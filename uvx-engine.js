@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.2.2
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.2.3
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.2.2/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.2.3/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.2.2';
+  var VERSION = '1.2.3';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -602,7 +602,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
   }
 
   /* ---------- 4. État ---------- */
-  var zones = readMenu(), allFiches = readFiches(), cur = null, visited = {};
+  var zones = readMenu(), allFiches = readFiches(), cur = null, visited = {}, cardAway = false;
   function isFaq(f) { return /^FAQ\b/i.test(f.title); }
   /* F21 : contrat de contenu. Une balise « Nom · 360 · Libellé » (type Hotspot Images) ou « Nom · Vidéo · Titre »
      n'est jamais la fiche d'une salle : c'est un contenu rattaché à l'étape « Nom » du menu. */
@@ -660,6 +660,8 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
   var FAQ = uvxFaq(faqText);
 
   try { visited = JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) {}
+  /* v1.2.3 : « ?demo » dans l'adresse = visite neuve (aucun espace coché), pour commencer une démonstration */
+  if (/[?&]demo(=|&|$)/.test(location.search)) { visited = {}; try { localStorage.removeItem(LS); } catch (e) {} }
   zones.forEach(function (z) {
     z.nFiches = 0;
     z.steps.forEach(function (st) { st.parts = split(st.label); st.fiche = ficheFor(st.parts.name, fiches); if (st.fiche) z.nFiches++; });
@@ -768,7 +770,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     if (!el) return;
     tick();
     if ($) $(el).trigger('click'); else el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    cur = st; visited[st.key] = 1;
+    cur = st; visited[st.key] = 1; cardAway = false;
     try { localStorage.setItem(LS, JSON.stringify(visited)); } catch (e) {}
     if (!CHAMP) try {   /* F8 — pas en mode champ seul : l'interface classique ne réécrit pas l'adresse */
       var u = new URL(el.href, location.href); u.searchParams.delete('play');
@@ -801,7 +803,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     q('.uvx-car .prev').disabled = idx <= 0;
     q('.uvx-car .next').disabled = idx >= all.length - 1;
     var card = q('.uvx-card');
-    if (!cur) { card.classList.add('hide'); return; }
+    if (!cur || cardAway) { card.classList.add('hide'); return; }
     card.querySelector('.eb').textContent = cur.group || zones[cur.zi].label;
     card.querySelector('h2').textContent = cur.parts.name;
     var fig = card.querySelector('.fig'); fig.textContent = cur.parts.fig; fig.style.display = cur.parts.fig ? '' : 'none';
@@ -919,7 +921,9 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
         console.warn('[UVX] SDK Matterport absent après 30 s : modules qui en dépendent désactivés'); }
     }, 100);
   }
-  var byIdx = {}; try { Object.values(cfg.sweepR || {}).forEach(function (r) { byIdx[r.index] = r.uuid; }); } catch (e) {}
+  /* v1.2.3 : le « ss » des liens MPskin compte à partir de 1, l'index Matterport (cfg.sweepR) à partir de 0.
+     Vérifié en ouvrant ?ss=451 / 447 / 624 : le point atteint a l'index 450 / 446 / 623. */
+  var byIdx = {}; try { Object.values(cfg.sweepR || {}).forEach(function (r) { byIdx[r.index + 1] = r.uuid; }); } catch (e) {}
   var dests = [];
   flat().forEach(function (st) {
     try {
@@ -962,12 +966,15 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
   var stepsBySid = {};
   flat().forEach(function (st) {
     try { var sid = byIdx[new URL(st.el.href, location.href).searchParams.get('ss')];
-      if (sid) (stepsBySid[sid] = stepsBySid[sid] || []).push(st); } catch (e) {}
+      if (sid) { st.sid = sid; (stepsBySid[sid] = stepsBySid[sid] || []).push(st); } } catch (e) {}
   });
   if (!CHAMP) withSdk(function (sdk) {
     try { hsSubs.push(sdk.Sweep.current.subscribe(function (s) {
       var sid = s && (s.sid || s.id), list = sid && stepsBySid[sid];
-      if (!list || !list.length || (cur && list.indexOf(cur) >= 0)) return;
+      /* v1.2.3 (demande de Mickaël) : point de scan sans fiche propre → le carton disparaît plutôt que de décrire un autre espace */
+      if (!list || !list.length) { if (cur && cur.sid && sid && sid !== cur.sid && !cardAway) { cardAway = true; render(); } return; }
+      if (cur && list.indexOf(cur) >= 0) { if (cardAway) { cardAway = false; render(); } return; }
+      cardAway = false;
       var st = (cur && list.filter(function (x) { return x.zi === cur.zi; })[0]) || list[0];
       cur = st; visited[st.key] = 1;
       try { localStorage.setItem(LS, JSON.stringify(visited)); } catch (e) {}
