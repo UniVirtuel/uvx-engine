@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.2.1
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.2.2
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.2.1/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.2.2/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.2.1';
+  var VERSION = '1.2.2';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -138,13 +138,15 @@ body.uvx-novign #uvx-back .uvx-vign{display:none}
 body.uvx-bare #uvx-back .uvx-grad{opacity:0}
 /* F1 / F2 */
 .uvx-zones{position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;pointer-events:auto}
+/* v1.2.2 : barre trop large pour tenir entre le logo et les outils → elle descend sous le logo, sur plusieurs lignes si besoin */
+#uvx .uvx-zones.low{top:var(--uvx-logo-b,70px);flex-wrap:wrap;justify-content:center;row-gap:6px;width:max-content;max-width:calc(100% - 40px)}
 .uvx-zone{position:relative}
 .uvx-pill{display:flex;align-items:center;gap:8px;height:34px;padding:0 12px;border-radius:999px;font-size:13px;white-space:nowrap}
 .uvx-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--uvx-accent)}
 .uvx-pill .n{font-size:11px;min-width:20px;height:18px;line-height:18px;border-radius:9px;background:rgba(var(--uvx-fg-rgb),.16);text-align:center}
 #uvx .uvx-zone.on .uvx-pill{background:var(--uvx-sheet)!important;color:var(--uvx-on-sheet)}
 .uvx-zone.on .uvx-pill .n{background:rgba(var(--uvx-deep-rgb),.1)}
-.uvx-drop{position:absolute;top:40px;left:50%;transform:translateX(-50%);min-width:260px;max-height:60vh;overflow:auto;padding:6px;border-radius:12px;display:none}
+.uvx-drop{position:absolute;top:40px;left:50%;transform:translateX(-50%);min-width:300px;max-height:60vh;overflow:auto;padding:6px;border-radius:12px;display:none}
 .uvx-zone:hover .uvx-drop,.uvx-zone.open .uvx-drop{display:block}
 .uvx-drop .grp{font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.6;padding:8px 10px 4px}
 .uvx-step{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:8px;background:none;text-align:left;font-size:13px}
@@ -428,16 +430,19 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
       var t = s.querySelector(':scope > .icnt.cnt-title');
       var z = { label: (t ? t.textContent : '').trim(), steps: [] };
       var tl = t ? t.querySelector(':scope > a') : null; if (!isStep(tl)) tl = null;
-      if (tl) z.steps.push({ label: label(tl) || z.label, el: tl, group: '' });
-      function walk(el, group) {
+      if (tl) z.steps.push({ label: label(tl) || z.label, el: tl, group: '', depth: 0 });
+      /* v1.2.2 : arborescence d'origine respectée — groupe = chemin complet des intertitres (« Le Couvent › Le Quartier Latin »),
+         profondeur = nombre d'étapes parentes (« La Charrue » › « La Sarclette (Sous-com) » est décalée d'un cran). */
+      function walk(el, path, depth) {
         var a = el.querySelector(':scope > a');
         var kids = Array.from(el.children).filter(function (c) { return c.classList && c.classList.contains('nav-level'); });
-        if (isStep(a)) z.steps.push({ label: label(a), el: a, group: group });
-        var g = (a && !isStep(a)) ? label(a) : group;
-        kids.forEach(function (k) { walk(k, g); });
+        var step = isStep(a);
+        if (step) z.steps.push({ label: label(a), el: a, group: path.join(' › '), depth: depth });
+        var p = (a && !step && label(a)) ? path.concat([label(a)]) : path;
+        kids.forEach(function (k) { walk(k, p, step ? depth + 1 : depth); });
       }
       var w = s.querySelector(':scope > .icnt-wrap');
-      if (w) w.querySelectorAll(':scope > .icnt > .nav-level').forEach(function (n) { walk(n, ''); });
+      if (w) w.querySelectorAll(':scope > .icnt > .nav-level').forEach(function (n) { walk(n, [], 0); });
       if (!z.label && z.steps.length) z.label = z.steps[0].label;
       if (z.steps.length) zones.push(z);
     });
@@ -731,7 +736,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
       var g = null;
       z.steps.forEach(function (st) {
         if (st.group !== g) { g = st.group; if (g) html += '<div class="grp">' + g + '</div>'; }
-        html += '<button class="uvx-step" data-key="' + st.key + '"><span class="k">' + (st.i + 1) + '</span>' + st.parts.name + '<span class="v"></span></button>';
+        html += '<button class="uvx-step' + (st.depth ? ' sub' : '') + '" style="' + (st.depth ? 'padding-left:' + (10 + 22 * st.depth) + 'px' : '') + '" data-key="' + st.key + '"><span class="k">' + (st.i + 1) + '</span>' + st.parts.name + '<span class="v"></span></button>';
       });
       html += '</div>';
     }
@@ -743,6 +748,15 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     });
   });
   q('.uvx-disc').addEventListener('click', function () { bar.classList.toggle('open'); });
+  function fitZones() {
+    bar.classList.remove('low');
+    if (!window.matchMedia('(min-width:1101px)').matches) return;
+    var r = bar.getBoundingClientRect(), t = q('.uvx-tools').getBoundingClientRect(),
+        l = document.querySelector('.logo-box'), lr = l ? l.getBoundingClientRect() : null;
+    var hitTools = r.right > t.left - 12, hitLogo = lr && lr.width && r.left < lr.right + 12 && r.top < lr.bottom;
+    if (hitTools || hitLogo) bar.classList.add('low');
+  }
+  fitZones(); window.addEventListener('resize', fitZones); setTimeout(fitZones, 1500); setTimeout(fitZones, 5000);
   root.addEventListener('click', function (e) {
     var b = e.target.closest('.uvx-step'); if (!b) return;
     var k = b.dataset.key.split(':'); go(zones[+k[0]].steps[+k[1]]);
@@ -843,7 +857,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     var l = document.createElement('div'); l.className = 'uvx-fl'; var h = '', g = null;
     z.steps.forEach(function (st) {
       if (st.group !== g) { g = st.group; if (g) h += '<div class="grp">' + g + '</div>'; }
-      h += '<button class="uvx-fstep" data-key="' + st.key + '"><i></i>' + st.parts.name + (st.parts.fig ? ' <span class="f">· ' + st.parts.fig + '</span>' : '') + '<span class="v"></span></button>';
+      h += '<button class="uvx-fstep' + (st.depth ? ' sub' : '') + '" style="' + (st.depth ? 'padding-left:' + (22 * st.depth) + 'px' : '') + '" data-key="' + st.key + '"><i></i>' + st.parts.name + (st.parts.fig ? ' <span class="f">· ' + st.parts.fig + '</span>' : '') + '<span class="v"></span></button>';
     });
     l.innerHTML = h; c1.appendChild(l);
   });
@@ -940,6 +954,26 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     };
     try { hsSubs.push(sdk.Sweep.current.subscribe(function (s) { curSid = s.sid || s.id; hsUpdate(); })); } catch (e) {}
     try { hsSubs.push(sdk.Camera.pose.subscribe(function (p) { pose = p; hsUpdate(); })); } catch (e) {}
+  });
+
+  /* ---------- v1.2.2 : le carton suit le visiteur ----------
+     Arrivée à pied sur un point de scan qui est aussi une étape du menu → cette étape devient l'étape courante
+     (carton, menu, compteur), sans relancer de déplacement. Point partagé par plusieurs étapes : on garde la zone en cours. */
+  var stepsBySid = {};
+  flat().forEach(function (st) {
+    try { var sid = byIdx[new URL(st.el.href, location.href).searchParams.get('ss')];
+      if (sid) (stepsBySid[sid] = stepsBySid[sid] || []).push(st); } catch (e) {}
+  });
+  if (!CHAMP) withSdk(function (sdk) {
+    try { hsSubs.push(sdk.Sweep.current.subscribe(function (s) {
+      var sid = s && (s.sid || s.id), list = sid && stepsBySid[sid];
+      if (!list || !list.length || (cur && list.indexOf(cur) >= 0)) return;
+      var st = (cur && list.filter(function (x) { return x.zi === cur.zi; })[0]) || list[0];
+      cur = st; visited[st.key] = 1;
+      try { localStorage.setItem(LS, JSON.stringify(visited)); } catch (e) {}
+      try { document.title = st.parts.name + ' — ' + baseTitle; } catch (e) {}
+      render(); cfgRefresh();
+    })); } catch (e) {}
   });
 
   /* ---------- F15 : même salle, autre configuration (photo 360 en surimpression) ---------- */
