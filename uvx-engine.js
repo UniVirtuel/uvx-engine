@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.2.0
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.2.1
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.2.0/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.2.1/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.2.0';
+  var VERSION = '1.2.1';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -318,6 +318,9 @@ body:not(.uvx-champ-on) .fancybox-container .fancybox-button--close{background:v
  .uvx-car{display:none!important}
  .uvx-ask{left:12px;right:12px;width:auto;transform:none;bottom:14px}
  #uvx .uvx-card{bottom:172px;pointer-events:none}
+ /* v1.2.1 (Mickaël) : le bouton « Découvrir » masquait le logo → il se range sous le logo, aligné à gauche */
+ #uvx .uvx-zones{top:var(--uvx-logo-b,70px);left:14px;right:auto;align-items:flex-start}
+ .uvx-cfg{top:calc(var(--uvx-logo-b,70px) + 54px)}
  .uvx-card p,#uvx .uvx-card .more{display:none!important}
  .uvx-cfg{left:14px;right:70px;width:auto;bottom:auto;top:var(--uvx-logo-b,70px)}
  .uvx-full.on{flex-direction:column;padding:64px 16px 16px;gap:14px}
@@ -1223,6 +1226,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
         }, 450));
         timers.push(setTimeout(scan, 600), setTimeout(scan, 2000));
       },
+      open: function () { if (!popOpen() && window.jQuery) jQuery('.click-trigger-cnt-start').first().trigger('click'); timers.push(setTimeout(scan, 800)); },
       stop: function () { if (obs) obs.disconnect(); timers.forEach(clearTimeout); },
       scan: scan
     };
@@ -1259,10 +1263,11 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     root.classList.remove('bare'); document.body.classList.remove('uvx-bare');
     var eyeB = root.querySelector('.uvx-tool.eye'); if (eyeB) eyeB.classList.remove('off');
     var first = flat()[0]; if (first) go(first);
-    showIntro();
+    if (aero) aero.open(); else showIntro();   /* v1.2.1 : avec une vue aérienne, la maison la rouvre */
   }
   root.querySelector('.uvx-tool.home').addEventListener('click', goHome);
-  if (OPTIONS.intro && !CHAMP && !window.__UVX_NOINTRO) showIntro();
+  /* v1.2.1 (décision de Mickaël) : s'il y a une vue aérienne d'accueil, pas d'écran d'accueil — elle s'affiche en premier */
+  if (OPTIONS.intro && !CHAMP && !aero && !window.__UVX_NOINTRO) showIntro();
 
   render();
   window.UVX = {
