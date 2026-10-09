@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.1.0
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.2.0
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.1.0/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.2.0/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.1.0';
+  var VERSION = '1.2.0';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -46,10 +46,14 @@
     charte: { couleur: '#2B2F36', accent: null, police: null },
     /* Mode (décision de Mickaël, 07/10/2026) : 'complet' = standard v1 (le menu natif est redessiné) ;
        'champ' = interface MPskin classique intacte + le seul champ de question (FAQ + renvoi), avec son œil. */
-    mode: 'complet'
+    mode: 'complet',
+    /* Vue aérienne d'accueil (popup d'entrée MPskin « Images interactives ») : effets de survol façon Juumo.
+       'auto' = actif si la popup d'entrée est une image interactive ; false = jamais. halo = couleur de l'anneau. */
+    aerien: 'auto', aerienHalo: '#ffffff'
   };
   if (window.UVX_OPTIONS) Object.keys(window.UVX_OPTIONS).forEach(function (k) { OPTIONS[k] = window.UVX_OPTIONS[k]; });
-  var CHAMP = OPTIONS.mode === 'champ';
+  var MODULES = OPTIONS.mode === 'modules';   /* interface MPskin intacte : seuls les modules autonomes (vue aérienne) */
+  var CHAMP = OPTIONS.mode === 'champ' || MODULES;
 
 
   /* ---------- 0 bis. Charte : une ou deux couleurs → toute la palette ----------
@@ -380,6 +384,10 @@ body:not(.uvx-champ-on) .fancybox-container .fancybox-button--close{background:v
 /* ---- Mode « champ seul » : interface MPskin classique + le seul champ de question ----
    Position calculée en JS (champPlace) : centré dans la zone laissée libre par le menu natif, au-dessus de sa barre basse. */
 body.uvx-champ-on #uvx > :not(.uvx-ask){display:none!important}
+body.uvx-aero-wait .fancybox-container.open-fancybox-pano{opacity:0!important;transition:none!important}
+body.uvx-aero-wait .fancybox-container.open-fancybox-pano,body.uvx-aero-wait .fancybox-container.open-fancybox-pano *{pointer-events:none!important}
+body .fancybox-container.open-fancybox-pano{transition:opacity .6s ease}
+body:not(.uvx-champ-on) .fancybox-container.open-fancybox-pano .fancybox-content{border-radius:0!important}
 body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360{display:none!important}
 #uvx.uvx-champ .uvx-ask{left:var(--uvx-cl,12px);right:auto;width:var(--uvx-cw,440px);bottom:var(--uvx-cb,72px);transform:none;display:flex;align-items:center;gap:6px;transition:opacity .25s}
 #uvx.uvx-champ .uvx-ask form{flex:1;min-width:0}
@@ -982,7 +990,8 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
 
   /* ---------- F16 : épisodes vidéo, la visite se place sur l'étape de l'épisode ---------- */
   var eps = OPTIONS.episodes;
-  if (!eps) {   /* démonstration : vidéos déjà présentes dans le skin */
+  if (!eps) eps = [];   /* v1.2.0 : sans balises « · Vidéo · Ép. N » ni épisodes dans la fiche, pas de visite guidée */
+  if (false) {
     var mp4 = ((cfg.vsConf && cfg.vsConf.objects) || []).filter(function (o) { return /\.mp4/i.test(o.srcUrl || ''); }).map(function (o) { return o.srcUrl; });
     var all = flat();
     eps = mp4.slice(0, 3).map(function (v, i) { var st = all[[0, 1, all.length - 1][i]]; return { title: st ? st.parts.name : 'Épisode ' + (i + 1), video: v, step: st && st.parts.name }; });
@@ -1120,6 +1129,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
   function champSoon() { champPlace(); champT.forEach(clearTimeout); champT = [120, 400, 1200].map(function (t) { return setTimeout(champFrame, t); }); }
   if (CHAMP) {
     root.classList.add('uvx-champ'); document.body.classList.add('uvx-champ-on');
+    if (MODULES) { root.style.display = 'none'; document.body.classList.add('uvx-modules-on'); }
     ask.querySelector('.ceye').addEventListener('click', function () {
       tick(); var h = ask.classList.toggle('hid'); if (h) ans.classList.remove('on');
       this.title = h ? 'Afficher le champ de question' : 'Masquer le champ de question';
@@ -1145,6 +1155,79 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     ask.addEventListener('focusin', kbSoon); ask.addEventListener('focusout', kbSoon);
   }
 
+
+  /* ---------- Vue aérienne d'accueil (v1.2.0) — effets façon Juumo sur les hotspots des images interactives MPskin ----------
+     La popup d'entrée MPskin (.click-trigger-cnt-start, data-media-type="pano") ouvre /fr/pano/<id> dans une iframe
+     Fancybox du même site. On y injecte une feuille de style et deux écouteurs :
+       · halo battant sur tous les hotspots, interrompu dès qu'un hotspot est survolé ;
+       · hotspot survolé (souris) : icône agrandie, libellé en pastille, les autres voilés ;
+       · écran tactile : pas d'effet de survol, le 1er toucher déclenche directement l'action MPskin (comme Juumo).
+     MPskin recrée les hotspots au chargement de l'image pleine définition : tout passe par la feuille de style et
+     par des écouteurs posés sur le document, jamais sur les hotspots eux-mêmes.
+     Avec l'écran d'accueil du moteur : la popup est masquée pendant l'accueil (elle se charge derrière),
+     puis révélée — ou ouverte — au clic sur « Démarrer la visite ». */
+  var aero = (function () {
+    if (OPTIONS.aerien === false) return null;
+    var trig = document.querySelector('.click-trigger-cnt-start');
+    if (!trig || trig.getAttribute('data-media-type') !== 'pano') return null;
+    /* pastille = couleur principale de la charte du client, texte clair ou foncé selon le contraste (exigence de Mickaël) */
+    var pill = CHARTE.vars['--uvx-panel-rgb'] || '43,47,54', pillTx = CHARTE.vars['--uvx-fg'] || '#ffffff', font = CHARTE.vars['--uvx-font'];
+    var halo = String(OPTIONS.aerienHalo || '#ffffff');
+    var hr = /^#?([0-9a-f]{6})$/i.exec(halo.trim()); var hrgb = hr ? [0, 2, 4].map(function (i) { return parseInt(hr[1].substr(i, 2), 16); }).join(',') : '255,255,255';
+    var CSS = '@keyframes uvxAeroHalo{0%{box-shadow:0 0 0 0 rgba(' + hrgb + ',.6)}70%{box-shadow:0 0 0 11px rgba(' + hrgb + ',0)}100%{box-shadow:0 0 0 0 rgba(' + hrgb + ',0)}}\n' +
+      'html.pano div.custom-tooltip{transition:opacity .35s ease}\n' +
+      'html.pano div.custom-tooltip .icon{display:block;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.95),0 3px 12px rgba(0,0,0,.35);animation:uvxAeroHalo 2.2s infinite;transition:transform .35s cubic-bezier(.2,.8,.2,1);transform-origin:50% 50%}\n' +
+      'html.pano.uvx-aero-focus div.custom-tooltip .icon{animation:none}\n' +
+      'html.pano.uvx-aero-focus div.custom-tooltip:not(.uvx-on){opacity:.28}\n' +
+      'html.pano div.custom-tooltip.uvx-on{z-index:1000!important}\n' +
+      'html.pano div.custom-tooltip.uvx-on .icon{transform:scale(1.35)}\n' +
+      'html.pano div.custom-tooltip .tt-wrap{visibility:hidden!important;opacity:0;position:absolute!important;left:100%!important;top:50%!important;margin:0 0 0 14px!important;width:auto!important;max-width:none!important;transform:translate(-6px,-50%);transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap}\n' +
+      'html.pano div.custom-tooltip.uvx-left .tt-wrap{left:auto!important;right:100%!important;margin:0 14px 0 0!important;transform:translate(6px,-50%)}\n' +
+      'html.pano div.custom-tooltip.uvx-on .tt-wrap{visibility:visible!important;opacity:1;transform:translate(0,-50%)}\n' +
+      'html.pano div.custom-tooltip .tt-wrap .tt{display:inline-block;background:rgba(' + pill + ',.9)!important;color:' + pillTx + '!important;font:600 11px/1 ' + font + ';letter-spacing:.2em;text-transform:uppercase;padding:9px 14px 8px;border-radius:999px;box-shadow:0 0 0 1px rgba(255,255,255,.18),0 6px 18px rgba(0,0,0,.25);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}\n' +
+      'html.pano div.custom-tooltip span:after,html.pano div.custom-tooltip:hover span:after{display:none!important;content:none!important}\n' +
+      '@media (max-width:767px){html.pano div.custom-tooltip .icon{transform:scale(.8)}html.pano div.custom-tooltip.uvx-on .icon{transform:scale(1.1)}html.pano div.custom-tooltip .tt-wrap .tt{font-size:10px;letter-spacing:.16em;padding:8px 12px 7px}}\n';
+    var obs = null, timers = [], touch = window.matchMedia && matchMedia('(hover: none)').matches;
+    function enhance(fr) {
+      var d; try { d = fr.contentDocument; } catch (e) { return; }
+      if (!d || !d.documentElement || !/\bpano\b/.test(d.documentElement.className) || d.getElementById('uvx-aero')) return;
+      var st = d.createElement('style'); st.id = 'uvx-aero'; st.textContent = CSS; (d.head || d.documentElement).appendChild(st);
+      var w = fr.contentWindow, cur = null;
+      function hsOf(t) { return t && t.closest ? t.closest('div.custom-tooltip') : null; }
+      function focus(h) {
+        if (cur && cur !== h) cur.classList.remove('uvx-on', 'uvx-left');
+        cur = h;
+        if (h) { var r = h.getBoundingClientRect(); h.classList.toggle('uvx-left', r.left > w.innerWidth * 0.62); h.classList.add('uvx-on'); }
+        d.documentElement.classList.toggle('uvx-aero-focus', !!h);
+      }
+      d.addEventListener('mouseover', function (e) { if (!touch) focus(hsOf(e.target)); }, true);
+      d.addEventListener('mouseout', function (e) { if (!touch && !e.relatedTarget) focus(null); }, true);
+      /* téléphone et tablette (pas de survol) : aucun effet, le 1er toucher envoie directement dans la visite,
+         comme chez Juumo (décision de Mickaël, 09/10/2026) — le halo reste. */
+    }
+    function scan() { document.querySelectorAll('.fancybox-container iframe').forEach(function (fr) {
+      if (!/\/pano\//.test(fr.src || '')) return;
+      enhance(fr); if (!fr.__uvxAero) { fr.__uvxAero = 1; fr.addEventListener('load', function () { enhance(fr); }); }
+    }); }
+    function popOpen() { return !!document.querySelector('.fancybox-container.open-fancybox-pano, .fancybox-container iframe[src*="/pano/"]'); }
+    obs = new MutationObserver(function () { scan(); });
+    obs.observe(document.body, { childList: true, subtree: true });
+    scan();
+    return {
+      hold: function () { document.body.classList.add('uvx-aero-wait'); },
+      reveal: function () {
+        document.body.classList.remove('uvx-aero-wait');
+        if (window.cfg && cfg.targetUrl) return;            /* lien profond : MPskin n'ouvre pas la popup, nous non plus */
+        timers.push(setTimeout(function () {                 /* laisser à MPskin le temps de l'ouvrir lui-même */
+          if (!popOpen() && window.jQuery) jQuery('.click-trigger-cnt-start').first().trigger('click');
+        }, 450));
+        timers.push(setTimeout(scan, 600), setTimeout(scan, 2000));
+      },
+      stop: function () { if (obs) obs.disconnect(); timers.forEach(clearTimeout); },
+      scan: scan
+    };
+  })();
+
   /* ---------- F18 : intro (rappelable par le bouton Accueil) ---------- */
   function showIntro() {
     var old = root.querySelector('.uvx-intro'); if (old) old.remove();
@@ -1161,7 +1244,8 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     intro.innerHTML = vid + '<div class="in"><div class="eb">Bienvenue</div><h1>' + (OPTIONS.introTitle || (pj ? pj.textContent.trim() : baseTitle)) + '</h1>' +
       '<button class="go-btn">' + OPTIONS.introButton + '</button></div>' + (vid ? '' : '<button class="skip">Passer l\'intro</button>');
     root.appendChild(intro);
-    var leave = function () { tick(); intro.classList.add('go'); setTimeout(function () { intro.remove(); }, 2400); };
+    if (aero) aero.hold();
+    var leave = function () { tick(); intro.classList.add('go'); setTimeout(function () { intro.remove(); }, 2400); if (aero) aero.reveal(); };
     var sk = intro.querySelector('.skip'); if (!sk) { sk = document.createElement('i'); }
     intro.querySelector('.go-btn').addEventListener('click', leave);
     sk.addEventListener('click', leave);
@@ -1185,7 +1269,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     key: key, zones: zones, fiches: fiches, go: go, options: OPTIONS, charte: CHARTE,
     setCharte: function (ch) { CHARTE = uvxCharte(ch); OPTIONS.charte = ch; style.textContent = CHARTE.css + css; window.UVX.charte = CHARTE; return CHARTE.report; },
     home: goHome, mode: OPTIONS.mode, champPlace: champPlace,
-    faq: FAQ, ask: answer,
+    faq: FAQ, ask: answer, aero: aero,
     faqMisses: function () { try { return JSON.parse(localStorage.getItem('uvx-faq-miss') || '[]'); } catch (e) { return []; } },
     destroy: function () {
       hsSubs.forEach(function (s) { try { s.cancel(); } catch (e) {} });
@@ -1194,7 +1278,8 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
       if (window.visualViewport) { visualViewport.removeEventListener('resize', kbSoon); visualViewport.removeEventListener('scroll', kbSoon); }
       if (pv) { try { pv.destroy(); } catch (e) {} }
       [root, style, back, pano, hsLayer].forEach(function (n) { n.remove(); });
-      document.body.classList.remove('uvx-bare', 'uvx-novign', 'uvx-champ-on');
+      document.body.classList.remove('uvx-bare', 'uvx-novign', 'uvx-champ-on', 'uvx-modules-on', 'uvx-aero-wait');
+      if (aero) aero.stop();
       if (champObs) champObs.disconnect(); champT.forEach(clearTimeout); window.removeEventListener('resize', champSoon);
       window.removeEventListener('keydown', onKey, true); window.removeEventListener('resize', placeUnderLogo);
     }
