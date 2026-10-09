@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.0.0
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.1.0
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.0.0/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.1.0/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.0.0';
+  var VERSION = '1.1.0';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -309,8 +309,12 @@ body:not(.uvx-champ-on) .fancybox-container .fancybox-button--close{background:v
  .uvx-car{left:12px;right:12px;transform:none;bottom:14px}
  .uvx-car .mid{flex:1;min-width:0}
  .uvx-car .arr{width:44px;height:52px}
- .uvx-ask{left:12px;right:12px;width:auto;transform:none;bottom:166px}
- #uvx .uvx-card{bottom:216px}
+ /* v1.1.0 (Mickaël, 09/10/2026) : sur téléphone, plus de carrousel « Commencer la visite » : le champ de question
+    prend sa place en bas ; la carte de contexte se réduit au nom et au chiffre et ne capte plus les touchers. */
+ .uvx-car{display:none!important}
+ .uvx-ask{left:12px;right:12px;width:auto;transform:none;bottom:14px}
+ #uvx .uvx-card{bottom:172px;pointer-events:none}
+ .uvx-card p,#uvx .uvx-card .more{display:none!important}
  .uvx-cfg{left:14px;right:70px;width:auto;bottom:auto;top:var(--uvx-logo-b,70px)}
  .uvx-full.on{flex-direction:column;padding:64px 16px 16px;gap:14px}
  .uvx-full .col2{order:-1;position:static;width:100%}
@@ -350,11 +354,11 @@ body:not(.uvx-champ-on) .fancybox-container .fancybox-button--close{background:v
  .uvx-pill{height:30px}
  .uvx-tools{top:8px;right:8px;gap:4px}
  .uvx-tool{width:34px;height:34px}
- .uvx-car{bottom:8px}
- .uvx-car .arr{width:36px;height:40px}
+ .uvx-car{display:none!important}
+ .uvx-card{pointer-events:none}
  .uvx-car .mid{height:40px;min-width:220px}
  .uvx-car .mid span{display:none}
- .uvx-ask{bottom:56px;width:min(380px,46vw)}
+ .uvx-ask{bottom:66px;width:min(380px,46vw)}
  .uvx-ask form{height:34px}
  .uvx-ask .ans{bottom:40px;max-height:calc(100vh - 120px)}
  .uvx-card{left:16px;bottom:auto;top:calc(var(--uvx-logo-b,70px) + 8px);width:min(260px,30vw)}
@@ -750,7 +754,9 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     q('.uvx-full').classList.remove('on');
     render(); cfgRefresh();
   }
-  var baseTitle = document.title;
+  /* titre d'origine mémorisé une fois : une relance du moteur ne doit pas empiler les noms d'étapes */
+  if (!window.__UVX_TITLE0) window.__UVX_TITLE0 = document.title;
+  var baseTitle = window.__UVX_TITLE0;
 
   /* F3 + F10 */
   function render() {
@@ -1125,6 +1131,19 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     ask.addEventListener('focusin', champSoon); ask.addEventListener('focusout', champSoon);
     champSoon(); setTimeout(champPlace, 1500); setTimeout(champPlace, 5000);
   }
+  /* v1.1.0 — mode complet sur téléphone : le champ est en bas d'écran ; quand le clavier virtuel s'ouvre, on le remonte
+     au-dessus (visualViewport), puis on le rend à sa place à la fermeture. */
+  function kbPlace() {
+    if (CHAMP) return;
+    var vv = window.visualViewport, kb = 0;
+    if (vv && ask.contains(document.activeElement)) kb = Math.round(window.innerHeight - (vv.height + vv.offsetTop));
+    ask.style.bottom = kb > 80 ? (kb + 12) + 'px' : '';
+  }
+  function kbSoon() { kbPlace(); setTimeout(kbPlace, 300); setTimeout(kbPlace, 800); }
+  if (!CHAMP) {
+    if (window.visualViewport) { visualViewport.addEventListener('resize', kbSoon); visualViewport.addEventListener('scroll', kbSoon); }
+    ask.addEventListener('focusin', kbSoon); ask.addEventListener('focusout', kbSoon);
+  }
 
   /* ---------- F18 : intro (rappelable par le bouton Accueil) ---------- */
   function showIntro() {
@@ -1172,6 +1191,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
       hsSubs.forEach(function (s) { try { s.cancel(); } catch (e) {} });
       if (sdkPoll) clearInterval(sdkPoll); sdkWait = null;
       if (window.visualViewport) { visualViewport.removeEventListener('resize', champSoon); visualViewport.removeEventListener('scroll', champSoon); }
+      if (window.visualViewport) { visualViewport.removeEventListener('resize', kbSoon); visualViewport.removeEventListener('scroll', kbSoon); }
       if (pv) { try { pv.destroy(); } catch (e) {} }
       [root, style, back, pano, hsLayer].forEach(function (n) { n.remove(); });
       document.body.classList.remove('uvx-bare', 'uvx-novign', 'uvx-champ-on');
