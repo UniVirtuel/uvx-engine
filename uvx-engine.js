@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.3.2
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.3.3
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.3.2/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.3.3/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.3.2';
+  var VERSION = '1.3.3';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -471,7 +471,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-fd .lead h3{margin:0;font-weight:300;font-size:22px}
 #uvx .v-fd .lead span{font-size:12px;opacity:.6}
 #uvx .v-rooms{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
-#uvx .v-room{display:block;width:100%;text-align:left;padding:0;border-radius:16px;overflow:hidden;background:var(--uvx-card)!important;border:1px solid var(--uvx-card-bd)!important}
+#uvx .v-room{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;width:100%;text-align:left;padding:0;border-radius:16px;overflow:hidden;background:var(--uvx-card)!important;border:1px solid var(--uvx-card-bd)!important}
 #uvx .v-room .im{display:block;height:120px;background:rgba(var(--uvx-fg-rgb),.06) center/cover no-repeat}
 #uvx .v-room .tx{padding:11px 14px 13px}
 #uvx .v-room .t{display:block;font-size:15px;font-weight:500}
@@ -510,6 +510,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-finder input{width:64px;height:34px;border-radius:17px;border:0!important;background:rgba(var(--uvx-fg-rgb),.12)!important;color:var(--uvx-fg);font:600 13px var(--uvx-font);text-align:center;outline:0;box-shadow:none!important;padding:0}
 #uvx .v-finder select{height:34px;border-radius:17px;border:0;background:rgba(var(--uvx-fg-rgb),.12);color:var(--uvx-fg);font:600 13px var(--uvx-font);padding:0 10px;outline:0}
 #uvx .v-finder select option{color:#222}
+#uvx .v-finder .f1{white-space:nowrap}
+#uvx .v-finder .br{display:none}
+#uvx .v-cat{background:rgb(var(--uvx-panel-rgb))!important}
 #uvx .v-finder button{height:34px;padding:0 16px;border-radius:17px;background:var(--uvx-accent)!important;color:var(--uvx-on-accent);font-weight:600}
 #uvx .v-tabs{display:flex;gap:8px;margin:22px 0 18px;overflow-x:auto;scrollbar-width:none;flex:none}
 #uvx .v-tabs::-webkit-scrollbar{display:none}
@@ -519,7 +522,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-grid .grp{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.55;margin:18px 0 10px}
 #uvx .v-grid .grp:first-child{margin-top:0}
 #uvx .v-grid .row{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
-#uvx .v-card{display:block;width:100%;text-align:left;padding:0;border-radius:18px;overflow:hidden;background:var(--uvx-card)!important;border:1px solid var(--uvx-card-bd)!important;transition:transform .2s}
+#uvx .v-card{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;width:100%;text-align:left;padding:0;border-radius:18px;overflow:hidden;background:var(--uvx-card)!important;border:1px solid var(--uvx-card-bd)!important;transition:transform .2s}
 #uvx .v-card:hover{transform:translateY(-2px)}
 #uvx .v-card .im{height:150px;background:rgba(var(--uvx-fg-rgb),.07) center/cover no-repeat;position:relative;display:block}
 #uvx .v-card .im i{position:absolute;left:10px;bottom:10px;font-style:normal;font-size:11px;font-weight:600;padding:5px 10px;border-radius:12px;background:rgba(0,0,0,.5);color:#fff}
@@ -638,13 +641,16 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
  #uvx .v-pop{left:12px;right:12px;width:auto;transform:none;bottom:136px}
  #uvx .v-pop .ans{max-height:calc(100vh - 230px)}
  #uvx .v-rooms{grid-template-columns:1fr}
- #uvx .v-room{display:flex}
+ #uvx .v-room{display:flex;flex-direction:row}
  #uvx .v-room .im{width:96px;height:auto;min-height:78px;flex:none}
  #uvx .v-ft,#uvx .v-rep{left:0;right:0;width:auto;top:auto;bottom:0;max-height:82vh;border-radius:24px 24px 0 0}
  #uvx .v-ft .ph{height:150px}
  #uvx .v-cat{left:0;right:0;top:56px;padding:18px 14px 0;border-radius:22px 22px 0 0}
  #uvx .v-cat h1{font-size:22px}
- #uvx .v-finder{margin-left:0;width:100%}
+ #uvx .v-finder{margin-left:0;width:100%;flex-wrap:wrap;border-radius:20px;padding:10px 12px;row-gap:10px}
+ #uvx .v-finder .br{display:block;flex-basis:100%;height:0}
+ #uvx .v-finder select{flex:1;min-width:0}
+ #uvx.v-catopen .v-dock,#uvx.v-catopen .v-cap,#uvx.v-catopen .v-pop{display:none!important}
  #uvx .v-tabs{margin:14px 0 12px}
  #uvx .v-grid .row{grid-template-columns:1fr 1fr;gap:10px}
  #uvx .v-card .im{height:96px}
@@ -1644,7 +1650,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       '<div class="v-ft v-panel"><button class="v-x" type="button">×</button><div class="ph"><span class="fit" style="display:none"></span></div><div class="bd"><div class="sc"></div><div class="add"></div></div></div>' +
       '<div class="v-rep v-panel"><button class="v-x" type="button">×</button><div class="v-eb"></div><h2>' + esc(LB.reperage) + '</h2><div class="sum"></div><div class="ls"></div><div class="foot"></div></div>' +
       '<div class="v-cat v-panel"><button class="v-x" type="button">×</button><div class="hd"><div><h1></h1><div class="sub"></div></div>' +
-        '<form class="v-finder">' + esc(LB.trouver) + ' <input type="number" min="1" max="99999" inputmode="numeric" placeholder="—"> ' + esc(LB.personnes) + ' <select></select><button type="submit">' + esc(LB.voir) + '</button></form></div>' +
+        '<form class="v-finder"><span class="f1">' + esc(LB.trouver) + '</span><input type="number" min="1" max="99999" inputmode="numeric" placeholder="—"><span class="f1">' + esc(LB.personnes) + '</span><i class="br"></i><select></select><button type="submit">' + esc(LB.voir) + '</button></form></div>' +
         '<div class="v-tabs"></div><div class="v-grid"></div></div>' +
       '<div class="v-plan"><button class="v-x" type="button">×</button><div class="lv"></div><div class="ttl"><b></b><span></span></div><div class="stage"><div class="wrap"><img alt=""></div></div><div class="leg"></div></div>' +
       '<div class="v-brief"><div class="in v-panel"><div class="v-eb"></div><h1>' + esc(LB.briefTitre) + '</h1><div class="sub">' + esc(LB.briefTexte) + '</div>' +
@@ -1675,6 +1681,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       [ft, repP, cat, plan].forEach(function (p) { p.classList.toggle('on', p === except); });
       if (except !== 'pop') { ans.classList.remove('on'); }
       dim.classList.toggle('on', except === cat || except === plan);
+      root.classList.toggle('v-catopen', except === cat);
       dock.querySelector('.cat').classList.toggle('on', except === cat);
       dock.querySelector('.rep').classList.toggle('on', except === repP);
       dock.querySelector('.plan').classList.toggle('on', except === plan);
