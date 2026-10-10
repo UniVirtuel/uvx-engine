@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.4.0
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.4.1
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.4.0/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.4.1/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.4.0';
+  var VERSION = '1.4.1';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -626,6 +626,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-cap p{margin:8px auto 0;max-width:600px;font-size:14px;line-height:1.45;text-shadow:0 1px 10px rgba(0,0,0,.65);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 #uvx .v-cap button{pointer-events:auto;margin-top:10px;background:none!important;padding:0 0 3px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#fff;border-bottom:1px solid var(--uvx-accent)!important;text-shadow:0 1px 8px rgba(0,0,0,.6)}
 /* dock */
+#uvx .v-dock .v-here.inert{cursor:default}
 #uvx .v-dock{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);height:60px;width:clamp(600px,calc(100vw - 540px),1000px);border-radius:30px;display:flex;align-items:center;padding:0 8px 0 10px;pointer-events:auto;box-shadow:0 20px 50px rgba(0,0,0,.3);background:rgba(var(--uvx-panel-rgb),.82)!important}
 #uvx .v-here{flex:none;display:flex;align-items:center;gap:12px;height:44px;padding:0 16px 0 12px;border-radius:22px;background:none;max-width:260px;text-align:left}
 #uvx .v-here:hover{background:rgba(var(--uvx-fg-rgb),.07)!important}
@@ -928,7 +929,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     if (LANG !== 'fr') STOP = STOP.concat(('a an the of to in on at for with and or is are was be been can could do does did i we you he she they our your my me us it its this that these those there here what which how where when who whom why ' +
       'many much any some have has had please near nearby from by as about into than then so very also just get got would should will shall may might must not no yes ' +
       'de het een van en of is zijn er te om op aan bij uit door ook nog naar kan kunnen heeft hebben wordt worden u uw jullie we wij ik mijn onze ons deze dit die dat wat welke hoe hoeveel waar wanneer wie waarom ' +
-      'geen niet wel zo zeer veel meer minder graag mogelijk in met voor als dan tot ' +
+      'geen niet wel zo zeer veel meer minder graag mogelijk in met voor als dan tot houden organiseren organiseer regelen doen hold organise organize arrange ' +
       'der die das den dem des ein eine einen einem einer und oder ist sind war gibt es gibt ich wir sie ihr ihre unser unsere mein kann koennen koennte haben hat wie wo wann was welche welcher welches wieviel viele ' +
       'mit fuer von zu im in am an auf bei aus nach ueber unter vor auch noch nur sehr mehr weniger bitte moeglich nicht kein keine ja nein hier dort ' +
       'el la los las un una unos unas de del al y o es son hay que como cual cuales cuanto cuantos cuantas donde cuando quien por para con sin en se su sus mi mis nuestro nuestra puede pueden tienen tiene ' +
@@ -1899,7 +1900,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         var t = clean((typeof o === 'string' ? o + ' ' : '') + (st.fiche ? htmlText(st.fiche.html) : '') + ' ' + st.label), m;
         var mm = /(\d[\d\s.]*)\s*m(?:²|2)(?![a-z])/i.exec(t); if (mm) out.m2 = num(mm[1]);
         var PREP = LANG === 'fr' ? '(?:en|au|à)\\s+' : '(?:(?:en|au|à|in|op|als|im|bei|mit|en)\\s+)?';
-        var re = new RegExp('(\\d{1,3}(?:[\\s.]\\d{3})*|\\d+)\\s+(?:personnes?\\s+|places?\\s+|pers\\.?\\s+|invit[ée]s\\s+|people\\s+|persons\\s+|guests\\s+|personen\\s+|gasten\\s+|teilnehmer(?:n)?\\s+|gäste\\s+|personas\\s+|invitados\\s+)?' + PREP + CW + '\\b((?:\\s+ou\\s+en\\s+' + CW + '\\b)*)', 'gi');
+        var re = new RegExp('(\\d{1,3}(?:[\\s.]\\d{3})+(?!\\d)|\\d+)\\s+(?:personnes?\\s+|places?\\s+|pers\\.?\\s+|invit[ée]s\\s+|people\\s+|persons\\s+|guests\\s+|personen\\s+|gasten\\s+|teilnehmer(?:n)?\\s+|gäste\\s+|personas\\s+|invitados\\s+)?' + PREP + CW + '\\b((?:\\s+ou\\s+en\\s+' + CW + '\\b)*)', 'gi');
         while ((m = re.exec(t))) {
           var n = num(m[1]), names = [m[2]].concat((m[3] || '').split(/\s+ou\s+en\s+/i).slice(1));
           names.forEach(function (w) { var c = confName(w.trim()); if (c && !out.rows.some(function (r) { return r.k === c; })) out.rows.push({ k: c, n: n }); });
@@ -1907,7 +1908,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         var cv = /(\d+)\s+(?:couverts?|covers?|gedecke|cubiertos)(?:\s+(?:au|à|en|at|for|bij|zum|beim)\s+(d[ée]jeuner|d[îi]ner|lunch|dinner|mittagessen|abendessen))?/gi;
         while ((m = cv.exec(t))) { var c2 = m[2] ? confName(m[2]) : 'Couverts'; if (!out.rows.some(function (r) { return r.k === c2; })) out.rows.push({ k: c2, n: +m[1] }); }
         if (!out.rows.length) {   /* « 10 personnes autour d'une table » ; « 1 497 places » */
-          var pp = /(\d{1,3}(?:[\s.,]\d{3})*|\d+)\s+(personnes|places|people|persons|guests|seats|personen|plaatsen|plätze|sitzplätze|gäste|teilnehmer|personas|plazas|asistentes)\b/i.exec(t);
+          var pp = /(\d{1,3}(?:[\s.,]\d{3})+(?!\d)|\d+)\s+(personnes|places|people|persons|guests|seats|personen|plaatsen|plätze|sitzplätze|gäste|teilnehmer|personas|plazas|asistentes)\b/i.exec(t);
           if (pp) out.rows.push({ k: /places|seats|plaatsen|plätze|plazas/i.test(pp[2]) ? 'Places' : 'Personnes', n: num(pp[1]) });
         }
         var sm = /\d[\d\s.]*\s*m(?:²|2)\s*:[^.]*\./.exec(t); if (sm && out.rows.length) out.sentence = sm[0];
@@ -2029,6 +2030,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var lastKey = null;
     function renderDock() {
       var here = dock.querySelector('.v-here');
+      here.classList.toggle('inert', !(cur && (cur.fiche || caps(cur))) && !aero);
       here.querySelector('b').textContent = cur ? cur.parts.name : LIEU;
       here.querySelector('i').textContent = cur ? zoneOf(cur) : T('{z} univers · {n} espaces', { z: zones.length, n: flat().length });
       var cx = dock.querySelector('.v-ctx');
@@ -2040,7 +2042,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       var k = cur && !cardAway ? cur.key : null;
       if (k !== lastKey) { lastKey = k; showCap(); }
     }
-    dock.querySelector('.v-here').onclick = function () { tick(); if (cur && (cur.fiche || caps(cur))) openFiche(cur); else openCat(cur ? cur.zi : -1); };
+    /* v1.4.1 (décision de Mickaël, 10/10/2026) : hors d'un espace, ce bouton n'ouvre plus le catalogue (doublon avec « Salles & espaces ») :
+       il ramène à la vue aérienne s'il y en a une, sinon il ne sert que de repère. Dans un espace : raccourci vers sa fiche. */
+    dock.querySelector('.v-here').onclick = function () { if (cur && (cur.fiche || caps(cur))) { tick(); openFiche(cur); } else if (aero) { tick(); goHome(); } };
     dock.querySelector('.v-ctx').onclick = function () { tick(); openBrief(); };
     dock.querySelector('.cat').onclick = function () { tick(); if (cat.classList.contains('on')) closeAll(); else openCat(-1); };
     dock.querySelector('.rep').onclick = function () { tick(); if (repP.classList.contains('on')) closeAll(); else openRep(); };
@@ -2139,7 +2143,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var CAPW = /(personnes?|pers\b|participants?|pax|places?|invit[ée]s?|collaborateurs?|convives|couverts?|jauge|salle|accueillir|capacit[ée]|people|persons?|guests?|attendees|delegates|seats|capacity|rooms?|personen|deelnemers|gasten|plaatsen|capaciteit|za(?:a|le)l\w*|teilnehmer\w*|gäste|plätze|kapazität|raum|räume|saal|säle|personas|asistentes|invitados|plazas|capacidad|salas?)/i;
     function finderAnswer(text) {
       if (withCaps < 2) return false;
-      var t = clean(text), m = /(\d{1,3}(?:[\s.,]\d{3})*|\d+)/.exec(t); if (!m) return false;
+      var t = clean(text), m = /(\d{1,3}(?:[\s.,]\d{3})+(?!\d)|\d+)/.exec(t); if (!m) return false;   /* v1.4.1 : « 2000 » était lu 200 (signalé par Mickaël sur le CID) */
       var n = num(m[1]); if (!n || n < 2) return false;
       var cm = new RegExp('(?:^|[^a-zà-ÿ])' + CW + '(?![a-zà-ÿ])', 'i').exec(t), conf = cm ? confName(cm[1]) : '';
       if (conf && allConfs.indexOf(conf) < 0) conf = '';
