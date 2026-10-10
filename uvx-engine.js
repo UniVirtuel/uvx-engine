@@ -108,6 +108,43 @@
       'Cocktail': 'reception', 'Tables rondes': 'round tables', 'Carré': 'hollow square', 'Réunion': 'meeting', 'Déjeuner': 'lunch', 'Dîner': 'dinner', 'Assis': 'seated', 'Debout': 'standing',
       'Places': 'seats', 'Personnes': 'people', 'Couverts': 'covers'
     },
+    de: {
+      'Démarrer la visite': 'Rundgang starten', 'Commencer la visite': 'Rundgang starten', 'Découvrir ▾': 'Entdecken ▾',
+      'Retour à l\'accueil': 'Zurück zum Start', 'Masquer l\'interface': 'Oberfläche ausblenden', 'Flou périphérique': 'Randunschärfe', 'Musique': 'Musik',
+      'Plein écran': 'Vollbild', 'Visite guidée en vidéo': 'Videoführung', 'Tous les espaces': 'Alle Räume', 'Voir plus': 'Mehr sehen',
+      'Masquer le champ de question': 'Fragefeld ausblenden', 'Afficher le champ de question': 'Fragefeld einblenden', 'Photo à venir': 'Foto folgt',
+      '{n} espace': '{n} Raum', '{n} espaces': '{n} Räume', '{n} fiche': '{n} Datenblatt', '{n} fiches': '{n} Datenblätter',
+      'Même salle, autre configuration': 'Gleicher Raum, andere Bestuhlung', 'Vue 3D': '3D-Ansicht', 'Une question ?': 'Eine Frage?',
+      'Bonjour,\n\nMa question : ': 'Guten Tag,\n\nmeine Frage: ', '(Question posée depuis la visite virtuelle': '(Frage aus dem virtuellen Rundgang',
+      ', espace « {s} »': ', Raum „{s}“', 'Question depuis la visite virtuelle': 'Frage aus dem virtuellen Rundgang',
+      '✉ Écrire à {nom}': '✉ An {nom} schreiben', 'l\'équipe': 'das Team', 'L\'équipe': 'Das Team', 'Voir {s} →': '{s} ansehen →', 'Questions fréquentes': 'Häufige Fragen',
+      'Voir aussi': 'Siehe auch', 'Besoin d\'une précision ?': 'Weitere Details?', 'Écrire à {nom}': 'An {nom} schreiben', 'Une question précise': 'Eine konkrete Frage',
+      'Je n\'ai pas de réponse fiable à cette question dans les informations du lieu.': 'Zu dieser Frage finde ich keine verlässliche Antwort in den Informationen des Hauses.',
+      '{nom} vous répond directement': '{nom} antwortet Ihnen direkt', ' Essayez avec le nom d\'une salle, une capacité ou un usage.': ' Versuchen Sie es mit einem Raumnamen, einer Kapazität oder einer Nutzung.',
+      'Salles & espaces': 'Räume & Bereiche', 'Mon repérage': 'Meine Auswahl', 'Repérage': 'Auswahl', 'Dans mon repérage': 'In meiner Auswahl',
+      'Demander une proposition': 'Angebot anfragen', 'Ajouter à mon repérage': 'Zu meiner Auswahl', 'Retiré du repérage': 'Aus der Auswahl entfernt',
+      'Y aller': 'Hingehen', 'Plan': 'Grundriss', 'Salle, jauge, question…': 'Raum, Kapazität, Frage…', 'Lire la fiche': 'Datenblatt lesen',
+      'Préparez votre repérage': 'Bereiten Sie Ihre Besichtigung vor', 'Deux réponses facultatives : la visite met ensuite en avant les espaces adaptés à votre événement.': 'Zwei optionale Angaben: Der Rundgang hebt danach die passenden Räume für Ihre Veranstaltung hervor.',
+      'Commencer le repérage': 'Besichtigung starten', 'Visiter librement': 'Frei erkunden', 'Nombre de participants': 'Teilnehmerzahl', 'Format': 'Format',
+      'Tout': 'Alle', 'Trouver une salle pour': 'Raum finden für', 'Voir': 'Anzeigen', 'Convient à': 'Geeignet für', 'personnes': 'Personen', 'Votre événement': 'Ihre Veranstaltung',
+      'Séminaire résidentiel': 'Seminar mit Übernachtung', 'Journée d\'étude': 'Tagung', 'Convention / plénière': 'Konferenz / Plenum', 'Soirée de gala': 'Galaabend',
+      'Team building': 'Teambuilding', 'Comité de direction': 'Vorstandssitzung', 'jauge indicative': 'Richtwert', 'Modifiable à tout moment': 'Jederzeit änderbar',
+      'Vue d\'ensemble': 'Überblick', '{z} univers · {n} espaces': '{z} Bereiche · {n} Räume', '{n} pers.': '{n} Pers.', '{e} ?': '{e}?',
+      '✓ {c} {n} {p}': '✓ {c} {n} {p}', 'toutes configurations': 'alle Bestuhlungen', 'Découvrir {l}': '{l} entdecken', '{n} espaces · {z} univers': '{n} Räume · {z} Bereiche',
+      '{k} espace pour {n} {u}': '{k} Raum für {n} {u}', '{k} espaces pour {n} {u}': '{k} Räume für {n} {u}', 'Aucun espace pour {n} {u}': 'Kein Raum für {n} {u}',
+      ' en {c}': ' · {c}', ' — au plus {m}': ' — höchstens {m}', 'les plus grandes capacités · ': 'größte Kapazitäten · ', 'd\'après les capacités indiquées par {l}': 'laut den Kapazitätsangaben von {l}',
+      'Voir les {n} espaces →': 'Alle {n} Räume ansehen →', 'Une question ? Écrire à {nom} →': 'Eine Frage? An {nom} schreiben →', 'couverts': 'Gedecke', 'places': 'Plätze',
+      'Retirer': 'Entfernen', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
+        'Fügen Sie die Räume, die Sie interessieren, über ihr Datenblatt hinzu (♡ „{a}“). Ihre Auswahl geht dann mit einem Klick an das Vertriebsteam, das Ihnen ein Angebot schickt.',
+      'Envoyé à {nom}': 'Geht an {nom}', 'l\'équipe commerciale': 'das Vertriebsteam', '{l} · repérage': '{l} · Besichtigung',
+      'Vous êtes ici · {s}': 'Sie sind hier · {s}', '{n} espaces sur ce niveau · cliquez un repère pour y aller': '{n} Räume auf dieser Ebene · Markierung anklicken, um hinzugehen',
+      '{n} espaces à visiter': '{n} Räume zu besichtigen', '{n} fiches techniques': '{n} Datenblätter', 'jusqu\'à {n} personnes': 'bis zu {n} Personen',
+      'Visite virtuelle · repérage en ligne': 'Virtueller Rundgang · Online-Besichtigung', 'Préparer mon repérage': 'Besichtigung vorbereiten', 'Bienvenue': 'Willkommen', 'Passer l\'intro': 'Intro überspringen',
+      'Langue': 'Sprache',
+      'Théâtre': 'Reihe', 'Classe': 'Parlament', 'Îlots': 'Bankett-Inseln', 'U': 'U-Form', 'Conférence': 'Block', 'Cabaret': 'Cabaret', 'Pavé': 'Block', 'Banquet': 'Bankett',
+      'Cocktail': 'Empfang', 'Tables rondes': 'runde Tische', 'Carré': 'Karree', 'Réunion': 'Besprechung', 'Déjeuner': 'Mittagessen', 'Dîner': 'Abendessen', 'Assis': 'sitzend', 'Debout': 'stehend',
+      'Places': 'Plätze', 'Personnes': 'Personen', 'Couverts': 'Gedecke'
+    },
     nl: {
       'Démarrer la visite': 'Start de rondleiding', 'Commencer la visite': 'Start de rondleiding', 'Découvrir ▾': 'Ontdekken ▾',
       'Retour à l\'accueil': 'Terug naar het begin', 'Masquer l\'interface': 'Interface verbergen', 'Flou périphérique': 'Randvervaging', 'Musique': 'Muziek',
@@ -854,7 +891,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     if (LANG !== 'fr') STOP = STOP.concat(('a an the of to in on at for with and or is are was be been can could do does did i we you he she they our your my me us it its this that these those there here what which how where when who whom why ' +
       'many much any some have has had please near nearby from by as about into than then so very also just get got would should will shall may might must not no yes ' +
       'de het een van en of is zijn er te om op aan bij uit door ook nog naar kan kunnen heeft hebben wordt worden u uw jullie we wij ik mijn onze ons deze dit die dat wat welke hoe hoeveel waar wanneer wie waarom ' +
-      'geen niet wel zo zeer veel meer minder graag mogelijk in met voor als dan tot').split(' '));
+      'geen niet wel zo zeer veel meer minder graag mogelijk in met voor als dan tot ' +
+      'der die das den dem des ein eine einen einem einer und oder ist sind war gibt es gibt ich wir sie ihr ihre unser unsere mein kann koennen koennte haben hat wie wo wann was welche welcher welches wieviel viele ' +
+      'mit fuer von zu im in am an auf bei aus nach ueber unter vor auch noch nur sehr mehr weniger bitte moeglich nicht kein keine ja nein hier dort').split(' '));
     /* Dictionnaire MICE : forme canonique ← variantes (expressions avant mots). Commun à tous les lieux ; enrichi au fil des clients. */
     var SYN = {   /* variantes séparées par des virgules ; une variante à plusieurs mots est une expression */
       capacite: 'capacite,capacites,personnes,personne,participants,participant,pax,invites,invite,places,place,jauge,accueillir,accueille,contenir,convives,gens,sieges,siege,places assises',
@@ -921,6 +960,35 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         grand: 'large,largest,big,biggest,maximum,max,groot,grootste',
         petit: 'small,smaller,intimate,klein,kleine'
       };
+      var SYNDE = {
+        capacite: 'personen,teilnehmer,teilnehmern,gaeste,plaetze,sitzplaetze,kapazitaet,wie viele personen',
+        auditorium: 'plenum,plenarsaal,konferenzsaal,saal',
+        atelier: 'gruppenraum,gruppenraeume,tagungsraum,tagungsraeume,besprechungsraum,meetingraum,workshop,breakout',
+        restauration: 'essen,mahlzeit,mahlzeiten,mittagessen,abendessen,verpflegung,buffet,restaurant',
+        soiree: 'gala,galaabend,feier,abend,party',
+        hebergement: 'zimmer,uebernachtung,uebernachten,schlafen,unterkunft,hotelzimmer,betten',
+        train: 'zug,bahn,bahnhof,zuege',
+        avion: 'flughafen,flug,fluege,flugzeug',
+        voiture: 'auto,fahren,autobahn,strasse,pkw',
+        acces: 'anreise,anfahrt,erreichen,hinkommen,route,lage',
+        parking: 'parken,parkplatz,parkplaetze,stellplatz,stellplaetze,tiefgarage',
+        pmr: 'rollstuhl,barrierefrei,barrierefreiheit,behindert,eingeschraenkt',
+        wifi: 'wlan,internet,verbindung,netzwerk',
+        technique: 'technik,beamer,leinwand,bildschirm,ton,mikrofon,mikrofone,ausstattung,ausruestung',
+        tarif: 'preis,preise,kosten,budget,angebot,tarif,pauschale',
+        exterieur: 'draussen,aussen,garten,terrasse,freien,park',
+        rse: 'nachhaltig,nachhaltigkeit,umwelt,oeko,gruen,label,zertifikat',
+        contact: 'kontakt,telefon,anrufen,email,mail,erreichen',
+        pause: 'pause,pausen,kaffee,kaffeepause',
+        activite: 'aktivitaet,aktivitaeten,freizeit,teambuilding,rahmenprogramm',
+        adresse: 'adresse,lage,wo liegt,standort',
+        navette: 'shuttle,bus,transfer,transfers,reisebus',
+        regime: 'vegetarisch,vegan,allergie,allergien,glutenfrei,halal,koscher,diaet',
+        surface: 'groesse,flaeche,quadratmeter,qm,m2',
+        grand: 'gross,groesste,maximal,maximum',
+        petit: 'klein,kleine,kleiner'
+      };
+      if (LANG === 'de') Object.keys(SYNDE).forEach(function (k) { SYNX[k] = SYNX[k] ? SYNX[k] + ',' + SYNDE[k] : SYNDE[k]; });
       Object.keys(SYNX).forEach(function (k) { SYN[k] = SYN[k] ? SYN[k] + ',' + SYNX[k] : SYNX[k]; });
     }
     /* Synonymes propres au lieu (fiche client) : ajoutés aux familles existantes ou en créent de nouvelles. */
@@ -930,7 +998,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       SYN[c].split(',').forEach(function (v) { if (v.indexOf(' ') > 0) phr.push([v, c]); else one[v] = c; });
     });
     function base(s) {
-      return ' ' + (s || '').replace(/­/g, '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+      return ' ' + (s || '').replace(/­/g, '').replace(/[äÄ]/g, 'ae').replace(/[öÖ]/g, 'oe').replace(/[üÜ]/g, 'ue').replace(/ß/g, 'ss').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
         .replace(/m²/g, ' m2 ').replace(/[’'`\-]/g, ' ').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ') + ' ';
     }
     function stem(w) { return w.length > 4 && /[sx]$/.test(w) ? w.slice(0, -1) : w; }
@@ -1524,9 +1592,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
   /* v1.4 — décision de Mickaël : une question d'hébergement (chambres, couchage, résidentiel…) ne reçoit que la capacité
      d'hébergement ; une question de stationnement, que la capacité de stationnement. Le chercheur de salles se retire,
      et la FAQ reçoit la question débarrassée de la jauge (« 80 personnes ») pour viser le bon thème. */
-  var HEB = /(chambres?|h[ée]bergement|h[ée]berger|couchages?|dormir|nuit[ée]?e?s?\b|r[ée]sidences?\b|lits?\b|loger|logement|bedrooms?|accommodation|overnight|sleep\w*|kamers?|overnacht\w*|slapen|logies)/i;
-  var PARK = /(parkings?|stationn\w*|garer|se garer|car ?park|parkeer\w*|parkeren)/i;
-  var JAUGEW = /\d[\d\s.]*|\b(personnes?|pers|participants?|pax|places?|invit[ée]s?|collaborateurs?|convives|gens|people|persons?|guests?|personen|deelnemers|gasten|plaatsen)\b/gi;
+  var HEB = /(chambres?|h[ée]bergement|h[ée]berger|couchages?|dormir|nuit[ée]?e?s?\b|r[ée]sidences?\b|lits?\b|loger|logement|bedrooms?|accommodation|overnight|sleep\w*|kamers?|overnacht\w*|slapen|logies|zimmer|übernachtung\w*|schlafen|unterkunft|hotelzimmer|betten?)/i;
+  var PARK = /(parkings?|stationn\w*|garer|se garer|car ?park|parkeer\w*|parkeren|parkpl[äa]tz\w*|parken|stellpl[äa]tz\w*)/i;
+  var JAUGEW = /\d[\d\s.]*|\b(personnes?|pers|participants?|pax|places?|invit[ée]s?|collaborateurs?|convives|gens|people|persons?|guests?|personen|deelnemers|gasten|plaatsen|teilnehmer\w*|gäste|plätze)\b/gi;
   function answer(text) {
     if (v13 && v13.finder(text)) return;
     var topic = HEB.test(text) ? 'heb' : PARK.test(text) ? 'park' : '';
@@ -1726,11 +1794,11 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
        « jusqu'à 350 personnes en théâtre ou en cocktail » ; « 1 497 places » (libellé du menu). Fiche client « capacites »
        = priorité : { 'Nom': { m2: 129, 'Théâtre': 127, 'Classe': 58 } }. */
     /* v1.4 : les mêmes configurations en anglais et en néerlandais (fiches et questions dans la langue de la visite) */
-    var CONF = [['th[ée][âa]tre|theat(?:re|er)(?:[- ]style)?', 'Théâtre'], ['classe|classroom|klas(?:lokaal|opstelling)?', 'Classe'], ['[îi]lots?|islands?|eilandjes?', 'Îlots'],
-      ['u|u[- ]?shape|u[- ]?vorm', 'U'], ['conf[ée]rence|boardroom', 'Conférence'],
-      ['cabaret', 'Cabaret'], ['pav[ée]', 'Pavé'], ['banquet|banket', 'Banquet'], ['cocktail|reception|receptie', 'Cocktail'], ['tables? rondes?|round tables?|ronde tafels?', 'Tables rondes'],
-      ['carr[ée]|hollow square', 'Carré'], ['r[ée]union|meeting|vergadering', 'Réunion'], ['d[ée]jeuner|lunch', 'Déjeuner'], ['d[îi]ner|dinner', 'Dîner'],
-      ['assis|seated|zittend', 'Assis'], ['debout|standing|staand', 'Debout']];
+    var CONF = [['th[ée][âa]tre|theat(?:re|er)(?:[- ]style)?|reihen?(?:bestuhlung)?|kinobestuhlung', 'Théâtre'], ['classe|classroom|klas(?:lokaal|opstelling)?|parlament(?:arisch)?|schulbestuhlung', 'Classe'], ['[îi]lots?|islands?|eilandjes?|inseln?|gruppentische', 'Îlots'],
+      ['u|u[- ]?shape|u[- ]?vorm|u[- ]?form', 'U'], ['conf[ée]rence|boardroom|blocktafel|block', 'Conférence'],
+      ['cabaret', 'Cabaret'], ['pav[ée]', 'Pavé'], ['banquet|banket|bankett', 'Banquet'], ['cocktail|reception|receptie|empfang|stehempfang', 'Cocktail'], ['tables? rondes?|round tables?|ronde tafels?', 'Tables rondes'],
+      ['carr[ée]|hollow square', 'Carré'], ['r[ée]union|meeting|vergadering|besprechung', 'Réunion'], ['d[ée]jeuner|lunch|mittagessen', 'Déjeuner'], ['d[îi]ner|dinner|abendessen', 'Dîner'],
+      ['assis|seated|zittend|sitzend', 'Assis'], ['debout|standing|staand|stehend', 'Debout']];
     var CW = '(' + CONF.map(function (c) { return c[0]; }).join('|') + ')';
     function confName(w) { w = String(w || '').toLowerCase(); for (var i = 0; i < CONF.length; i++) if (new RegExp('^(?:' + CONF[i][0] + ')$', 'i').test(w)) return (OPTIONS.configsLibelles && OPTIONS.configsLibelles[CONF[i][1]]) || CONF[i][1]; return null; }
     /* v1.4 : la clé reste le nom français (Théâtre…) ; l'affichage passe par la langue de la visite */
@@ -1762,17 +1830,17 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       } else {
         var t = clean((typeof o === 'string' ? o + ' ' : '') + (st.fiche ? htmlText(st.fiche.html) : '') + ' ' + st.label), m;
         var mm = /(\d[\d\s.]*)\s*m(?:²|2)(?![a-z])/i.exec(t); if (mm) out.m2 = num(mm[1]);
-        var PREP = LANG === 'fr' ? '(?:en|au|à)\\s+' : '(?:(?:en|au|à|in|op|als)\\s+)?';
-        var re = new RegExp('(\\d{1,3}(?:[\\s.]\\d{3})*|\\d+)\\s+(?:personnes?\\s+|places?\\s+|pers\\.?\\s+|invit[ée]s\\s+|people\\s+|persons\\s+|guests\\s+|personen\\s+|gasten\\s+)?' + PREP + CW + '\\b((?:\\s+ou\\s+en\\s+' + CW + '\\b)*)', 'gi');
+        var PREP = LANG === 'fr' ? '(?:en|au|à)\\s+' : '(?:(?:en|au|à|in|op|als|im|bei|mit)\\s+)?';
+        var re = new RegExp('(\\d{1,3}(?:[\\s.]\\d{3})*|\\d+)\\s+(?:personnes?\\s+|places?\\s+|pers\\.?\\s+|invit[ée]s\\s+|people\\s+|persons\\s+|guests\\s+|personen\\s+|gasten\\s+|teilnehmer(?:n)?\\s+|gäste\\s+)?' + PREP + CW + '\\b((?:\\s+ou\\s+en\\s+' + CW + '\\b)*)', 'gi');
         while ((m = re.exec(t))) {
           var n = num(m[1]), names = [m[2]].concat((m[3] || '').split(/\s+ou\s+en\s+/i).slice(1));
           names.forEach(function (w) { var c = confName(w.trim()); if (c && !out.rows.some(function (r) { return r.k === c; })) out.rows.push({ k: c, n: n }); });
         }
-        var cv = /(\d+)\s+(?:couverts?|covers?)(?:\s+(?:au|à|en|at|for|bij)\s+(d[ée]jeuner|d[îi]ner|lunch|dinner))?/gi;
+        var cv = /(\d+)\s+(?:couverts?|covers?|gedecke)(?:\s+(?:au|à|en|at|for|bij|zum|beim)\s+(d[ée]jeuner|d[îi]ner|lunch|dinner|mittagessen|abendessen))?/gi;
         while ((m = cv.exec(t))) { var c2 = m[2] ? confName(m[2]) : 'Couverts'; if (!out.rows.some(function (r) { return r.k === c2; })) out.rows.push({ k: c2, n: +m[1] }); }
         if (!out.rows.length) {   /* « 10 personnes autour d'une table » ; « 1 497 places » */
-          var pp = /(\d{1,3}(?:[\s.,]\d{3})*|\d+)\s+(personnes|places|people|persons|guests|seats|personen|plaatsen)\b/i.exec(t);
-          if (pp) out.rows.push({ k: /places|seats|plaatsen/i.test(pp[2]) ? 'Places' : 'Personnes', n: num(pp[1]) });
+          var pp = /(\d{1,3}(?:[\s.,]\d{3})*|\d+)\s+(personnes|places|people|persons|guests|seats|personen|plaatsen|plätze|sitzplätze|gäste|teilnehmer)\b/i.exec(t);
+          if (pp) out.rows.push({ k: /places|seats|plaatsen|plätze/i.test(pp[2]) ? 'Places' : 'Personnes', n: num(pp[1]) });
         }
         var sm = /\d[\d\s.]*\s*m(?:²|2)\s*:[^.]*\./.exec(t); if (sm && out.rows.length) out.sentence = sm[0];
       }
@@ -2000,7 +2068,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     }
 
     /* ---- « Trouver la bonne salle » : une question chiffrée dans la recherche ---- */
-    var CAPW = /(personnes?|pers\b|participants?|pax|places?|invit[ée]s?|collaborateurs?|convives|couverts?|jauge|salle|accueillir|capacit[ée]|people|persons?|guests?|attendees|delegates|seats|capacity|rooms?|personen|deelnemers|gasten|plaatsen|capaciteit|za(?:a|le)l\w*)/i;
+    var CAPW = /(personnes?|pers\b|participants?|pax|places?|invit[ée]s?|collaborateurs?|convives|couverts?|jauge|salle|accueillir|capacit[ée]|people|persons?|guests?|attendees|delegates|seats|capacity|rooms?|personen|deelnemers|gasten|plaatsen|capaciteit|za(?:a|le)l\w*|teilnehmer\w*|gäste|plätze|kapazität|raum|räume|saal|säle)/i;
     function finderAnswer(text) {
       if (withCaps < 2) return false;
       var t = clean(text), m = /(\d{1,3}(?:[\s.,]\d{3})*|\d+)/.exec(t); if (!m) return false;
@@ -2010,7 +2078,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       if (!CAPW.test(t) && !conf) return false;
       /* v1.4 : une question d'hébergement ou de stationnement n'est pas une question de salle → la FAQ répond */
       if (HEB.test(t) || PARK.test(t)) return false;
-      var food = /couverts?|d[ée]jeuner|d[îi]ner|repas|restauration|covers?|lunch|dinner|meals?|maaltijd\w*/i.test(t);
+      var food = /couverts?|d[ée]jeuner|d[îi]ner|repas|restauration|covers?|lunch|dinner|meals?|maaltijd\w*|mittagessen|abendessen|gedecke|essen/i.test(t);
       var list = flat().map(function (st) {
         var c = caps(st); if (!c || !c.jauge) return null;
         var rows = c.rows.filter(function (r) { return conf ? r.k === conf : (food ? /couverts|d[ée]jeuner|d[îi]ner|cocktail|banquet/i.test(r.k) : !/couverts|d[ée]jeuner|d[îi]ner/i.test(r.k)); });
@@ -2072,6 +2140,10 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         subj = 'Site inspection — ' + (f || 'proposal request') + (n ? ', ' + n + ' participants' : '');
         body = 'Hello,\n\nI am planning ' + (f ? 'a ' + f.toLowerCase() : 'an event') + (n ? ' for ' + n + ' participants' : '') + ' and have shortlisted in your virtual tour:\n' + list +
           '\n\nCould you send me a proposal?\nPreferred dates: \n\nThank you,\n\n— Tour: ' + url + '\n';
+      } else if (LANG === 'de') {
+        subj = 'Besichtigung — ' + (f || 'Angebotsanfrage') + (n ? ', ' + n + ' Teilnehmer' : '');
+        body = 'Guten Tag,\n\nich plane ' + (f ? 'eine Veranstaltung (' + f + ')' : 'eine Veranstaltung') + (n ? ' für ' + n + ' Teilnehmer' : '') + ' und habe in Ihrem virtuellen Rundgang ausgewählt:\n' + list +
+          '\n\nKönnten Sie mir ein Angebot senden?\nGewünschte Termine: \n\nVielen Dank,\n\n— Rundgang: ' + url + '\n';
       } else if (LANG === 'nl') {
         subj = 'Locatiebezoek — ' + (f || 'offerteaanvraag') + (n ? ', ' + n + ' deelnemers' : '');
         body = 'Hallo,\n\nIk bereid ' + (f ? 'een ' + f.toLowerCase() : 'een evenement') + (n ? ' voor ' + n + ' deelnemers' : '') + ' voor en heb in uw virtuele rondleiding geselecteerd:\n' + list +
