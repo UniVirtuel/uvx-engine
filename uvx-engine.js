@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.3.0
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.3.1
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.3.0/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.3.1/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.3.0';
+  var VERSION = '1.3.1';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -1770,7 +1770,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     function cardHtml(st) {
       var c = caps(st), ph = photo(st), k = [];
       if (c) { if (catConf) { var r = c.rows.filter(function (x) { return x.k === catConf; })[0]; if (r) k.push(rowTxt(r)); } else c.rows.slice(0, 2).forEach(function (r) { k.push(rowTxt(r)); }); }
-      return '<button class="v-card' + (fits(st) ? '' : ' dim') + '" type="button" data-key="' + st.key + '"><span class="im">' + im(ph) + ((c && c.m2) || st.parts.fig ? '<i>' + esc(c && c.m2 ? c.m2 + ' m²' : st.parts.fig) + '</i>' : '') + (visited[st.key] ? '<em>✓</em>' : '') + '</span>' +
+      return '<button class="v-card" type="button" data-key="' + st.key + '"><span class="im">' + im(ph) + ((c && c.m2) || st.parts.fig ? '<i>' + esc(c && c.m2 ? c.m2 + ' m²' : st.parts.fig) + '</i>' : '') + (visited[st.key] ? '<em>✓</em>' : '') + '</span>' +
         '<span class="tx"><span class="t">' + esc(st.parts.name) + '</span><span class="s">' + esc(zoneOf(st)) + '</span>' + (k.length ? '<span class="k">' + k.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('') + '</span>' : '') + '</span></button>';
     }
     function fillCat() {
@@ -1787,7 +1787,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         var groups = [], by = {};
         z.steps.forEach(function (st) { var k = st.group || ''; if (!by[k]) { by[k] = []; groups.push(k); } by[k].push(st); });
         groups.forEach(function (gname) {
-          var list = by[gname]; if (catN) list = list.filter(fits).concat(list.filter(function (s) { return !fits(s); }));
+          var list = by[gname];   /* v1.3.1 (Mickaël) : rien n'est grisé ni réordonné — un groupe de 50 a aussi besoin de petites salles ; c'est à lui de choisir */
           var title = catZ < 0 ? (gname ? z.label + ' › ' + gname : z.label) : gname;
           if (title) h += '<div class="grp">' + esc(title) + '</div>';
           h += '<div class="row">' + list.map(cardHtml).join('') + '</div>';
@@ -1891,7 +1891,10 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     br.onclick = function (e) { if (e.target === br) br.querySelector('.free').click(); };
     var briefAuto = OPTIONS.brief === 'accueil' && !brief && !window.matchMedia('(max-width:760px)').matches;
     function briefSoon() {   /* après l'écran d'accueil ou la vue aérienne, une seule fois */
-      if (!briefAuto) return; briefAuto = false; setTimeout(function () { if (!br.classList.contains('on')) openBrief(); }, 900);
+      if (!briefAuto) return; briefAuto = false; setTimeout(function () {
+        /* v1.3.1 : jamais par-dessus ce que le visiteur a déjà ouvert (fiche, catalogue, repérage, plan, réponse) */
+        var busy = [ft, repP, cat, plan].some(function (p) { return p.classList.contains('on'); }) || ans.classList.contains('on') || document.activeElement === askIn;
+        if (!busy && !br.classList.contains('on')) openBrief(); }, 900);
     }
 
     /* ---- plan de niveau (fiche client « plans ») ----
