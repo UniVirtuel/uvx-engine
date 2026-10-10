@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.2.3
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.3.0
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.2.3/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.3.0/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.2.3';
+  var VERSION = '1.3.0';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -40,6 +40,8 @@
     faqSeuil: 0.5,          // couverture minimale de la question pour répondre ; en dessous, renvoi vers l'équipe
     /* Contact du renvoi commercial (fiche client). null = pas de bouton. */
     contact: null,          // { nom: "l'équipe commerciale", email: '…', tel: '…', libelle: 'Accueil du lundi au vendredi…' }
+    /* v1.3 (démos, décision de Mickaël 10/10/2026) : contact.envoi = adresse qui REÇOIT réellement les e-mails (questions,
+       demandes de proposition) ; contact.email reste l'adresse affichée. Sur une base de démo : envoi = adresse UniVirtuel. */
     /* Charte du client : UNE ou DEUX couleurs (exigence de Mickaël, 07/10/2026). Tout le reste est calculé.
        couleur = couleur principale (fonds du menu, des boutons, des fenêtres) ; accent = facultative (pastilles,
        boutons d'action, repères). police = facultative. Défaut : gris anthracite neutre (à remplacer par la fiche client). */
@@ -47,7 +49,7 @@
     /* Mode (décision de Mickaël, 07/10/2026) : 'complet' = standard v1 (le menu natif est redessiné) ;
        'champ' = interface MPskin classique intacte + le seul champ de question (FAQ + renvoi), avec son œil. */
     mode: 'complet',
-    /* Vue aérienne d'accueil (popup d'entrée MPskin « Images interactives ») : effets de survol façon Juumo.
+    /* Vue aérienne d'accueil (popup d'entrée MPskin « Images interactives ») : effets de survol de l'interface UniVirtuel.
        'auto' = actif si la popup d'entrée est une image interactive ; false = jamais. halo = couleur de l'anneau. */
     aerien: 'auto', aerienHalo: '#ffffff'
   };
@@ -87,7 +89,8 @@
     var accTx = readable(A, P, 4.5);
     var scene = lum(P) < 0.03 ? P : mix(P, K, light ? 0.82 : 0.55);   /* voiles posés sur la 3D et la vidéo : toujours sombres */
     var accScene = readable(A, scene, 4.5);
-    var sheet = mix(A, W, 0.88);
+    var B2 = hx(ch.bouton2);   /* v1.3 : couleur des boutons secondaires (Châteauform : blanc, en alternance avec l'accent beige) */
+    var sheet = hx(ch.clair) || mix(A, W, 0.88);   /* v1.3 : surface claire de la charte du client si fournie (Châteauform : #EAE7E0) */
     var onSheet = readable(lum(P) < 0.18 ? P : mix(P, K, 0.6), sheet, 7);
     var sheetMuted = readable(mix(A, K, 0.3), sheet, 4.5);
     var onAcc = ctr(P, A) >= 4.5 ? P : onColor(A);           /* la couleur principale sur l'accent si lisible */
@@ -101,6 +104,10 @@
       '--uvx-fg': hex(fg), '--uvx-fg-rgb': rgb(fg), '--uvx-deep-rgb': rgb(deep), '--uvx-scene-rgb': rgb(scene), '--uvx-accent-scene': hex(accScene),
       '--uvx-accent': hex(A), '--uvx-accent-rgb': rgb(A), '--uvx-accent-tx': hex(accTx), '--uvx-on-accent': hex(onAcc),
       '--uvx-sheet': hex(sheet), '--uvx-sheet-rgb': rgb(sheet), '--uvx-on-sheet': hex(onSheet), '--uvx-sheet-muted': hex(sheetMuted),
+      /* v1.3 : boutons secondaires — blancs sur une interface claire (comme les boutons secondaires du site du client) */
+      '--uvx-btn2': B2 ? hex(B2) : light ? '#ffffff' : 'rgba(' + rgb(fg) + ',.1)', '--uvx-on-btn2': B2 ? hex(ctr(P, B2) >= 4.5 ? P : onColor(B2)) : hex(fg),
+      '--uvx-btn2-bd': light && !B2 ? 'rgba(0,0,0,.1)' : 'transparent',
+      '--uvx-card': light ? '#ffffff' : 'rgba(' + rgb(fg) + ',.06)', '--uvx-card-bd': light ? 'rgba(0,0,0,.08)' : 'transparent',
       '--uvx-font': ch.police ? ch.police + ',system-ui,sans-serif' : 'Roboto,system-ui,sans-serif'
     };
     var report = {
@@ -172,19 +179,19 @@ body.uvx-bare #uvx-back .uvx-grad{opacity:0}
 #uvx .uvx-ask input{flex:1;min-width:0;height:100%;background:transparent!important;border:0!important;outline:0;color:var(--uvx-fg);font:400 13px var(--uvx-font);padding:0 10px;box-shadow:none!important}
 #uvx .uvx-ask input::placeholder{color:rgba(var(--uvx-fg-rgb),.78)}
 #uvx .uvx-ask .send{width:30px;height:30px;border-radius:50%;background:var(--uvx-accent)!important;color:var(--uvx-on-accent);font-size:15px;flex:none}
-.uvx-ask .ans{position:absolute;left:0;right:0;bottom:48px;padding:14px 16px 12px;border-radius:14px;font-size:13px;line-height:1.5;display:none;max-height:min(52vh,420px);overflow:auto}
-.uvx-ask .ans .eb{font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin:0 18px 4px 0}
-.uvx-ask .ans .qq{font-weight:600;margin-bottom:4px}
-.uvx-ask .ans .also{margin-top:10px;border-top:1px solid rgba(var(--uvx-fg-rgb),.15);padding-top:8px}
-#uvx .uvx-ask .ans .also button{display:block;background:none!important;color:inherit;font-size:12px;text-align:left;padding:3px 0;opacity:.85;text-decoration:underline;text-underline-offset:3px}
-#uvx .uvx-ask .ans .lnk.ghost{background:rgba(var(--uvx-fg-rgb),.14)!important;color:var(--uvx-fg)}
-.uvx-ask .ans .foot{margin-top:10px;font-size:11px;opacity:.75}
-#uvx .uvx-ask .ans .foot a{color:inherit;text-decoration:underline;text-underline-offset:3px}
-.uvx-ask .ans.on{display:block}
-.uvx-ask .ans .links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-#uvx .uvx-ask .ans .lnk{display:inline-flex;align-items:center;text-decoration:none;height:28px;padding:0 12px;border-radius:999px;background:var(--uvx-accent)!important;color:var(--uvx-on-accent);font-size:12px;font-weight:600}
-.uvx-ask .ans .note{margin-top:8px;font-size:10px;letter-spacing:.06em;opacity:.55}
-#uvx .uvx-ask .ans .close{position:absolute!important;top:6px;right:8px;background:none!important;font-size:16px;opacity:.7}
+.uvx-ans{position:absolute;left:0;right:0;bottom:48px;padding:14px 16px 12px;border-radius:14px;font-size:13px;line-height:1.5;display:none;max-height:min(52vh,420px);overflow:auto}
+.uvx-ans .eb{font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin:0 18px 4px 0}
+.uvx-ans .qq{font-weight:600;margin-bottom:4px}
+.uvx-ans .also{margin-top:10px;border-top:1px solid rgba(var(--uvx-fg-rgb),.15);padding-top:8px}
+#uvx .uvx-ans .also button{display:block;background:none!important;color:inherit;font-size:12px;text-align:left;padding:3px 0;opacity:.85;text-decoration:underline;text-underline-offset:3px}
+#uvx .uvx-ans .lnk.ghost{background:rgba(var(--uvx-fg-rgb),.14)!important;color:var(--uvx-fg)}
+.uvx-ans .foot{margin-top:10px;font-size:11px;opacity:.75}
+#uvx .uvx-ans .foot a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.uvx-ans.on{display:block}
+.uvx-ans .links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+#uvx .uvx-ans .lnk{display:inline-flex;align-items:center;text-decoration:none;height:28px;padding:0 12px;border-radius:999px;background:var(--uvx-accent)!important;color:var(--uvx-on-accent);font-size:12px;font-weight:600}
+.uvx-ans .note{margin-top:8px;font-size:10px;letter-spacing:.06em;opacity:.55}
+#uvx .uvx-ans .close{position:absolute!important;top:6px;right:8px;background:none!important;font-size:16px;opacity:.7}
 /* F10 */
 .uvx-card{position:absolute;left:24px;bottom:205px;width:340px;color:#fff;pointer-events:auto;transition:opacity .4s,transform .4s}
 .uvx-card.hide{opacity:0;transform:translateY(8px);pointer-events:none}
@@ -369,7 +376,7 @@ body:not(.uvx-champ-on) .fancybox-container .fancybox-button--close{background:v
  .uvx-car .mid span{display:none}
  .uvx-ask{bottom:66px;width:min(380px,46vw)}
  .uvx-ask form{height:34px}
- .uvx-ask .ans{bottom:40px;max-height:calc(100vh - 120px)}
+ .uvx-ans{bottom:40px;max-height:calc(100vh - 120px)}
  .uvx-card{left:16px;bottom:auto;top:calc(var(--uvx-logo-b,70px) + 8px);width:min(260px,30vw)}
  .uvx-card h2{font-size:18px}
  .uvx-card p,#uvx .uvx-card .more{display:none}
@@ -406,6 +413,254 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
 #uvx.uvx-champ .uvx-ask.cov{opacity:0;pointer-events:none}
 #uvx.uvx-champ .uvx-ask.cov *{pointer-events:none!important}
 @media (max-height:500px) and (min-width:500px){ #uvx.uvx-champ .uvx-ask .ceye{width:34px;height:34px} }
+/* =====================================================================
+   v1.3 — interface UniVirtuel « organisateur d'événement » (décision de Mickaël, 10/10/2026)
+   Le lieu d'abord : plus de barre de zones, de carrousel ni de colonne d'outils (ils restent dans le DOM, masqués,
+   pour le mode « champ seul » et les modules existants). Une barre unique en bas (« dock ») : où je suis · mon
+   événement · recherche · Plan · Mon repérage · Salles & espaces. Fiche technique, catalogue, repérage, plan, brief.
+   ===================================================================== */
+#uvx.v13 .uvx-zones,#uvx.v13 .uvx-car,#uvx.v13 .uvx-tools,#uvx.v13 .uvx-card,#uvx.v13 .uvx-full{display:none!important}
+#uvx.v13 #uvx-back .uvx-grad{display:none}
+#uvx-back .uvx-top{position:absolute;left:0;top:0;width:560px;max-width:70%;height:220px;background:radial-gradient(ellipse at 0 0,rgba(var(--uvx-scene-rgb),.5),rgba(var(--uvx-scene-rgb),.18) 45%,transparent 72%);pointer-events:none}
+body.uvx-bare #uvx-back .uvx-top{opacity:0}
+#uvx-back .uvx-floor{position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.5),rgba(var(--uvx-scene-rgb),.14) 55%,transparent);transition:opacity .4s}
+body.uvx-bare #uvx-back .uvx-floor{opacity:0}
+#uvx .v-svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+#uvx .v-eb{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--uvx-accent-tx);font-weight:600}
+#uvx .v-panel{background:rgba(var(--uvx-panel-rgb),.96);color:var(--uvx-fg);box-shadow:0 30px 80px rgba(0,0,0,.45);pointer-events:auto}
+#uvx .v-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 18px;border-radius:14px;font-size:13.5px;font-weight:600;background:var(--uvx-btn2)!important;border:1px solid var(--uvx-btn2-bd)!important;color:var(--uvx-on-btn2,var(--uvx-fg));text-decoration:none;white-space:nowrap;color:var(--uvx-on-btn2)}
+#uvx .v-btn.p{border-color:transparent!important;background:var(--uvx-accent)!important;color:var(--uvx-on-accent)}
+#uvx .v-btn.on{background:rgba(var(--uvx-accent-rgb),.22)!important;color:var(--uvx-accent-tx)}
+#uvx .v-x{position:absolute;top:18px;right:18px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(var(--uvx-fg-rgb),.1)!important;font-size:18px;z-index:3}
+#uvx .v-badge{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:10px;background:var(--uvx-accent);color:var(--uvx-on-accent);font-size:11px;font-weight:700;padding:0 6px}
+#uvx .v-badge:empty{display:none}
+#uvx .v-dot{width:7px;height:7px;border-radius:50%;background:var(--uvx-accent);flex:none;box-shadow:0 0 0 4px rgba(var(--uvx-accent-rgb),.2)}
+/* coin haut droit : seulement ce qui sert à tout moment */
+#uvx .v-corner{position:absolute;top:22px;right:22px;display:flex;gap:8px;pointer-events:auto}
+#uvx .v-corner button{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;padding:0}
+#uvx .v-corner button.off{opacity:.6}
+/* légende de l'espace, au-dessus du dock */
+#uvx .v-cap{position:absolute;left:50%;bottom:108px;transform:translateX(-50%);width:min(720px,80vw);text-align:center;color:#fff;transition:opacity .6s,transform .6s;pointer-events:none}
+#uvx .v-cap.hide{opacity:0;transform:translate(-50%,8px)}
+#uvx .v-cap .v-eb{color:var(--uvx-accent-scene)}
+#uvx .v-cap h2{margin:6px 0 0;font-size:34px;font-weight:300;letter-spacing:.01em;line-height:1.15;text-shadow:0 2px 16px rgba(0,0,0,.55)}
+#uvx .v-cap p{margin:8px auto 0;max-width:600px;font-size:14px;line-height:1.45;text-shadow:0 1px 10px rgba(0,0,0,.65);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#uvx .v-cap button{pointer-events:auto;margin-top:10px;background:none!important;padding:0 0 3px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#fff;border-bottom:1px solid var(--uvx-accent)!important;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+/* dock */
+#uvx .v-dock{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);height:60px;width:clamp(600px,calc(100vw - 540px),1000px);border-radius:30px;display:flex;align-items:center;padding:0 8px 0 10px;pointer-events:auto;box-shadow:0 20px 50px rgba(0,0,0,.3);background:rgba(var(--uvx-panel-rgb),.82)!important}
+#uvx .v-here{flex:none;display:flex;align-items:center;gap:12px;height:44px;padding:0 16px 0 12px;border-radius:22px;background:none;max-width:260px;text-align:left}
+#uvx .v-here:hover{background:rgba(var(--uvx-fg-rgb),.07)!important}
+#uvx .v-here span.t{display:block;min-width:0}
+#uvx .v-here b{display:block;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#uvx .v-here i{display:block;font-style:normal;font-size:11px;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#uvx .v-sep{width:1px;height:30px;background:rgba(var(--uvx-fg-rgb),.14);flex:none}
+#uvx .v-ctx{flex:none;height:36px;padding:0 14px;border-radius:18px;background:var(--uvx-btn2)!important;border:1px solid var(--uvx-btn2-bd)!important;font-size:12px;font-weight:600;white-space:nowrap;margin-left:10px;color:var(--uvx-on-btn2)}
+#uvx .v-dock .uvx-ask{position:static!important;transform:none;width:auto;flex:1;min-width:0;bottom:auto;left:auto}
+#uvx .v-dock .uvx-ask form{height:44px;background:none!important;border:0!important;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0 4px 0 14px}
+#uvx .v-dock .uvx-ask input{font-size:14px;text-overflow:ellipsis}
+#uvx .v-dock .uvx-ask .send{display:none}
+#uvx .v-act{flex:none;display:flex;gap:6px}
+#uvx .v-act button{height:44px;border-radius:22px;display:flex;align-items:center;gap:8px;padding:0 16px;font-size:13px;font-weight:500;background:var(--uvx-btn2)!important;border:1px solid var(--uvx-btn2-bd)!important;white-space:nowrap;color:var(--uvx-on-btn2)}
+#uvx .v-act button.main{border-color:transparent!important;background:var(--uvx-accent)!important;color:var(--uvx-on-accent)}
+#uvx .v-act button.on{background:rgba(var(--uvx-fg-rgb),.2)!important}
+/* bulle de réponse et résultats de recherche : au-dessus du dock */
+#uvx .v-pop{position:absolute;left:50%;bottom:98px;transform:translateX(-50%);width:min(860px,calc(100vw - 48px));pointer-events:none;z-index:2}
+#uvx .v-pop .ans{position:relative;left:auto;right:auto;bottom:auto;pointer-events:auto;background:rgba(var(--uvx-panel-rgb),.96)!important;border-radius:22px;padding:20px 22px 18px;font-size:14px;max-height:min(56vh,480px);box-shadow:0 30px 80px rgba(0,0,0,.45)}
+#uvx .v-pop .ans .close{top:12px;right:14px}
+#uvx .v-fd .lead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-right:30px}
+#uvx .v-fd .lead h3{margin:0;font-weight:300;font-size:22px}
+#uvx .v-fd .lead span{font-size:12px;opacity:.6}
+#uvx .v-rooms{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+#uvx .v-room{display:block;width:100%;text-align:left;padding:0;border-radius:16px;overflow:hidden;background:var(--uvx-card)!important;border:1px solid var(--uvx-card-bd)!important}
+#uvx .v-room .im{display:block;height:120px;background:rgba(var(--uvx-fg-rgb),.06) center/cover no-repeat}
+#uvx .v-room .tx{padding:11px 14px 13px}
+#uvx .v-room .t{display:block;font-size:15px;font-weight:500}
+#uvx .v-room .c{display:block;margin-top:6px;font-size:13px}
+#uvx .v-room .c b{color:var(--uvx-accent-tx);font-size:20px;font-weight:500;margin-right:4px}
+#uvx .v-room .m{display:block;font-size:11.5px;opacity:.6;margin-top:3px}
+#uvx .v-fd .note{margin-top:14px;padding-top:12px;border-top:1px solid rgba(var(--uvx-fg-rgb),.1);font-size:12.5px;opacity:.8;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#uvx .v-fd .note a,#uvx .v-fd .note button{color:var(--uvx-accent-tx);background:none!important;padding:0;font-size:12.5px;text-decoration:none}
+/* fiche technique */
+#uvx .v-ft{position:absolute;right:24px;top:84px;bottom:var(--v-db,100px);width:min(430px,calc(100vw - 48px));border-radius:24px;overflow:hidden;display:none;flex-direction:column;z-index:2}
+#uvx .v-ft.on{display:flex}
+#uvx .v-ft .v-x{background:rgba(0,0,0,.42)!important;color:#fff}
+#uvx .v-ft .ph{height:200px;flex:none;background:rgba(var(--uvx-fg-rgb),.06) center/cover no-repeat;position:relative}
+#uvx .v-ft .ph.none{height:0}
+#uvx .v-ft .fit{position:absolute;left:16px;bottom:14px;font-size:12px;font-weight:600;padding:7px 12px;border-radius:14px;background:var(--uvx-accent);color:var(--uvx-on-accent)}
+#uvx .v-ft .bd{padding:20px 24px 22px;flex:1;min-height:0;display:flex;flex-direction:column}
+#uvx .v-ft .sc{flex:1;min-height:0;overflow:auto;margin-right:-8px;padding-right:8px}
+#uvx .v-ft h2{margin:8px 34px 4px 0;font-weight:300;font-size:28px;line-height:1.15}
+#uvx .v-ft .meta{font-size:12.5px;opacity:.72}
+#uvx .v-ft table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}
+#uvx .v-ft td{padding:8px 0;border-bottom:1px solid rgba(var(--uvx-fg-rgb),.09)}
+#uvx .v-ft td:last-child{text-align:right;font-weight:600}
+#uvx .v-ft tr.ok td{color:var(--uvx-accent-tx)}
+#uvx .v-ft .tx{font-size:13px;line-height:1.55;opacity:.85;margin-top:12px}
+#uvx .v-ft .tx h3{font-size:14px;font-weight:600;margin:0 0 6px}
+#uvx .v-ft .tx p{margin:0 0 8px}
+#uvx .v-ft .add{display:flex;gap:10px;margin-top:14px;flex:none}
+#uvx .v-ft .add .v-btn{flex:1}
+/* catalogue « Salles & espaces » */
+#uvx .v-cat{position:absolute;left:32px;right:32px;top:72px;bottom:0;border-radius:26px 26px 0 0;padding:28px 36px 0;display:none;flex-direction:column;z-index:3}
+#uvx .v-cat.on{display:flex}
+#uvx .v-cat .hd{display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-right:44px}
+#uvx .v-cat h1{margin:0;font-weight:300;font-size:30px}
+#uvx .v-cat .sub{font-size:13px;opacity:.65;margin-top:6px}
+#uvx .v-finder{margin-left:auto;display:flex;align-items:center;gap:8px;padding:6px 6px 6px 16px;border-radius:30px;background:rgba(var(--uvx-fg-rgb),.08);font-size:13px}
+#uvx .v-finder input{width:64px;height:34px;border-radius:17px;border:0!important;background:rgba(var(--uvx-fg-rgb),.12)!important;color:var(--uvx-fg);font:600 13px var(--uvx-font);text-align:center;outline:0;box-shadow:none!important;padding:0}
+#uvx .v-finder select{height:34px;border-radius:17px;border:0;background:rgba(var(--uvx-fg-rgb),.12);color:var(--uvx-fg);font:600 13px var(--uvx-font);padding:0 10px;outline:0}
+#uvx .v-finder select option{color:#222}
+#uvx .v-finder button{height:34px;padding:0 16px;border-radius:17px;background:var(--uvx-accent)!important;color:var(--uvx-on-accent);font-weight:600}
+#uvx .v-tabs{display:flex;gap:8px;margin:22px 0 18px;overflow-x:auto;scrollbar-width:none;flex:none}
+#uvx .v-tabs::-webkit-scrollbar{display:none}
+#uvx .v-tabs button{flex:none;font-size:13px;height:38px;padding:0 16px;border-radius:19px;background:none!important;border:1px solid rgba(var(--uvx-fg-rgb),.2)!important}
+#uvx .v-tabs button.on{background:var(--uvx-sheet)!important;color:var(--uvx-on-sheet);border-color:var(--uvx-sheet)!important;font-weight:600}
+#uvx .v-grid{flex:1;min-height:0;overflow:auto;padding-bottom:28px}
+#uvx .v-grid .grp{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.55;margin:18px 0 10px}
+#uvx .v-grid .grp:first-child{margin-top:0}
+#uvx .v-grid .row{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+#uvx .v-card{display:block;width:100%;text-align:left;padding:0;border-radius:18px;overflow:hidden;background:var(--uvx-card)!important;border:1px solid var(--uvx-card-bd)!important;transition:transform .2s}
+#uvx .v-card:hover{transform:translateY(-2px)}
+#uvx .v-card .im{height:150px;background:rgba(var(--uvx-fg-rgb),.07) center/cover no-repeat;position:relative;display:block}
+#uvx .v-card .im i{position:absolute;left:10px;bottom:10px;font-style:normal;font-size:11px;font-weight:600;padding:5px 10px;border-radius:12px;background:rgba(0,0,0,.5);color:#fff}
+#uvx .v-card .im em{position:absolute;right:10px;top:10px;font-style:normal;font-size:11px;font-weight:700;width:24px;height:24px;border-radius:12px;display:grid;place-items:center;background:var(--uvx-accent);color:var(--uvx-on-accent)}
+#uvx .v-card .tx{display:block;padding:12px 14px 14px}
+#uvx .v-card .t{display:block;font-size:15px;font-weight:500}
+#uvx .v-card .s{display:block;font-size:12px;opacity:.6;margin-top:4px}
+#uvx .v-card .k{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+#uvx .v-card .k span{font-size:11px;padding:4px 9px;border-radius:10px;background:rgba(var(--uvx-fg-rgb),.1)}
+#uvx .v-card.dim{opacity:.32}
+/* Mon repérage */
+#uvx .v-rep{position:absolute;right:24px;top:84px;bottom:var(--v-db,100px);width:min(460px,calc(100vw - 48px));border-radius:24px;padding:24px 26px;display:none;flex-direction:column;z-index:2}
+#uvx .v-rep.on{display:flex}
+#uvx .v-rep h2{margin:8px 0 4px;font-weight:300;font-size:26px}
+#uvx .v-rep .sum{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px}
+#uvx .v-rep .sum span{font-size:12px;padding:6px 11px;border-radius:12px;background:rgba(var(--uvx-fg-rgb),.1)}
+#uvx .v-rep .ls{flex:1;min-height:0;overflow:auto}
+#uvx .v-ri{display:flex;gap:12px;align-items:center;padding:10px;border-radius:16px;background:var(--uvx-card);border:1px solid var(--uvx-card-bd);margin-bottom:10px}
+#uvx .v-ri .im{display:block;width:74px;height:58px;border-radius:12px;background:rgba(var(--uvx-fg-rgb),.08) center/cover no-repeat;flex:none}
+#uvx .v-ri .go{flex:1;min-width:0;text-align:left;background:none!important;padding:0}
+#uvx .v-ri .t{display:block;font-size:14.5px;font-weight:500}
+#uvx .v-ri .c{display:block;font-size:11.5px;opacity:.62;margin-top:3px}
+#uvx .v-ri .x{background:none!important;opacity:.55;font-size:18px;padding:4px 8px}
+#uvx .v-rep .empty{font-size:13.5px;line-height:1.55;opacity:.75}
+#uvx .v-rep .foot{margin-top:12px}
+#uvx .v-rep .foot .v-btn{width:100%;height:52px;font-size:14.5px}
+#uvx .v-rep .foot .s{text-align:center;font-size:11.5px;opacity:.6;margin-top:10px}
+/* brief d'entrée */
+#uvx .v-brief{position:absolute;inset:0;display:none;place-items:center;background:rgba(var(--uvx-scene-rgb),.35);pointer-events:auto;z-index:5}
+#uvx .v-brief.on{display:grid}
+#uvx .v-brief .in{position:relative;width:min(620px,calc(100vw - 32px));border-radius:26px;padding:32px 36px 28px}
+#uvx .v-brief h1{margin:10px 0 6px;font-weight:300;font-size:30px}
+#uvx .v-brief .sub{font-size:13.5px;opacity:.75;line-height:1.5}
+#uvx .v-brief label{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.65;margin:22px 0 10px}
+#uvx .v-num{display:flex;align-items:center;gap:12px}
+#uvx .v-num .box{display:flex;align-items:center;width:220px;height:52px;border-radius:16px;background:rgba(var(--uvx-fg-rgb),.08);overflow:hidden}
+#uvx .v-num button{width:52px;height:52px;font-size:22px;font-weight:300;background:none!important}
+#uvx .v-num input{flex:1;min-width:0;height:52px;text-align:center;font:500 22px var(--uvx-font);background:none!important;border:0!important;color:var(--uvx-fg);outline:0;box-shadow:none!important;padding:0}
+#uvx .v-num span{font-size:12px;opacity:.6}
+#uvx .v-fmt{display:flex;flex-wrap:wrap;gap:8px}
+#uvx .v-fmt button{font-size:13px;height:40px;padding:0 16px;border-radius:20px;background:none!important;border:1px solid rgba(var(--uvx-fg-rgb),.2)!important}
+#uvx .v-fmt button.on{background:var(--uvx-sheet)!important;color:var(--uvx-on-sheet);border-color:var(--uvx-sheet)!important;font-weight:600}
+#uvx .v-brief .btns{display:flex;align-items:center;gap:16px;margin-top:28px;flex-wrap:wrap}
+#uvx .v-brief .free{background:none!important;padding:0 0 2px;font-size:13px;opacity:.8;border-bottom:1px solid rgba(var(--uvx-fg-rgb),.35)!important}
+#uvx .v-brief .note{margin-left:auto;font-size:11px;opacity:.5}
+/* plan de niveau */
+#uvx .v-plan{position:absolute;left:32px;right:32px;top:72px;bottom:var(--v-db,100px);border-radius:26px;background:#f4f1ec;color:#222;display:none;overflow:hidden;z-index:3;pointer-events:auto;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+#uvx .v-plan.on{display:block}
+#uvx .v-plan .lv{position:absolute;left:24px;top:22px;display:flex;gap:8px;z-index:2;flex-wrap:wrap;right:40%}
+#uvx .v-plan .lv button{font-size:13px;height:38px;padding:0 16px;border-radius:19px;background:#fff!important;color:#333;border:1px solid rgba(0,0,0,.14)!important}
+#uvx .v-plan .lv button.on{background:var(--uvx-panel)!important;color:var(--uvx-fg);border-color:var(--uvx-panel)!important;font-weight:600}
+#uvx .v-plan .ttl{position:absolute;right:76px;top:20px;text-align:right;z-index:2}
+#uvx .v-plan .ttl b{display:block;font-weight:400;font-size:22px;color:var(--uvx-panel)}
+#uvx .v-plan .ttl span{font-size:12px;color:#666}
+#uvx .v-plan .stage{position:absolute;left:24px;right:24px;top:76px;bottom:46px;display:grid;place-items:center}
+#uvx .v-plan .wrap{position:relative;max-width:100%;max-height:100%}
+#uvx .v-plan .wrap img{display:block;max-width:100%;max-height:calc(100vh - 340px);width:auto;height:auto}
+#uvx .v-plan .pt{position:absolute;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;padding:0;background:var(--uvx-panel)!important;border:3px solid #fff!important;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+#uvx .v-plan .pt span{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:600;padding:5px 10px;border-radius:10px;background:var(--uvx-panel);color:var(--uvx-fg);opacity:0;transition:opacity .2s;pointer-events:none}
+#uvx .v-plan .pt:hover span,#uvx .v-plan .pt.here span{opacity:1}
+#uvx .v-plan .pt.here{width:20px;height:20px;background:var(--uvx-accent)!important;box-shadow:0 0 0 6px rgba(var(--uvx-accent-rgb),.3),0 3px 10px rgba(0,0,0,.3)}
+#uvx .v-plan .leg{position:absolute;left:24px;bottom:16px;font-size:12px;color:#555}
+#uvx .v-plan .v-x{background:rgba(0,0,0,.06)!important;color:#222}
+#uvx .v-card .im,#uvx .v-room .im,#uvx .v-ri .im{overflow:hidden;position:relative}
+#uvx .v-card .im img,#uvx .v-room .im img,#uvx .v-ri .im img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#uvx .v-card .im i,#uvx .v-card .im em{z-index:1}
+#uvx .v-dim{position:absolute;inset:0;background:rgba(var(--uvx-scene-rgb),.4);display:none;pointer-events:auto;z-index:1}
+#uvx .v-dim.on{display:block}
+#uvx.v13 .uvx-cfg{right:auto;left:24px;bottom:auto;top:var(--uvx-logo-b,90px)}
+@media (max-width:1380px){ #uvx .v-act button:not(.main) .l{display:none} #uvx .v-act button:not(.main){padding:0 13px} }
+/* accueil v1.3 : le lieu plein écran, le texte en bas à gauche, pas de pastille centrale */
+#uvx .uvx-intro.v13i{place-items:end start;text-align:left;backdrop-filter:blur(6px) brightness(.9);-webkit-backdrop-filter:blur(6px) brightness(.9)}
+#uvx .uvx-intro.v13i.vid{backdrop-filter:none;-webkit-backdrop-filter:none}
+#uvx .uvx-intro.v13i .shade{background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.85),rgba(var(--uvx-scene-rgb),.35) 45%,rgba(var(--uvx-scene-rgb),.05) 75%),linear-gradient(to right,rgba(var(--uvx-scene-rgb),.45),transparent 60%)}
+#uvx .uvx-intro.v13i::before{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.8),transparent 55%);pointer-events:none}
+#uvx .uvx-intro.v13i.vid::before{display:none}
+#uvx .uvx-intro.v13i .in{margin:0 0 72px 64px;max-width:min(760px,calc(100vw - 64px))}
+#uvx .uvx-intro.v13i .eb{font-size:11px;letter-spacing:.22em;font-weight:600}
+#uvx .uvx-intro.v13i h1{font-size:56px;font-weight:300;line-height:1.05;margin:14px 0 18px;letter-spacing:-.01em}
+#uvx .uvx-intro.v13i .figs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+#uvx .uvx-intro.v13i .figs span{font-size:13px;padding:7px 14px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#uvx .uvx-intro.v13i .btns{display:flex;gap:12px;flex-wrap:wrap}
+#uvx .uvx-intro.v13i .go-btn{height:52px;padding:0 26px;border-radius:14px;font-size:14.5px;font-weight:600;box-shadow:none}
+#uvx .uvx-intro.v13i .go-btn.rep{background:var(--uvx-accent)!important;color:var(--uvx-on-accent)}
+#uvx .uvx-intro.v13i .go-btn.free{background:rgba(255,255,255,.14)!important;color:#fff;border:1px solid rgba(255,255,255,.35)!important}
+#uvx .uvx-intro.v13i .go-btn.free:only-child{background:var(--uvx-accent)!important;color:var(--uvx-on-accent);border:0!important}
+/* tablette */
+@media (min-width:761px) and (max-width:1100px){
+ #uvx .v-dock{width:calc(100vw - 48px)}
+ #uvx .v-act button .l{display:none}
+ #uvx .v-act button{padding:0 13px}
+ #uvx .v-here{max-width:190px}
+ #uvx .v-rooms{grid-template-columns:repeat(2,1fr)}
+ #uvx .v-cat{left:16px;right:16px;padding:24px 22px 0}
+ #uvx .v-plan{left:16px;right:16px}
+}
+/* téléphone : voir le lieu et ses espaces, vite — nom de l'espace, recherche, Salles & espaces */
+@media (max-width:760px){
+ #uvx .uvx-intro.v13i .in{margin:0 18px 34px 18px}
+ #uvx .uvx-intro.v13i h1{font-size:34px}
+ #uvx .uvx-intro.v13i .btns{flex-direction:column}
+ #uvx .uvx-intro.v13i .go-btn{width:100%}
+ #uvx .v-corner{top:12px;right:12px;flex-direction:column}
+ #uvx .v-corner button{width:40px;height:40px}
+ #uvx .v-cap{bottom:150px;width:calc(100vw - 32px)}
+ #uvx .v-cap h2{font-size:24px}
+ #uvx .v-cap p,#uvx .v-cap button,#uvx .v-cap .v-eb{display:none}
+ #uvx .v-dock{left:12px;right:12px;width:auto;transform:none;bottom:14px;height:56px;padding:0 6px 0 4px}
+ #uvx .v-here{max-width:none;flex:1;min-width:0;padding:0 8px}
+ #uvx .v-here i,#uvx .v-sep,#uvx .v-ctx,#uvx .v-act .plan,#uvx .v-act button .l{display:none}
+ #uvx .v-dock .uvx-ask{display:none}
+ #uvx .v-dock.srch .uvx-ask{display:block;position:absolute!important;left:0;right:0;bottom:64px}
+ #uvx .v-dock.srch .uvx-ask form{background:rgba(var(--uvx-panel-rgb),.96)!important;border-radius:24px;height:48px}
+ #uvx .v-act .srch{display:flex!important}
+ #uvx .v-act button{padding:0 13px;height:44px}
+ #uvx .v-pop{left:12px;right:12px;width:auto;transform:none;bottom:136px}
+ #uvx .v-pop .ans{max-height:calc(100vh - 230px)}
+ #uvx .v-rooms{grid-template-columns:1fr}
+ #uvx .v-room{display:flex}
+ #uvx .v-room .im{width:96px;height:auto;min-height:78px;flex:none}
+ #uvx .v-ft,#uvx .v-rep{left:0;right:0;width:auto;top:auto;bottom:0;max-height:82vh;border-radius:24px 24px 0 0}
+ #uvx .v-ft .ph{height:150px}
+ #uvx .v-cat{left:0;right:0;top:56px;padding:18px 14px 0;border-radius:22px 22px 0 0}
+ #uvx .v-cat h1{font-size:22px}
+ #uvx .v-finder{margin-left:0;width:100%}
+ #uvx .v-tabs{margin:14px 0 12px}
+ #uvx .v-grid .row{grid-template-columns:1fr 1fr;gap:10px}
+ #uvx .v-card .im{height:96px}
+ #uvx .v-card .k{display:none}
+ #uvx .v-plan{display:none!important}
+ #uvx.v13 .uvx-cfg{top:var(--uvx-logo-b,70px);left:14px;right:64px;width:auto}
+}
+@media (max-height:500px) and (min-width:500px){
+ #uvx .v-cap{bottom:70px}#uvx .v-cap h2{font-size:20px}#uvx .v-cap p,#uvx .v-cap button{display:none}
+ #uvx .v-dock{height:48px;bottom:10px}#uvx .v-act button{height:38px}#uvx .v-act button .l{display:none}
+ #uvx .v-ft,#uvx .v-rep{top:10px;bottom:66px}#uvx .v-ft .ph{height:110px}
+ #uvx .v-cat{top:8px}#uvx .v-plan{top:8px;bottom:66px}
+ #uvx .v-pop{bottom:66px}
+ #uvx .v-brief .in{padding:16px 22px;max-height:calc(100vh - 16px);overflow:auto}#uvx .v-brief .sub{display:none}#uvx .v-brief .btns{margin-top:14px}#uvx .v-fmt button{height:32px}#uvx .v-brief label{margin:10px 0 6px}#uvx .v-brief h1{font-size:22px}
+ #uvx .v-corner{top:8px;right:8px}
+}
 `;
 
   /* ---------- 2. Lecture du menu natif ---------- */
@@ -719,7 +974,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     '</div>' +
     '<div class="uvx-card hide"><div class="eb"></div><h2></h2><span class="fig"></span><p></p><button class="more">Voir plus</button></div>' +
     '<div class="uvx-cfg uvx-glass" style="display:none"></div>' +
-    '<div class="uvx-ask"><div class="ans uvx-glass"><button class="close" type="button">×</button><div class="txt"></div><div class="links"></div></div>' +
+    '<div class="uvx-ask"><div class="ans uvx-ans uvx-glass"><button class="close" type="button">×</button><div class="txt"></div><div class="links"></div></div>' +
       '<button class="ceye uvx-glass" type="button" title="Masquer le champ de question"><svg class="on" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="off" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></button>' +
       '<form class="uvx-glass">' + ic.ask + '<input type="text" autocomplete="off"><button class="send" type="submit">↑</button></form></div>' +
     '<div class="uvx-car"><button class="arr uvx-glass prev">‹</button><button class="mid uvx-glass"><b></b><span></span></button><button class="arr uvx-glass next">›</button></div>' +
@@ -779,6 +1034,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     } catch (e) {}
     bar.classList.remove('open'); bar.querySelectorAll('.uvx-zone').forEach(function (x) { x.classList.remove('open'); });
     q('.uvx-full').classList.remove('on');
+    if (v13) v13.onGo();
     render(); cfgRefresh();
   }
   /* titre d'origine mémorisé une fois : une relance du moteur ne doit pas empiler les noms d'étapes */
@@ -787,6 +1043,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
 
   /* F3 + F10 */
   function render() {
+    if (v13) v13.render();
     var all = flat(), idx = cur ? all.indexOf(cur) : -1;
     bar.querySelectorAll('.uvx-zone').forEach(function (d) { d.classList.toggle('on', !!cur && +d.dataset.zi === cur.zi); });
     bar.querySelectorAll('.uvx-step').forEach(function (b) {
@@ -892,7 +1149,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
   q('.fs').addEventListener('click', function () {
     var d = document; if (!d.fullscreenElement) d.documentElement.requestFullscreen && d.documentElement.requestFullscreen(); else d.exitFullscreen();
   });
-  function onKey(e) { if (e.key === 'Escape') { modal.classList.remove('on'); full.classList.remove('on'); epClose(); var a = root.querySelector('.uvx-ask .ans'); if (a) a.classList.remove('on'); } }
+  function onKey(e) { if (e.key === 'Escape') { modal.classList.remove('on'); full.classList.remove('on'); epClose(); var a = root.querySelector('.uvx-ans'); if (a) a.classList.remove('on'); if (v13) v13.onGo(); } }
   window.addEventListener('keydown', onKey, true);
 
   /* ---------- F5 : points de déplacement libellés (projection SDK) ---------- */
@@ -1092,7 +1349,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
   function mailto(question) {
     var c = OPTIONS.contact; if (!c || !c.email) return '';
     var body = 'Bonjour,\n\nMa question : ' + question + '\n\n(Question posée depuis la visite virtuelle' + (cur ? ', espace « ' + cur.parts.name + ' »' : '') + '.)\n';
-    return 'mailto:' + c.email + '?subject=' + encodeURIComponent('Question depuis la visite virtuelle') + '&body=' + encodeURIComponent(body);
+    return 'mailto:' + (c.envoi || c.email) + '?subject=' + encodeURIComponent('Question depuis la visite virtuelle') + '&body=' + encodeURIComponent(body);
   }
   function contactBtns(question) {
     var c = OPTIONS.contact; if (!c) return '';
@@ -1116,6 +1373,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     ans.scrollTop = 0;
   }
   function answer(text) {
+    if (v13 && v13.finder(text)) return;
     var r = FAQ.ask(text), h = FAQ.decide(r, OPTIONS.faqSeuil), sp = spaceHits(text);
     var t = ans.querySelector('.txt'), l = ans.querySelector('.links');
     var named = sp.filter(function (x) { return norm(x.st.parts.name).some(function (w) { return norm(text).indexOf(w) >= 0 && w.length > 4; }); });
@@ -1200,12 +1458,12 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
   }
 
 
-  /* ---------- Vue aérienne d'accueil (v1.2.0) — effets façon Juumo sur les hotspots des images interactives MPskin ----------
+  /* ---------- Vue aérienne d'accueil (v1.2.0) — effets de l'interface UniVirtuel sur les hotspots des images interactives MPskin ----------
      La popup d'entrée MPskin (.click-trigger-cnt-start, data-media-type="pano") ouvre /fr/pano/<id> dans une iframe
      Fancybox du même site. On y injecte une feuille de style et deux écouteurs :
        · halo battant sur tous les hotspots, interrompu dès qu'un hotspot est survolé ;
        · hotspot survolé (souris) : icône agrandie, libellé en pastille, les autres voilés ;
-       · écran tactile : pas d'effet de survol, le 1er toucher déclenche directement l'action MPskin (comme Juumo).
+       · écran tactile : pas d'effet de survol, le 1er toucher déclenche directement l'action MPskin.
      MPskin recrée les hotspots au chargement de l'image pleine définition : tout passe par la feuille de style et
      par des écouteurs posés sur le document, jamais sur les hotspots eux-mêmes.
      Avec l'écran d'accueil du moteur : la popup est masquée pendant l'accueil (elle se charge derrière),
@@ -1218,9 +1476,9 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     var pill = CHARTE.vars['--uvx-panel-rgb'] || '43,47,54', pillTx = CHARTE.vars['--uvx-fg'] || '#ffffff', font = CHARTE.vars['--uvx-font'];
     var halo = String(OPTIONS.aerienHalo || '#ffffff');
     var hr = /^#?([0-9a-f]{6})$/i.exec(halo.trim()); var hrgb = hr ? [0, 2, 4].map(function (i) { return parseInt(hr[1].substr(i, 2), 16); }).join(',') : '255,255,255';
-    var CSS = '@keyframes uvxAeroHalo{0%{box-shadow:0 0 0 0 rgba(' + hrgb + ',.6)}70%{box-shadow:0 0 0 11px rgba(' + hrgb + ',0)}100%{box-shadow:0 0 0 0 rgba(' + hrgb + ',0)}}\n' +
+    var CSS = '@keyframes uvxAeroHalo{0%{box-shadow:0 0 0 0 rgba(' + hrgb + ',.6)}60%{box-shadow:0 0 0 14px rgba(' + hrgb + ',0)}100%{box-shadow:0 0 0 0 rgba(' + hrgb + ',0)}}\n' +
       'html.pano div.custom-tooltip{transition:opacity .35s ease}\n' +
-      'html.pano div.custom-tooltip .icon{display:block;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.95),0 3px 12px rgba(0,0,0,.35);animation:uvxAeroHalo 2.2s infinite;transition:transform .35s cubic-bezier(.2,.8,.2,1);transform-origin:50% 50%}\n' +
+      'html.pano div.custom-tooltip .icon{display:block;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.95),0 3px 12px rgba(0,0,0,.35);animation:uvxAeroHalo 3.2s cubic-bezier(.25,.6,.3,1) infinite;transition:transform .35s cubic-bezier(.2,.8,.2,1);transform-origin:50% 50%}\n' +
       'html.pano.uvx-aero-focus div.custom-tooltip .icon{animation:none}\n' +
       'html.pano.uvx-aero-focus div.custom-tooltip:not(.uvx-on){opacity:.28}\n' +
       'html.pano div.custom-tooltip.uvx-on{z-index:1000!important}\n' +
@@ -1247,7 +1505,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
       d.addEventListener('mouseover', function (e) { if (!touch) focus(hsOf(e.target)); }, true);
       d.addEventListener('mouseout', function (e) { if (!touch && !e.relatedTarget) focus(null); }, true);
       /* téléphone et tablette (pas de survol) : aucun effet, le 1er toucher envoie directement dans la visite,
-         comme chez Juumo (décision de Mickaël, 09/10/2026) — le halo reste. */
+         (décision de Mickaël, 09/10/2026) — le halo reste. */
     }
     function scan() { document.querySelectorAll('.fancybox-container iframe').forEach(function (fr) {
       if (!/\/pano\//.test(fr.src || '')) return;
@@ -1273,6 +1531,438 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     };
   })();
 
+  /* =====================================================================
+     v1.3 — interface « organisateur d'événement ». Uniquement l'habillage : la navigation passe toujours par
+     go() (lien natif du menu MPskin), le contenu vient toujours des balises. Rien n'est écrit dans MPskin.
+     ===================================================================== */
+  var v13 = CHAMP ? null : (function () {
+    var LB = {   /* libellés de l'interface — réglables par client (fiche client « libelles ») ; les noms d'espaces et de zones, jamais */
+      espaces: 'Salles & espaces', reperage: 'Mon repérage', proposer: 'Demander une proposition', ajouter: 'Ajouter à mon repérage',
+      retirer: 'Retiré du repérage', aller: 'Y aller', plan: 'Plan', recherche: 'Salle, jauge, question…', fiche: 'Lire la fiche',
+      briefTitre: 'Préparez votre repérage', briefTexte: 'Deux réponses facultatives : la visite met ensuite en avant les espaces adaptés à votre événement.',
+      briefGo: 'Commencer le repérage', briefLibre: 'Visiter librement', participants: 'Nombre de participants', format: 'Format',
+      tout: 'Tout', trouver: 'Trouver une salle pour', voir: 'Voir', convient: 'Convient à', personnes: 'personnes', evenement: 'Votre événement'
+    };
+    Object.keys(OPTIONS.libelles || {}).forEach(function (k) { if (OPTIONS.libelles[k]) LB[k] = OPTIONS.libelles[k]; });
+    var FORMATS = OPTIONS.formats || ['Séminaire résidentiel', 'Journée d\'étude', 'Convention / plénière', 'Soirée de gala', 'Team building', 'Comité de direction'];
+    var LIEU = OPTIONS.introTitle || (document.querySelector('.nav-cnt .section.title .project') || {}).textContent || baseTitle;
+    LIEU = String(LIEU).trim();
+    var LSR = 'uvx-rep-' + location.pathname, LSB = 'uvx-brief-' + location.pathname;
+    var demo = /[?&]demo(=|&|$)/.test(location.search);
+    var rep = [], brief = null;
+    try { rep = JSON.parse(localStorage.getItem(LSR) || '[]'); brief = JSON.parse(localStorage.getItem(LSB) || 'null'); } catch (e) {}
+    if (demo) { rep = []; brief = null; try { localStorage.removeItem(LSR); localStorage.removeItem(LSB); } catch (e) {} }
+    function save() { try { localStorage.setItem(LSR, JSON.stringify(rep)); localStorage.setItem(LSB, JSON.stringify(brief)); } catch (e) {} }
+    var SV = {
+      search: '<svg class="v-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+      map: '<svg class="v-svg" viewBox="0 0 24 24"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>',
+      heart: '<svg class="v-svg" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+      heartF: '<svg class="v-svg" viewBox="0 0 24 24" style="fill:currentColor"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+      grid: '<svg class="v-svg" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>'
+    };
+
+    /* ---- Capacités : lues dans le texte de la fiche (format standard du contrat de contenu) ----
+       « 159 m² : 120 en théâtre, 64 en classe, 64 en îlots, 30 en U, 24 en conférence. » ; « 46 couverts au déjeuner » ;
+       « jusqu'à 350 personnes en théâtre ou en cocktail » ; « 1 497 places » (libellé du menu). Fiche client « capacites »
+       = priorité : { 'Nom': { m2: 129, 'Théâtre': 127, 'Classe': 58 } }. */
+    var CONF = [['th[ée][âa]tre', 'Théâtre'], ['classe', 'Classe'], ['[îi]lots?', 'Îlots'], ['u', 'U'], ['conf[ée]rence', 'Conférence'],
+      ['cabaret', 'Cabaret'], ['pav[ée]', 'Pavé'], ['banquet', 'Banquet'], ['cocktail', 'Cocktail'], ['tables? rondes?', 'Tables rondes'],
+      ['carr[ée]', 'Carré'], ['r[ée]union', 'Réunion'], ['d[ée]jeuner', 'Déjeuner'], ['d[îi]ner', 'Dîner'], ['assis', 'Assis'], ['debout', 'Debout']];
+    var CW = '(' + CONF.map(function (c) { return c[0]; }).join('|') + ')';
+    function confName(w) { w = String(w || '').toLowerCase(); for (var i = 0; i < CONF.length; i++) if (new RegExp('^' + CONF[i][0] + '$', 'i').test(w)) return (OPTIONS.configsLibelles && OPTIONS.configsLibelles[CONF[i][1]]) || CONF[i][1]; return null; }
+    function num(s) { return parseInt(String(s).replace(/[\s  .]/g, ''), 10); }
+    function clean(t) { return String(t || '').replace(/­/g, '').replace(/[  ]/g, ' '); }
+    var capCache = {};
+    function caps(st) {
+      if (!st) return null;
+      if (capCache[st.key] !== undefined) return capCache[st.key];
+      var out = { m2: null, rows: [], max: 0, sentence: null };
+      var o = byKey(OPTIONS.capacites, st.parts.name);
+      if (o && typeof o === 'object') {
+        Object.keys(o).forEach(function (k) { if (/^m2$|^surface$/i.test(k)) out.m2 = +o[k]; else if (/^note$/i.test(k)) out.note = String(o[k]); else if (+o[k]) out.rows.push({ k: k, n: +o[k] }); });
+      } else {
+        var t = clean((typeof o === 'string' ? o + ' ' : '') + (st.fiche ? htmlText(st.fiche.html) : '') + ' ' + st.label), m;
+        var mm = /(\d[\d\s.]*)\s*m(?:²|2)(?![a-z])/i.exec(t); if (mm) out.m2 = num(mm[1]);
+        var re = new RegExp('(\\d{1,3}(?:[\\s.]\\d{3})*|\\d+)\\s+(?:personnes?\\s+|places?\\s+|pers\\.?\\s+|invit[ée]s\\s+)?(?:en|au|à)\\s+' + CW + '\\b((?:\\s+ou\\s+en\\s+' + CW + '\\b)*)', 'gi');
+        while ((m = re.exec(t))) {
+          var n = num(m[1]), names = [m[2]].concat((m[3] || '').split(/\s+ou\s+en\s+/i).slice(1));
+          names.forEach(function (w) { var c = confName(w.trim()); if (c && !out.rows.some(function (r) { return r.k === c; })) out.rows.push({ k: c, n: n }); });
+        }
+        var cv = /(\d+)\s+couverts?(?:\s+(?:au|à|en)\s+(d[ée]jeuner|d[îi]ner))?/gi;
+        while ((m = cv.exec(t))) { var c2 = m[2] ? confName(m[2]) : 'Couverts'; if (!out.rows.some(function (r) { return r.k === c2; })) out.rows.push({ k: c2, n: +m[1] }); }
+        if (!out.rows.length) {   /* « 10 personnes autour d'une table » ; « 1 497 places » */
+          var pp = /(\d{1,3}(?:[\s.]\d{3})*|\d+)\s+(personnes|places)\b/i.exec(t);
+          if (pp) out.rows.push({ k: /places/i.test(pp[2]) ? 'Places' : 'Personnes', n: num(pp[1]) });
+        }
+        var sm = /\d[\d\s.]*\s*m(?:²|2)\s*:[^.]*\./.exec(t); if (sm && out.rows.length) out.sentence = sm[0];
+      }
+      out.rows.forEach(function (r) { if (!/d[ée]jeuner|d[îi]ner|couverts/i.test(r.k)) out.max = Math.max(out.max, r.n); });
+      if (!out.max) out.rows.forEach(function (r) { out.max = Math.max(out.max, r.n); });
+      if (!out.m2 && !out.rows.length && !out.note) out = null;
+      capCache[st.key] = out;
+      return out;
+    }
+    function capLine(c, conf) {
+      if (!c) return '';
+      var r = conf && c.rows.filter(function (x) { return x.k === conf; })[0];
+      if (r) return rowTxt(r);
+      var top = c.rows.slice().sort(function (a, b) { return b.n - a.n; })[0];
+      return top ? rowTxt(top) : '';
+    }
+    function lc(k) { return k.length < 3 ? k : k.toLowerCase(); }
+    /* « 120 en théâtre », « 46 couverts », « 1 497 places » (1re configuration), « 10 places PMR » */
+    function rowTxt(r) {
+      var n = r.n.toLocaleString('fr-FR');
+      if (/configuration/i.test(r.k) || /^(places|personnes)$/i.test(r.k)) return n + ' ' + (/personnes/i.test(r.k) ? 'personnes' : 'places');
+      if (/^places\s/i.test(r.k)) return n + ' ' + lc(r.k);
+      if (/couverts|d[ée]jeuner|d[îi]ner/i.test(r.k)) return n + ' couverts';
+      return n + ' en ' + lc(r.k);
+    }
+    function photo(st) { return photoFor(st); }
+    /* photos en <img loading=lazy> : le catalogue ne charge que ce qui est à l'écran */
+    function im(u) { return u ? '<img loading="lazy" decoding="async" alt="" src="' + esc(u) + '">' : ''; }
+    function zoneOf(st) { return st.group ? st.group.split(' › ').pop() : zones[st.zi].label; }
+
+    /* ---- DOM ---- */
+    var el = document.createElement('div');
+    el.innerHTML =
+      '<div class="v-dim"></div>' +
+      '<div class="v-corner"></div>' +
+      '<div class="v-cap hide"><div class="v-eb"></div><h2></h2><p></p><button type="button">' + esc(LB.fiche) + '</button></div>' +
+      '<div class="v-pop"></div>' +
+      '<div class="v-dock uvx-glass">' +
+        '<button class="v-here" type="button"><span class="v-dot"></span><span class="t"><b></b><i></i></span></button><span class="v-sep"></span>' +
+        '<button class="v-ctx" type="button" style="display:none"></button>' +
+        '<div class="v-act">' +
+          '<button class="srch" type="button" style="display:none">' + SV.search + '</button>' +
+          '<button class="plan" type="button" style="display:none">' + SV.map + '<span class="l">' + esc(LB.plan) + '</span></button>' +
+          '<button class="rep" type="button">' + SV.heart + '<span class="l">' + esc(LB.reperage.replace(/^Mon\s+/i, '').replace(/^./, function (c) { return c.toUpperCase(); })) + '</span><span class="v-badge"></span></button>' +
+          '<button class="main cat" type="button">' + SV.grid + '<span class="l">' + esc(LB.espaces) + '</span></button>' +
+        '</div></div>' +
+      '<div class="v-ft v-panel"><button class="v-x" type="button">×</button><div class="ph"><span class="fit" style="display:none"></span></div><div class="bd"><div class="sc"></div><div class="add"></div></div></div>' +
+      '<div class="v-rep v-panel"><button class="v-x" type="button">×</button><div class="v-eb"></div><h2>' + esc(LB.reperage) + '</h2><div class="sum"></div><div class="ls"></div><div class="foot"></div></div>' +
+      '<div class="v-cat v-panel"><button class="v-x" type="button">×</button><div class="hd"><div><h1></h1><div class="sub"></div></div>' +
+        '<form class="v-finder">' + esc(LB.trouver) + ' <input type="number" min="1" max="99999" inputmode="numeric" placeholder="—"> ' + esc(LB.personnes) + ' <select></select><button type="submit">' + esc(LB.voir) + '</button></form></div>' +
+        '<div class="v-tabs"></div><div class="v-grid"></div></div>' +
+      '<div class="v-plan"><button class="v-x" type="button">×</button><div class="lv"></div><div class="ttl"><b></b><span></span></div><div class="stage"><div class="wrap"><img alt=""></div></div><div class="leg"></div></div>' +
+      '<div class="v-brief"><div class="in v-panel"><div class="v-eb"></div><h1>' + esc(LB.briefTitre) + '</h1><div class="sub">' + esc(LB.briefTexte) + '</div>' +
+        '<label>' + esc(LB.participants) + '</label><div class="v-num"><div class="box"><button type="button" data-d="-10">−</button><input type="number" min="1" max="99999" inputmode="numeric"><button type="button" data-d="10">+</button></div><span>jauge indicative</span></div>' +
+        '<label>' + esc(LB.format) + '</label><div class="v-fmt"></div>' +
+        '<div class="btns"><button class="v-btn p go" type="button">' + esc(LB.briefGo) + '</button><button class="free" type="button">' + esc(LB.briefLibre) + '</button><span class="note">Modifiable à tout moment</span></div></div></div>';
+    while (el.firstChild) root.appendChild(el.firstChild);
+    root.classList.add('v13');
+    var Q = function (s) { return root.querySelector(s); };
+    var dock = Q('.v-dock'), pop = Q('.v-pop'), cap = Q('.v-cap'), ft = Q('.v-ft'), repP = Q('.v-rep'), cat = Q('.v-cat'), plan = Q('.v-plan'), br = Q('.v-brief'), dim = Q('.v-dim');
+    /* le champ de question (F17/F20) entre dans le dock ; sa bulle de réponse s'ouvre au-dessus */
+    dock.insertBefore(ask, dock.querySelector('.v-act'));
+    pop.appendChild(ans);
+    askIn.placeholder = LB.recherche;
+    var back2 = document.createElement('div'); back2.className = 'uvx-floor'; back.appendChild(back2); var back3 = document.createElement('div'); back3.className = 'uvx-top'; back.appendChild(back3);
+
+    /* coin : accueil (s'il y a une vue aérienne ou un écran d'accueil), visite vidéo, musique, plein écran */
+    var corner = Q('.v-corner');
+    function cbtn(cls, title, svg, fn) { var b = document.createElement('button'); b.type = 'button'; b.className = 'uvx-glass ' + cls; b.title = title; b.innerHTML = svg; b.onclick = fn; corner.appendChild(b); return b; }
+    if (aero || OPTIONS.intro) cbtn('home', aero ? 'Vue d\'ensemble' : 'Retour à l\'accueil', ic.home, function () { goHome(); });
+    if (eps.length) cbtn('ep', 'Visite guidée en vidéo', ic.play, function () { epPlay(0); });
+    var snd = cbtn('snd off', 'Musique', ic.snd, function () { root.querySelector('.uvx-tool.snd').click(); snd.classList.toggle('off', !sndOn); });
+    cbtn('fs', 'Plein écran', ic.fs, function () { root.querySelector('.uvx-tool.fs').click(); });
+    corner.querySelectorAll('svg').forEach(function (s) { s.setAttribute('class', 'v-svg'); });
+
+    /* ---- panneaux : un seul ouvert à la fois ---- */
+    function closeAll(except) {
+      [ft, repP, cat, plan].forEach(function (p) { p.classList.toggle('on', p === except); });
+      if (except !== 'pop') { ans.classList.remove('on'); }
+      dim.classList.toggle('on', except === cat || except === plan);
+      dock.querySelector('.cat').classList.toggle('on', except === cat);
+      dock.querySelector('.rep').classList.toggle('on', except === repP);
+      dock.querySelector('.plan').classList.toggle('on', except === plan);
+      dock.classList.remove('srch');
+    }
+    dim.onclick = function () { closeAll(); };
+    root.querySelectorAll('.v-ft .v-x, .v-rep .v-x, .v-cat .v-x, .v-plan .v-x').forEach(function (b) { b.onclick = function () { closeAll(); }; });
+
+    /* ---- légende de l'espace : apparaît à l'arrivée, s'efface pour rendre la vue ---- */
+    var capT = null;
+    function showCap() {
+      if (!cur || cardAway) { cap.classList.add('hide'); return; }
+      cap.querySelector('.v-eb').textContent = zoneOf(cur);
+      cap.querySelector('h2').textContent = cur.parts.name;
+      var c = caps(cur), sub = cur.fiche ? cur.fiche.lead : '';
+      if (c && (c.m2 || c.max)) sub = [c.m2 ? c.m2 + ' m²' : '', capLine(c)].filter(Boolean).join(' · ') + (sub ? ' — ' + sub : '');
+      cap.querySelector('p').textContent = sub; cap.querySelector('p').style.display = sub ? '' : 'none';
+      cap.querySelector('button').style.display = cur.fiche || c ? '' : 'none';
+      cap.classList.remove('hide');
+      clearTimeout(capT); capT = setTimeout(function () { cap.classList.add('hide'); }, 7000);
+    }
+    cap.querySelector('button').onclick = function () { tick(); openFiche(cur); };
+
+    /* ---- dock ---- */
+    var lastKey = null;
+    function renderDock() {
+      var here = dock.querySelector('.v-here');
+      here.querySelector('b').textContent = cur ? cur.parts.name : LIEU;
+      here.querySelector('i').textContent = cur ? zoneOf(cur) : zones.length + ' univers · ' + flat().length + ' espaces';
+      var cx = dock.querySelector('.v-ctx');
+      if (brief && (brief.n || brief.f)) { cx.textContent = [brief.n ? brief.n + ' pers.' : '', brief.f || ''].filter(Boolean).join(' · '); cx.style.display = ''; }
+      else if (OPTIONS.brief !== false) { cx.textContent = LB.evenement + ' ?'; cx.style.display = ''; }
+      else cx.style.display = 'none';
+      dock.querySelector('.v-badge').textContent = rep.length ? rep.length : '';
+      dock.querySelector('.plan').style.display = (OPTIONS.plans && OPTIONS.plans.length) ? '' : 'none';
+      var k = cur && !cardAway ? cur.key : null;
+      if (k !== lastKey) { lastKey = k; showCap(); }
+    }
+    dock.querySelector('.v-here').onclick = function () { tick(); if (cur && (cur.fiche || caps(cur))) openFiche(cur); else openCat(cur ? cur.zi : -1); };
+    dock.querySelector('.v-ctx').onclick = function () { tick(); openBrief(); };
+    dock.querySelector('.cat').onclick = function () { tick(); if (cat.classList.contains('on')) closeAll(); else openCat(-1); };
+    dock.querySelector('.rep').onclick = function () { tick(); if (repP.classList.contains('on')) closeAll(); else openRep(); };
+    dock.querySelector('.plan').onclick = function () { tick(); if (plan.classList.contains('on')) closeAll(); else openPlan(); };
+    dock.querySelector('.srch').onclick = function () { tick(); var o = dock.classList.toggle('srch'); if (o) setTimeout(function () { askIn.focus(); }, 50); };
+    askIn.addEventListener('focus', function () { [ft, repP, cat, plan].forEach(function (p) { p.classList.remove('on'); }); dim.classList.remove('on'); });
+
+    /* ---- fiche technique ---- */
+    var ftSt = null;
+    function inRep(st) { return rep.some(function (r) { return key(r.n) === key(st.parts.name); }); }
+    function toggleRep(st) {
+      if (inRep(st)) rep = rep.filter(function (r) { return key(r.n) !== key(st.parts.name); });
+      else rep.push({ n: st.parts.name, z: zoneOf(st) });
+      save(); renderDock();
+    }
+    function openFiche(st) {
+      if (!st) return; ftSt = st; closeAll(ft);
+      var c = caps(st), ph = photo(st), N = brief && brief.n;
+      var p = ft.querySelector('.ph'); p.style.backgroundImage = ph ? 'url("' + ph + '")' : ''; p.classList.toggle('none', !ph);
+      var fit = ft.querySelector('.fit'), ok = N && c && c.max >= N;
+      fit.textContent = '✓ ' + LB.convient + ' ' + N + ' ' + LB.personnes; fit.style.display = ok && ph ? '' : 'none';
+      var h = '<div class="v-eb">' + esc(st.group || zones[st.zi].label) + '</div><h2>' + esc(st.parts.name) + '</h2>';
+      var meta = [c && c.m2 ? c.m2 + ' m²' : (st.parts.fig || ''), ok && !ph ? '✓ ' + LB.convient + ' ' + N + ' ' + LB.personnes : ''].filter(Boolean).join(' · ');
+      if (meta) h += '<div class="meta">' + esc(meta) + '</div>';
+      if (c && c.rows.length) h += '<table>' + c.rows.map(function (r) { return '<tr class="' + (N && r.n >= N ? 'ok' : '') + '"><td>' + esc(r.k) + '</td><td>' + r.n.toLocaleString('fr-FR') + '</td></tr>'; }).join('') + '</table>';
+      if (c && c.note) h += '<div class="tx">' + esc(c.note) + '</div>';
+      if (st.fiche) {
+        var html = st.fiche.html;
+        if (c && c.sentence) { var d = document.createElement('div'); d.innerHTML = html; d.querySelectorAll('p').forEach(function (pp) { var t = clean(pp.textContent); if (t.indexOf(c.sentence) >= 0) { var rest = t.replace(c.sentence, '').trim(); if (rest) pp.textContent = rest; else pp.remove(); } }); html = d.innerHTML; }
+        h += '<div class="tx">' + html + '</div>';
+      }
+      ft.querySelector('.sc').innerHTML = h;
+      var a = ft.querySelector('.add'), on = inRep(st);
+      a.innerHTML = '<button class="v-btn ' + (on ? 'on' : 'p') + ' heart" type="button">' + (on ? SV.heartF : SV.heart) + esc(on ? LB.reperage.replace(/^Mon /, 'Dans mon ') : LB.ajouter) + '</button>' +
+        (cur === st ? '' : '<button class="v-btn goto" type="button">' + esc(LB.aller) + ' →</button>');
+      a.querySelector('.heart').onclick = function () { tick(); toggleRep(st); openFiche(st); };
+      var g = a.querySelector('.goto'); if (g) g.onclick = function () { closeAll(); go(st); };
+      ft.querySelector('.sc').scrollTop = 0;
+    }
+
+    /* ---- catalogue « Salles & espaces » ---- */
+    var catZ = -1, catN = 0, catConf = '';
+    var allConfs = [];
+    flat().forEach(function (st) { var c = caps(st); if (c) c.rows.forEach(function (r) { if (allConfs.indexOf(r.k) < 0 && !/^(Places|Personnes|Couverts|Déjeuner|Dîner)$/.test(r.k)) allConfs.push(r.k); }); });
+    var withCaps = flat().filter(function (st) { var c = caps(st); return c && c.max; }).length;
+    var finder = cat.querySelector('.v-finder');
+    if (withCaps < 2) finder.style.display = 'none';
+    finder.querySelector('select').innerHTML = '<option value="">toutes configurations</option>' + allConfs.map(function (c) { return '<option>' + esc(c) + '</option>'; }).join('');
+    finder.onsubmit = function (e) { e.preventDefault(); catN = +finder.querySelector('input').value || 0; catConf = finder.querySelector('select').value; tick(); fillCat(); };
+    cat.querySelector('h1').textContent = 'Découvrir ' + LIEU;
+    cat.querySelector('.sub').textContent = flat().length + ' espaces · ' + zones.length + ' univers';
+    var tabs = cat.querySelector('.v-tabs');
+    tabs.innerHTML = '<button type="button" data-z="-1">' + esc(LB.tout) + '</button>' + zones.map(function (z, i) { return '<button type="button" data-z="' + i + '">' + esc(z.label) + '</button>'; }).join('');
+    tabs.onclick = function (e) { var b = e.target.closest('button'); if (!b) return; tick(); catZ = +b.dataset.z; fillCat(); };
+    function fits(st) { if (!catN) return true; var c = caps(st); if (!c || !c.max) return true; return c.rows.some(function (r) { return r.n >= catN && (!catConf || r.k === catConf); }); }
+    function cardHtml(st) {
+      var c = caps(st), ph = photo(st), k = [];
+      if (c) { if (catConf) { var r = c.rows.filter(function (x) { return x.k === catConf; })[0]; if (r) k.push(rowTxt(r)); } else c.rows.slice(0, 2).forEach(function (r) { k.push(rowTxt(r)); }); }
+      return '<button class="v-card' + (fits(st) ? '' : ' dim') + '" type="button" data-key="' + st.key + '"><span class="im">' + im(ph) + ((c && c.m2) || st.parts.fig ? '<i>' + esc(c && c.m2 ? c.m2 + ' m²' : st.parts.fig) + '</i>' : '') + (visited[st.key] ? '<em>✓</em>' : '') + '</span>' +
+        '<span class="tx"><span class="t">' + esc(st.parts.name) + '</span><span class="s">' + esc(zoneOf(st)) + '</span>' + (k.length ? '<span class="k">' + k.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('') + '</span>' : '') + '</span></button>';
+    }
+    function fillCat() {
+      tabs.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', +b.dataset.z === catZ); });
+      var g = cat.querySelector('.v-grid'), h = '';
+      if (catN) {
+        var best = flat().filter(function (st) { var c = caps(st); return c && c.max && (catZ < 0 || st.zi === catZ) && fits(st); });
+        var sn = {}; best = best.filter(function (st) { var k = key(st.parts.name); if (sn[k]) return false; sn[k] = 1; return true; });
+        h += '<div class="grp">' + (best.length ? best.length + ' espace' + (best.length > 1 ? 's' : '') + ' pour ' + catN + ' ' + LB.personnes + (catConf ? ' en ' + lc(catConf) : '') : 'Aucun espace pour ' + catN + ' ' + LB.personnes + (catConf ? ' en ' + lc(catConf) : '')) + '</div>' +
+          (best.length ? '<div class="row">' + best.map(cardHtml).join('') + '</div>' : '') + '<div class="grp" style="margin-top:28px">Tous les espaces</div>';
+      }
+      zones.forEach(function (z, zi) {
+        if (catZ >= 0 && zi !== catZ) return;
+        var groups = [], by = {};
+        z.steps.forEach(function (st) { var k = st.group || ''; if (!by[k]) { by[k] = []; groups.push(k); } by[k].push(st); });
+        groups.forEach(function (gname) {
+          var list = by[gname]; if (catN) list = list.filter(fits).concat(list.filter(function (s) { return !fits(s); }));
+          var title = catZ < 0 ? (gname ? z.label + ' › ' + gname : z.label) : gname;
+          if (title) h += '<div class="grp">' + esc(title) + '</div>';
+          h += '<div class="row">' + list.map(cardHtml).join('') + '</div>';
+        });
+      });
+      g.innerHTML = h; g.scrollTop = 0;
+    }
+    cat.querySelector('.v-grid').onclick = function (e) {
+      var b = e.target.closest('.v-card'); if (!b) return; var k = b.dataset.key.split(':'), st = zones[+k[0]].steps[+k[1]]; tick();
+      if (st.fiche || caps(st)) { cat.classList.remove('on'); openFiche(st); dim.classList.remove('on'); } else { closeAll(); go(st); }
+    };
+    function openCat(zi) {
+      closeAll(cat); catZ = zi === undefined ? -1 : zi;
+      if (brief && brief.n && !catN) { catN = brief.n; finder.querySelector('input').value = brief.n; }
+      fillCat();
+    }
+
+    /* ---- « Trouver la bonne salle » : une question chiffrée dans la recherche ---- */
+    var CAPW = /(personnes?|pers\b|participants?|pax|places?|invit[ée]s?|collaborateurs?|convives|couverts?|jauge|salle|accueillir|capacit[ée])/i;
+    function finderAnswer(text) {
+      if (withCaps < 2) return false;
+      var t = clean(text), m = /(\d{1,3}(?:[\s.]\d{3})*|\d+)/.exec(t); if (!m) return false;
+      var n = num(m[1]); if (!n || n < 2) return false;
+      var cm = new RegExp('(?:^|[^a-zà-ÿ])' + CW + '(?![a-zà-ÿ])', 'i').exec(t), conf = cm ? confName(cm[1]) : '';
+      if (conf && allConfs.indexOf(conf) < 0) conf = '';
+      if (!CAPW.test(t) && !conf) return false;
+      var food = /couverts?|d[ée]jeuner|d[îi]ner|repas|restauration/i.test(t);
+      var list = flat().map(function (st) {
+        var c = caps(st); if (!c) return null;
+        var rows = c.rows.filter(function (r) { return conf ? r.k === conf : (food ? /couverts|d[ée]jeuner|d[îi]ner|cocktail|banquet/i.test(r.k) : !/couverts|d[ée]jeuner|d[îi]ner/i.test(r.k)); });
+        var best = rows.filter(function (r) { return r.n >= n; }).sort(function (a, b) { return a.n - b.n; })[0];
+        return best ? { st: st, r: best, c: c } : null;
+      }).filter(Boolean).sort(function (a, b) { return a.r.n - b.r.n; });
+      var none = !list.length;
+      if (none) list = flat().map(function (st) { var c = caps(st); if (!c) return null;
+          var rows = c.rows.filter(function (r) { return conf ? r.k === conf : !/couverts|d[ée]jeuner|d[îi]ner/i.test(r.k); }).sort(function (a, b) { return b.n - a.n; });
+          return rows[0] ? { st: st, r: rows[0], c: c } : null; }).filter(Boolean).sort(function (a, b) { return b.r.n - a.r.n; });
+      var seen = {}; list = list.filter(function (x) { var k = key(x.st.parts.name); if (seen[k]) return false; seen[k] = 1; return true; });
+      var shown = list.slice(0, 3);
+      var h = '<button class="close" type="button">×</button><div class="v-fd"><div class="lead"><h3>' +
+        (none ? 'Aucun espace pour ' + n + ' ' + LB.personnes + (conf ? ' en ' + lc(conf) : '') + (shown[0] ? ' — au plus ' + shown[0].r.n.toLocaleString('fr-FR') : '') : shown.length ? list.length + ' espace' + (list.length > 1 ? 's' : '') + ' pour ' + n + ' ' + (food ? 'couverts' : LB.personnes) + (conf ? ' en ' + lc(conf) : '') : 'Aucun espace pour ' + n + ' ' + LB.personnes + (conf ? ' en ' + lc(conf) : '')) +
+        '</h3><span>' + (none ? 'les plus grandes capacités · ' : '') + 'd\'après les capacités indiquées par ' + esc(LIEU) + '</span></div>';
+      if (shown.length) h += '<div class="v-rooms">' + shown.map(function (x, i) {
+        return '<button class="v-room" type="button" data-i="' + i + '"><span class="im">' + im(photo(x.st)) + '</span><span class="tx"><span class="t">' + esc(x.st.parts.name) + '</span>' +
+          '<span class="c"><b>' + x.r.n.toLocaleString('fr-FR') + '</b>' + esc(rowTxt(x.r).replace(/^[\d\s\u202f]+/, '')) + '</span><span class="m">' + esc([x.c.m2 ? x.c.m2 + ' m²' : '', zoneOf(x.st)].filter(Boolean).join(' · ')) + '</span></span></button>';
+      }).join('') + '</div>';
+      h += '<div class="note">' + (list.length > 3 && !none ? '<button type="button" class="all">Voir les ' + list.length + ' espaces →</button>' : '<span></span>') +
+        (OPTIONS.contact && OPTIONS.contact.email ? '<a href="' + mailto(text) + '">Une question ? Écrire à ' + esc(OPTIONS.contact.nom || "l'équipe") + ' →</a>' : '') + '</div></div>';
+      ans.innerHTML = h;
+      ans.querySelector('.close').onclick = function () { ans.classList.remove('on'); restoreAns(); };
+      ans.querySelectorAll('.v-room').forEach(function (b) { b.onclick = function () { tick(); var x = shown[+b.dataset.i]; ans.classList.remove('on'); restoreAns(); openFiche(x.st); }; });
+      var all = ans.querySelector('.all'); if (all) all.onclick = function () { ans.classList.remove('on'); restoreAns(); catN = n; catConf = conf || ''; finder.querySelector('input').value = n; finder.querySelector('select').value = catConf; openCat(-1); };
+      closeAll('pop'); ans.classList.add('on');
+      return true;
+    }
+    var ansHtml = ans.innerHTML;
+    function restoreAns() {   /* la bulle FAQ d'origine (txt + liens) reprend sa structure */
+      if (ans.querySelector('.txt')) return;
+      ans.innerHTML = ansHtml; ans.querySelector('.close').onclick = function () { ans.classList.remove('on'); };
+    }
+
+    /* ---- Mon repérage → demande de proposition (e-mail prérempli à l'équipe commerciale du lieu) ---- */
+    function repSteps() { return rep.map(function (r) { return { r: r, st: stepByName(r.n) }; }); }
+    function openRep() {
+      closeAll(repP);
+      repP.querySelector('.v-eb').textContent = LIEU;
+      var s = []; if (brief && brief.n) s.push(brief.n + ' ' + LB.personnes); if (brief && brief.f) s.push(brief.f); s.push(rep.length + ' espace' + (rep.length > 1 ? 's' : ''));
+      repP.querySelector('.sum').innerHTML = s.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('');
+      var ls = repP.querySelector('.ls');
+      ls.innerHTML = rep.length ? repSteps().map(function (x, i) {
+        var c = x.st && caps(x.st);
+        return '<div class="v-ri"><span class="im">' + im(x.st && photo(x.st)) + '</span><button class="go" type="button" data-i="' + i + '"><span class="t">' + esc(x.r.n) + '</span><span class="c">' +
+          esc([x.r.z, c && c.m2 ? c.m2 + ' m²' : '', capLine(c)].filter(Boolean).join(' · ')) + '</span></button><button class="x" type="button" data-i="' + i + '" title="Retirer">×</button></div>';
+      }).join('') : '<div class="empty">Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « ' + esc(LB.ajouter) + ' »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.</div>';
+      ls.querySelectorAll('.go').forEach(function (b) { b.onclick = function () { var x = repSteps()[+b.dataset.i]; if (x.st) { tick(); openFiche(x.st); } }; });
+      ls.querySelectorAll('.x').forEach(function (b) { b.onclick = function () { tick(); rep.splice(+b.dataset.i, 1); save(); renderDock(); openRep(); }; });
+      var f = repP.querySelector('.foot'), c = OPTIONS.contact;
+      f.innerHTML = rep.length && c && c.email ? '<a class="v-btn p" href="' + proposal() + '">' + esc(LB.proposer) + '</a><div class="s">Envoyé à ' + esc(c.nom || "l'équipe commerciale") + (c.libelle ? ' · ' + esc(c.libelle) : '') + '</div>' : '';
+    }
+    function proposal() {
+      var c = OPTIONS.contact || {}, ev = brief && brief.f ? brief.f.toLowerCase() : 'un événement', n = brief && brief.n;
+      var subj = 'Repérage — ' + (brief && brief.f ? brief.f : 'demande de proposition') + (n ? ', ' + n + ' participants' : '');
+      var body = 'Bonjour,\n\nJe prépare ' + (/^[aeiouéèh]/i.test(ev) ? 'un ' : 'une ') + ev.replace(/^un /, '') + (n ? ' pour ' + n + ' participants' : '') + ' et j\'ai repéré dans votre visite virtuelle :\n' +
+        repSteps().map(function (x) { var cc = x.st && caps(x.st); return '• ' + x.r.n + (x.r.z ? ' (' + x.r.z + ')' : '') + (cc && capLine(cc) ? ' — ' + capLine(cc) : ''); }).join('\n') +
+        '\n\nPourriez-vous m\'adresser une proposition ?\nDates envisagées : \n\nMerci,\n\n— Visite : ' + location.origin + location.pathname + '\n';
+      body = body.replace('une un événement', 'un événement');
+      return 'mailto:' + (c.envoi || c.email || '') + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+    }
+
+    /* ---- brief d'entrée (facultatif) ---- */
+    var bIn = br.querySelector('input'), bF = brief && brief.f || '';
+    br.querySelector('.v-eb').textContent = LIEU + ' · repérage';
+    br.querySelector('.v-fmt').innerHTML = FORMATS.map(function (f) { return '<button type="button">' + esc(f) + '</button>'; }).join('');
+    br.querySelector('.v-fmt').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; tick(); bF = bF === b.textContent ? '' : b.textContent; paintF(); };
+    function paintF() { br.querySelectorAll('.v-fmt button').forEach(function (b) { b.classList.toggle('on', b.textContent === bF); }); }
+    br.querySelectorAll('.v-num button').forEach(function (b) { b.onclick = function () { var v = (+bIn.value || 0) + (+b.dataset.d); bIn.value = Math.max(1, v); }; });
+    ['keydown', 'keyup', 'keypress'].forEach(function (t) { br.addEventListener(t, function (e) { e.stopPropagation(); }); cat.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    function openBrief() { closeAll(); bIn.value = brief && brief.n || 50; bF = brief && brief.f || ''; paintF(); br.classList.add('on'); }
+    br.querySelector('.go').onclick = function () { tick(); brief = { n: Math.max(1, +bIn.value || 0) || null, f: bF || '' }; save(); br.classList.remove('on'); catN = 0; renderDock(); if (withCaps >= 2) openCat(-1); };
+    br.querySelector('.free').onclick = function () { tick(); if (!brief) { brief = { n: null, f: '' }; save(); } br.classList.remove('on'); renderDock(); };
+    br.onclick = function (e) { if (e.target === br) br.querySelector('.free').click(); };
+    var briefAuto = OPTIONS.brief === 'accueil' && !brief && !window.matchMedia('(max-width:760px)').matches;
+    function briefSoon() {   /* après l'écran d'accueil ou la vue aérienne, une seule fois */
+      if (!briefAuto) return; briefAuto = false; setTimeout(function () { if (!br.classList.contains('on')) openBrief(); }, 900);
+    }
+
+    /* ---- plan de niveau (fiche client « plans ») ----
+       plans: [{ nom:'Niveau −1', titre:'Salles de sous-commission', image:'https://…', points:{ 'Salle Gatsby':[x %, y %] } }] */
+    var plIdx = 0;
+    function planOf(st) { var P = OPTIONS.plans || []; for (var i = 0; i < P.length; i++) if (st && byKey(P[i].points, st.parts.name)) return i; return -1; }
+    function openPlan(i) {
+      var P = OPTIONS.plans || []; if (!P.length) return;
+      closeAll(plan); plIdx = i === undefined ? Math.max(0, planOf(cur)) : i;
+      var p = P[plIdx];
+      plan.querySelector('.lv').innerHTML = P.length > 1 ? P.map(function (x, k) { return '<button type="button" data-i="' + k + '" class="' + (k === plIdx ? 'on' : '') + '">' + esc(x.nom) + '</button>'; }).join('') : '';
+      plan.querySelectorAll('.lv button').forEach(function (b) { b.onclick = function () { tick(); openPlan(+b.dataset.i); }; });
+      plan.querySelector('.ttl b').textContent = p.titre || p.nom; plan.querySelector('.ttl span').textContent = LIEU;
+      var w = plan.querySelector('.wrap'); w.querySelectorAll('.pt').forEach(function (x) { x.remove(); });
+      w.querySelector('img').src = p.image;
+      var n = 0;
+      Object.keys(p.points || {}).forEach(function (name) {
+        var st = stepByName(name); if (!st) return; n++;
+        var xy = p.points[name], b = document.createElement('button'); b.type = 'button'; b.className = 'pt' + (st === cur ? ' here' : '');
+        b.style.left = xy[0] + '%'; b.style.top = xy[1] + '%';
+        b.innerHTML = '<span>' + esc(st === cur ? 'Vous êtes ici · ' + st.parts.name : st.parts.name) + '</span>';
+        b.onclick = function () { closeAll(); go(st); };
+        w.appendChild(b);
+      });
+      plan.querySelector('.leg').textContent = n + ' espaces sur ce niveau · cliquez un repère pour y aller';
+    }
+
+    /* ---- la barre ne doit jamais couvrir les icônes de la barre MPskin du bas (visite guidée, vues, mesure, partage…) ----
+       On mesure les deux groupes d'icônes (même masqués, leurs rectangles existent) : la barre se loge entre eux ;
+       s'il ne reste pas 560 px, elle monte au-dessus de la barre MPskin, sur toute la largeur. */
+    function fitDock() {
+      var ab = document.querySelector('.action-box.my-ui.bottom'), W = window.innerWidth, H = window.innerHeight;
+      dock.style.width = ''; dock.style.bottom = ''; dock.style.left = ''; dock.style.right = ''; dock.style.transform = ''; pop.style.bottom = ''; cap.style.bottom = ''; root.style.removeProperty('--v-db');
+      if (!ab || window.matchMedia('(max-width:760px)').matches) return;
+      var lE = 0, rS = W, top = H;
+      ab.querySelectorAll('a,button,li,span,div,i').forEach(function (e) {
+        var r = e.getBoundingClientRect(); if (!r.width || r.width > W / 3 || r.bottom < H - 120) return;
+        if (r.left + r.width / 2 < W / 2) lE = Math.max(lE, r.right); else rS = Math.min(rS, r.left);
+        top = Math.min(top, r.top);
+      });
+      var side = Math.max(lE, W - rS) + 16, w = Math.min(1000, W - 2 * side);
+      if (w >= 560) { dock.style.width = w + 'px'; return; }
+      var b = Math.round(H - top + 8);
+      dock.style.left = '24px'; dock.style.right = '24px'; dock.style.width = 'auto'; dock.style.transform = 'none'; dock.style.bottom = b + 'px';
+      pop.style.bottom = (b + 74) + 'px'; cap.style.bottom = (b + 84) + 'px'; root.style.setProperty('--v-db', (b + 76) + 'px');
+    }
+    fitDock(); window.addEventListener('resize', fitDock); var fitT = [1500, 5000].map(function (t) { return setTimeout(fitDock, t); });
+    /* brief automatique : après la vue aérienne (popup fermée) ou, sans accueil, peu après le démarrage */
+    var briefIv = null;
+    if (briefAuto && aero) { var popWas = false; briefIv = setInterval(function () {
+      var o = !!document.querySelector('.fancybox-container.open-fancybox-pano'); if (o) popWas = true;
+      else if (popWas) { clearInterval(briefIv); briefIv = null; briefSoon(); } }, 500); }
+    else if (briefAuto && !(OPTIONS.intro && !window.__UVX_NOINTRO)) setTimeout(briefSoon, 1200);
+    function stats() {
+      var seen = {}, f = 0, mx = 0;
+      flat().forEach(function (st) { var k = key(st.parts.name); if (seen[k]) return; seen[k] = 1; var c = caps(st); if (c && c.rows.length) { f++; c.rows.forEach(function (r) { if (!/pmr/i.test(r.k)) mx = Math.max(mx, r.n); }); } });
+      return { espaces: Object.keys(seen).length, fiches: f, max: mx };
+    }
+    return {
+      stats: stats, briefSkip: function () { briefAuto = false; },
+      stop: function () { if (briefIv) clearInterval(briefIv); clearTimeout(capT); fitT.forEach(clearTimeout); window.removeEventListener('resize', fitDock); },
+      render: renderDock,
+      onGo: function () { closeAll(); dock.classList.remove('srch'); },
+      finder: function (text) { restoreAns(); return finderAnswer(text); },
+      restore: restoreAns,
+      briefSoon: briefSoon,
+      caps: caps, openFiche: openFiche, openCat: openCat, openRep: openRep, openBrief: openBrief, openPlan: openPlan,
+      rep: function () { return rep; }, brief: function () { return brief; }, proposal: proposal
+    };
+  })();
+
   /* ---------- F18 : intro (rappelable par le bouton Accueil) ---------- */
   function showIntro() {
     var old = root.querySelector('.uvx-intro'); if (old) old.remove();
@@ -1286,20 +1976,34 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
         var v = intro.querySelector('video.bg'); if (v) { v.src = ie.video; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } });
     }
     if (vid) intro.classList.add('vid');
-    intro.innerHTML = vid + '<div class="in"><div class="eb">Bienvenue</div><h1>' + (OPTIONS.introTitle || (pj ? pj.textContent.trim() : baseTitle)) + '</h1>' +
+    var ttl = OPTIONS.introTitle || (pj ? pj.textContent.trim() : baseTitle);
+    if (v13) {   /* v1.3 : accueil « organisateur » — composition en bas à gauche, chiffres clés du lieu, deux entrées */
+      var S = v13.stats(), figs = [];
+      if (S.espaces) figs.push(S.espaces + ' espaces à visiter');
+      if (S.fiches >= 2) figs.push(S.fiches + ' fiches techniques');
+      if (S.max) figs.push('jusqu\'à ' + S.max.toLocaleString('fr-FR') + ' personnes');
+      intro.classList.add('v13i');
+      intro.innerHTML = vid + '<div class="in"><div class="eb">' + esc(OPTIONS.introSurtitre || 'Visite virtuelle · repérage en ligne') + '</div><h1>' + esc(ttl) + '</h1>' +
+        (figs.length ? '<div class="figs">' + figs.map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') + '</div>' : '') +
+        '<div class="btns">' + (OPTIONS.brief !== false ? '<button class="go-btn rep" type="button">' + esc(OPTIONS.introRepere || 'Préparer mon repérage') + '</button>' : '') +
+        '<button class="go-btn free" type="button">' + esc(OPTIONS.brief !== false ? 'Visiter librement' : OPTIONS.introButton) + '</button></div></div>';
+    } else
+    intro.innerHTML = vid + '<div class="in"><div class="eb">Bienvenue</div><h1>' + ttl + '</h1>' +
       '<button class="go-btn">' + OPTIONS.introButton + '</button></div>' + (vid ? '' : '<button class="skip">Passer l\'intro</button>');
     root.appendChild(intro);
     if (aero) aero.hold();
-    var leave = function () { tick(); intro.classList.add('go'); setTimeout(function () { intro.remove(); }, 2400); if (aero) aero.reveal(); };
+    var leave = function (e) { tick(); intro.classList.add('go'); setTimeout(function () { intro.remove(); }, 2400);
+      var wantBrief = e && e.currentTarget && e.currentTarget.classList.contains('rep');
+      if (aero) aero.reveal(); else if (v13) { if (wantBrief) setTimeout(v13.openBrief, 700); else v13.briefSkip(); } };
     var sk = intro.querySelector('.skip'); if (!sk) { sk = document.createElement('i'); }
-    intro.querySelector('.go-btn').addEventListener('click', leave);
+    intro.querySelectorAll('.go-btn').forEach(function (b) { b.addEventListener('click', leave); });
     sk.addEventListener('click', leave);
   }
   function goHome() {
     tick();
     /* fermer tout ce qui est ouvert */
     root.querySelectorAll('.uvx-ep.on .uvx-x, .uvx-modal.on .uvx-x, .uvx-full.on .uvx-x').forEach(function (b) { b.click(); });
-    var ans2 = root.querySelector('.uvx-ask .ans'); if (ans2) ans2.classList.remove('on');
+    var ans2 = root.querySelector('.uvx-ans'); if (ans2) ans2.classList.remove('on');
     var c3d = root.querySelector('.uvx-cfg .chip'); if (pano.classList.contains('on') && c3d) c3d.click();
     root.classList.remove('bare'); document.body.classList.remove('uvx-bare');
     var eyeB = root.querySelector('.uvx-tool.eye'); if (eyeB) eyeB.classList.remove('off');
@@ -1315,7 +2019,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
     key: key, zones: zones, fiches: fiches, go: go, options: OPTIONS, charte: CHARTE,
     setCharte: function (ch) { CHARTE = uvxCharte(ch); OPTIONS.charte = ch; style.textContent = CHARTE.css + css; window.UVX.charte = CHARTE; return CHARTE.report; },
     home: goHome, mode: OPTIONS.mode, champPlace: champPlace,
-    faq: FAQ, ask: answer, aero: aero,
+    faq: FAQ, ask: answer, aero: aero, v13: v13,
     faqMisses: function () { try { return JSON.parse(localStorage.getItem('uvx-faq-miss') || '[]'); } catch (e) { return []; } },
     destroy: function () {
       hsSubs.forEach(function (s) { try { s.cancel(); } catch (e) {} });
@@ -1326,6 +2030,7 @@ body.uvx-champ-on #uvx-back,body.uvx-champ-on #uvx-hs,body.uvx-champ-on #uvx-360
       [root, style, back, pano, hsLayer].forEach(function (n) { n.remove(); });
       document.body.classList.remove('uvx-bare', 'uvx-novign', 'uvx-champ-on', 'uvx-modules-on', 'uvx-aero-wait');
       if (aero) aero.stop();
+      if (v13) v13.stop();
       if (champObs) champObs.disconnect(); champT.forEach(clearTimeout); window.removeEventListener('resize', champSoon);
       window.removeEventListener('keydown', onKey, true); window.removeEventListener('resize', placeUnderLogo);
     }
