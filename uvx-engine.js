@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.3.3
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.4.0
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.3.3/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.4.0/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.3.3';
+  var VERSION = '1.4.0';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -54,6 +54,106 @@
     aerien: 'auto', aerienHalo: '#ffffff'
   };
   if (window.UVX_OPTIONS) Object.keys(window.UVX_OPTIONS).forEach(function (k) { OPTIONS[k] = window.UVX_OPTIONS[k]; });
+  /* ---------- v1.4 — langues ----------
+     La langue est celle que MPskin affiche (attribut lang de la page : fr, en, nl…). Le moteur est relancé à chaque
+     changement de langue (voir le démarrage). Les textes du moteur passent par T('texte français') ; la fiche client se
+     traduit par OPTIONS.i18n = { en: { introTitle:'…', lieuPhrase:'…', contact:{ nom:'…' }, libelles:{…}, formats:[…] }, nl: {…} }
+     (mêmes clés que la fiche, fusionnées par-dessus). Contenus (menu, balises, FAQ) : versions créées dans MPskin. */
+  var LANG = String(document.documentElement.getAttribute('lang') || (window.cfg && window.cfg.lng) || 'fr').slice(0, 2).toLowerCase();
+  var LOC = { fr: 'fr-FR', en: 'en-GB', nl: 'nl-BE', de: 'de-DE', es: 'es-ES', it: 'it-IT' }[LANG] || 'fr-FR';
+  if (OPTIONS.i18n && OPTIONS.i18n[LANG]) {
+    var TR0 = OPTIONS.i18n[LANG];
+    Object.keys(TR0).forEach(function (k) {
+      var v = TR0[k];
+      if (v && typeof v === 'object' && !Array.isArray(v) && OPTIONS[k] && typeof OPTIONS[k] === 'object' && !Array.isArray(OPTIONS[k])) {
+        var m = {}; Object.keys(OPTIONS[k]).forEach(function (x) { m[x] = OPTIONS[k][x]; }); Object.keys(v).forEach(function (x) { m[x] = v[x]; }); OPTIONS[k] = m;
+      } else OPTIONS[k] = v;
+    });
+  }
+  var I18N = {
+    en: {
+      'Démarrer la visite': 'Start the tour', 'Commencer la visite': 'Start the tour', 'Découvrir ▾': 'Discover ▾',
+      'Retour à l\'accueil': 'Back to start', 'Masquer l\'interface': 'Hide interface', 'Flou périphérique': 'Peripheral blur', 'Musique': 'Music',
+      'Plein écran': 'Full screen', 'Visite guidée en vidéo': 'Guided video tour', 'Tous les espaces': 'All spaces', 'Voir plus': 'See more',
+      'Masquer le champ de question': 'Hide the question field', 'Afficher le champ de question': 'Show the question field', 'Photo à venir': 'Photo coming soon',
+      '{n} espace': '{n} space', '{n} espaces': '{n} spaces', '{n} fiche': '{n} factsheet', '{n} fiches': '{n} factsheets',
+      'Même salle, autre configuration': 'Same room, other layout', 'Vue 3D': '3D view', 'Une question ?': 'A question?',
+      'Bonjour,\n\nMa question : ': 'Hello,\n\nMy question: ', '(Question posée depuis la visite virtuelle': '(Question asked from the virtual tour',
+      ', espace « {s} »': ', space “{s}”', 'Question depuis la visite virtuelle': 'Question from the virtual tour',
+      '✉ Écrire à {nom}': '✉ Write to {nom}', 'l\'équipe': 'the team', 'L\'équipe': 'The team', 'Voir {s} →': 'See {s} →', 'Questions fréquentes': 'Frequently asked questions',
+      'Voir aussi': 'See also', 'Besoin d\'une précision ?': 'Need more details?', 'Écrire à {nom}': 'Write to {nom}', 'Une question précise': 'A specific question',
+      'Je n\'ai pas de réponse fiable à cette question dans les informations du lieu.': 'I don\'t have a reliable answer to this question in the venue\'s information.',
+      '{nom} vous répond directement': '{nom} will answer you directly', ' Essayez avec le nom d\'une salle, une capacité ou un usage.': ' Try the name of a room, a capacity or a use.',
+      'Salles & espaces': 'Rooms & spaces', 'Mon repérage': 'My shortlist', 'Repérage': 'Shortlist', 'Dans mon repérage': 'In my shortlist',
+      'Demander une proposition': 'Request a proposal', 'Ajouter à mon repérage': 'Add to my shortlist', 'Retiré du repérage': 'Removed from shortlist',
+      'Y aller': 'Go there', 'Plan': 'Floor plan', 'Salle, jauge, question…': 'Room, capacity, question…', 'Lire la fiche': 'Read the factsheet',
+      'Préparez votre repérage': 'Plan your site inspection', 'Deux réponses facultatives : la visite met ensuite en avant les espaces adaptés à votre événement.': 'Two optional answers: the tour then highlights the spaces suited to your event.',
+      'Commencer le repérage': 'Start exploring', 'Visiter librement': 'Explore freely', 'Nombre de participants': 'Number of participants', 'Format': 'Format',
+      'Tout': 'All', 'Trouver une salle pour': 'Find a room for', 'Voir': 'Show', 'Convient à': 'Suits', 'personnes': 'people', 'Votre événement': 'Your event',
+      'Séminaire résidentiel': 'Residential seminar', 'Journée d\'étude': 'Day meeting', 'Convention / plénière': 'Convention / plenary', 'Soirée de gala': 'Gala evening',
+      'Team building': 'Team building', 'Comité de direction': 'Board meeting', 'jauge indicative': 'approximate', 'Modifiable à tout moment': 'Can be changed at any time',
+      'Vue d\'ensemble': 'Overview', '{z} univers · {n} espaces': '{z} areas · {n} spaces', '{n} pers.': '{n} ppl', '{e} ?': '{e}?',
+      '✓ {c} {n} {p}': '✓ {c} {n} {p}', 'toutes configurations': 'all layouts', 'Découvrir {l}': 'Discover {l}', '{n} espaces · {z} univers': '{n} spaces · {z} areas',
+      '{k} espace pour {n} {u}': '{k} space for {n} {u}', '{k} espaces pour {n} {u}': '{k} spaces for {n} {u}', 'Aucun espace pour {n} {u}': 'No space for {n} {u}',
+      ' en {c}': ' · {c}', ' — au plus {m}': ' — {m} at most', 'les plus grandes capacités · ': 'largest capacities · ', 'd\'après les capacités indiquées par {l}': 'based on the capacities provided by {l}',
+      'Voir les {n} espaces →': 'See all {n} spaces →', 'Une question ? Écrire à {nom} →': 'A question? Write to {nom} →', 'couverts': 'covers', 'places': 'seats',
+      'Retirer': 'Remove', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
+        'Add the spaces you like from their factsheet (♡ “{a}”). Your selection is then sent in one click to the sales team, who will send you a proposal.',
+      'Envoyé à {nom}': 'Sent to {nom}', 'l\'équipe commerciale': 'the sales team', '{l} · repérage': '{l} · site inspection',
+      'Vous êtes ici · {s}': 'You are here · {s}', '{n} espaces sur ce niveau · cliquez un repère pour y aller': '{n} spaces on this level · click a marker to go there',
+      '{n} espaces à visiter': '{n} spaces to explore', '{n} fiches techniques': '{n} factsheets', 'jusqu\'à {n} personnes': 'up to {n} people',
+      'Visite virtuelle · repérage en ligne': 'Virtual tour · online site inspection', 'Préparer mon repérage': 'Plan my site inspection', 'Bienvenue': 'Welcome', 'Passer l\'intro': 'Skip intro',
+      'Langue': 'Language',
+      'Théâtre': 'theatre', 'Classe': 'classroom', 'Îlots': 'islands', 'U': 'U-shape', 'Conférence': 'boardroom', 'Cabaret': 'cabaret', 'Pavé': 'block', 'Banquet': 'banquet',
+      'Cocktail': 'reception', 'Tables rondes': 'round tables', 'Carré': 'hollow square', 'Réunion': 'meeting', 'Déjeuner': 'lunch', 'Dîner': 'dinner', 'Assis': 'seated', 'Debout': 'standing',
+      'Places': 'seats', 'Personnes': 'people', 'Couverts': 'covers'
+    },
+    nl: {
+      'Démarrer la visite': 'Start de rondleiding', 'Commencer la visite': 'Start de rondleiding', 'Découvrir ▾': 'Ontdekken ▾',
+      'Retour à l\'accueil': 'Terug naar het begin', 'Masquer l\'interface': 'Interface verbergen', 'Flou périphérique': 'Randvervaging', 'Musique': 'Muziek',
+      'Plein écran': 'Volledig scherm', 'Visite guidée en vidéo': 'Videorondleiding', 'Tous les espaces': 'Alle ruimtes', 'Voir plus': 'Meer zien',
+      'Masquer le champ de question': 'Vraagveld verbergen', 'Afficher le champ de question': 'Vraagveld tonen', 'Photo à venir': 'Foto volgt',
+      '{n} espace': '{n} ruimte', '{n} espaces': '{n} ruimtes', '{n} fiche': '{n} fiche', '{n} fiches': '{n} fiches',
+      'Même salle, autre configuration': 'Zelfde zaal, andere opstelling', 'Vue 3D': '3D-weergave', 'Une question ?': 'Een vraag?',
+      'Bonjour,\n\nMa question : ': 'Hallo,\n\nMijn vraag: ', '(Question posée depuis la visite virtuelle': '(Vraag gesteld vanuit de virtuele rondleiding',
+      ', espace « {s} »': ', ruimte “{s}”', 'Question depuis la visite virtuelle': 'Vraag vanuit de virtuele rondleiding',
+      '✉ Écrire à {nom}': '✉ Schrijf naar {nom}', 'l\'équipe': 'het team', 'L\'équipe': 'Het team', 'Voir {s} →': 'Bekijk {s} →', 'Questions fréquentes': 'Veelgestelde vragen',
+      'Voir aussi': 'Zie ook', 'Besoin d\'une précision ?': 'Meer details nodig?', 'Écrire à {nom}': 'Schrijf naar {nom}', 'Une question précise': 'Een specifieke vraag',
+      'Je n\'ai pas de réponse fiable à cette question dans les informations du lieu.': 'Ik heb geen betrouwbaar antwoord op deze vraag in de informatie over de locatie.',
+      '{nom} vous répond directement': '{nom} antwoordt u rechtstreeks', ' Essayez avec le nom d\'une salle, une capacité ou un usage.': ' Probeer de naam van een zaal, een capaciteit of een gebruik.',
+      'Salles & espaces': 'Zalen & ruimtes', 'Mon repérage': 'Mijn selectie', 'Repérage': 'Selectie', 'Dans mon repérage': 'In mijn selectie',
+      'Demander une proposition': 'Offerte aanvragen', 'Ajouter à mon repérage': 'Toevoegen aan mijn selectie', 'Retiré du repérage': 'Verwijderd uit selectie',
+      'Y aller': 'Ga erheen', 'Plan': 'Plattegrond', 'Salle, jauge, question…': 'Zaal, capaciteit, vraag…', 'Lire la fiche': 'Lees de fiche',
+      'Préparez votre repérage': 'Bereid uw locatiebezoek voor', 'Deux réponses facultatives : la visite met ensuite en avant les espaces adaptés à votre événement.': 'Twee optionele antwoorden: de rondleiding toont daarna de ruimtes die bij uw evenement passen.',
+      'Commencer le repérage': 'Start het bezoek', 'Visiter librement': 'Vrij rondkijken', 'Nombre de participants': 'Aantal deelnemers', 'Format': 'Formaat',
+      'Tout': 'Alles', 'Trouver une salle pour': 'Zoek een zaal voor', 'Voir': 'Toon', 'Convient à': 'Geschikt voor', 'personnes': 'personen', 'Votre événement': 'Uw evenement',
+      'Séminaire résidentiel': 'Residentieel seminarie', 'Journée d\'étude': 'Studiedag', 'Convention / plénière': 'Congres / plenaire', 'Soirée de gala': 'Galadiner',
+      'Team building': 'Teambuilding', 'Comité de direction': 'Directiecomité', 'jauge indicative': 'indicatief', 'Modifiable à tout moment': 'Altijd aan te passen',
+      'Vue d\'ensemble': 'Overzicht', '{z} univers · {n} espaces': '{z} zones · {n} ruimtes', '{n} pers.': '{n} pers.', '{e} ?': '{e}?',
+      '✓ {c} {n} {p}': '✓ {c} {n} {p}', 'toutes configurations': 'alle opstellingen', 'Découvrir {l}': 'Ontdek {l}', '{n} espaces · {z} univers': '{n} ruimtes · {z} zones',
+      '{k} espace pour {n} {u}': '{k} ruimte voor {n} {u}', '{k} espaces pour {n} {u}': '{k} ruimtes voor {n} {u}', 'Aucun espace pour {n} {u}': 'Geen ruimte voor {n} {u}',
+      ' en {c}': ' · {c}', ' — au plus {m}': ' — maximaal {m}', 'les plus grandes capacités · ': 'grootste capaciteiten · ', 'd\'après les capacités indiquées par {l}': 'volgens de capaciteiten opgegeven door {l}',
+      'Voir les {n} espaces →': 'Bekijk de {n} ruimtes →', 'Une question ? Écrire à {nom} →': 'Een vraag? Schrijf naar {nom} →', 'couverts': 'couverts', 'places': 'plaatsen',
+      'Retirer': 'Verwijderen', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
+        'Voeg de ruimtes die u interesseren toe vanuit hun fiche (♡ „{a}”). Uw selectie wordt daarna met één klik naar het verkoopteam gestuurd, dat u een offerte bezorgt.',
+      'Envoyé à {nom}': 'Verzonden naar {nom}', 'l\'équipe commerciale': 'het verkoopteam', '{l} · repérage': '{l} · locatiebezoek',
+      'Vous êtes ici · {s}': 'U bent hier · {s}', '{n} espaces sur ce niveau · cliquez un repère pour y aller': '{n} ruimtes op dit niveau · klik op een markering om erheen te gaan',
+      '{n} espaces à visiter': '{n} ruimtes te bezoeken', '{n} fiches techniques': '{n} technische fiches', 'jusqu\'à {n} personnes': 'tot {n} personen',
+      'Visite virtuelle · repérage en ligne': 'Virtuele rondleiding · online locatiebezoek', 'Préparer mon repérage': 'Mijn bezoek voorbereiden', 'Bienvenue': 'Welkom', 'Passer l\'intro': 'Intro overslaan',
+      'Langue': 'Taal',
+      'Théâtre': 'theater', 'Classe': 'klas', 'Îlots': 'eilandjes', 'U': 'U-vorm', 'Conférence': 'boardroom', 'Cabaret': 'cabaret', 'Pavé': 'blok', 'Banquet': 'banket',
+      'Cocktail': 'receptie', 'Tables rondes': 'ronde tafels', 'Carré': 'carré', 'Réunion': 'vergadering', 'Déjeuner': 'lunch', 'Dîner': 'diner', 'Assis': 'zittend', 'Debout': 'staand',
+      'Places': 'plaatsen', 'Personnes': 'personen', 'Couverts': 'couverts'
+    }
+  };
+  /* surcharges de la fiche client : OPTIONS.textes = { en: { 'texte français': 'English' } } */
+  if (OPTIONS.textes) Object.keys(OPTIONS.textes).forEach(function (l) { I18N[l] = I18N[l] || {}; Object.keys(OPTIONS.textes[l]).forEach(function (k) { I18N[l][k] = OPTIONS.textes[l][k]; }); });
+  function T(s, v) {
+    var d = I18N[LANG], r = (d && d[s] !== undefined) ? d[s] : s;
+    if (v) r = r.replace(/\{(\w+)\}/g, function (m, k) { return v[k] !== undefined ? v[k] : m; });
+    return r;
+  }
+  function Tn(n, one, many, v) { v = v || {}; v.n = n; return T(n > 1 ? many : one, v); }
   var MODULES = OPTIONS.mode === 'modules';   /* interface MPskin intacte : seuls les modules autonomes (vue aérienne) */
   var CHAMP = OPTIONS.mode === 'champ' || MODULES;
 
@@ -439,6 +539,11 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-corner{position:absolute;top:22px;right:22px;display:flex;gap:8px;pointer-events:auto}
 #uvx .v-corner button{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;padding:0}
 #uvx .v-corner button.off{opacity:.6}
+#uvx .v-corner .lng{position:relative;font:600 12px/1 var(--uvx-font);letter-spacing:.06em;color:var(--uvx-fg)}
+#uvx .v-lngs{position:absolute;top:46px;left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:4px;padding:6px;border-radius:14px;z-index:3}
+#uvx .v-lngs.on{display:flex}
+#uvx .v-lngs button{width:40px;height:32px;border-radius:10px;font:600 12px/1 var(--uvx-font);color:var(--uvx-fg);background:rgba(var(--uvx-fg-rgb),.08)}
+#uvx .v-lngs button:hover{background:rgba(var(--uvx-fg-rgb),.18)}
 /* légende de l'espace, au-dessus du dock */
 #uvx .v-cap{position:absolute;left:50%;bottom:108px;transform:translateX(-50%);width:min(720px,80vw);text-align:center;color:#fff;transition:opacity .6s,transform .6s;pointer-events:none}
 #uvx .v-cap.hide{opacity:0;transform:translate(-50%,8px)}
@@ -744,7 +849,12 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       'm ma me mes mon n ne nous on ou par pas pour qu que quel quelle quelles quels qui sa se ses si son sont sur t ta te tes ' +
       'toi ton tu un une vos votre vous y ont sera seront serai depuis devant exactement faites service avez avons ai as peut peuvent pouvez puis puisse faut faire fait ' +
       'est ce que estce comment combien quoi quand pourquoi possible bien tres plus moins svp merci bonjour aussi donc alors ' +
-      'chez dispose disposez avoir etes suis sommes proche proches proximite alentour alentours pres loin gratuit gratuite payant payante inclus demander demande obtenir prevoir prevu sur place exactement existe exister propose proposez proposer offre-t y-a-t-il ya cela ceci tout tous toute toutes').split(' ');
+      'chez dispose disposez avoir etes suis sommes proche proches proximite alentour alentours pres loin gratuit gratuite payant payante inclus demander demande obtenir prevoir prevu sur place exactement existe exister propose proposez proposer offre-t y-a-t-il ya cela ceci tout tous toute toutes ici').split(' ');
+    /* v1.4 : mots vides anglais et néerlandais (FAQ rédigée dans la langue de la visite) */
+    if (LANG !== 'fr') STOP = STOP.concat(('a an the of to in on at for with and or is are was be been can could do does did i we you he she they our your my me us it its this that these those there here what which how where when who whom why ' +
+      'many much any some have has had please near nearby from by as about into than then so very also just get got would should will shall may might must not no yes ' +
+      'de het een van en of is zijn er te om op aan bij uit door ook nog naar kan kunnen heeft hebben wordt worden u uw jullie we wij ik mijn onze ons deze dit die dat wat welke hoe hoeveel waar wanneer wie waarom ' +
+      'geen niet wel zo zeer veel meer minder graag mogelijk in met voor als dan tot').split(' '));
     /* Dictionnaire MICE : forme canonique ← variantes (expressions avant mots). Commun à tous les lieux ; enrichi au fil des clients. */
     var SYN = {   /* variantes séparées par des virgules ; une variante à plusieurs mots est une expression */
       capacite: 'capacite,capacites,personnes,personne,participants,participant,pax,invites,invite,places,place,jauge,accueillir,accueille,contenir,convives,gens,sieges,siege,places assises',
@@ -773,13 +883,46 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       petit: 'petit,petite,petits,petites,intime,intimiste,restreint,comite,codir,petit groupe',
       grand: 'grand,grande,grands,grandes,vaste,plus grand,plus grande,maximum,maximale,max',
       securite: 'securite,surete,securi site,safe congress,sanitaire',
-      activite: 'activite,activites,team building,incentive,loisirs,excursion,excursions,visite touristique,accompagnants,conjoints,golf,plage',
+      activite: 'activite,activites,team building,incentive,loisirs,excursion,excursions,visite touristique,accompagnants,conjoints',
       captation: 'captation,live,en direct,streaming,hybride,diffusion,diffuser,filmer,webinar,plateau tv',
       adresse: 'adresse,localisation,gps,ou se trouve,ou est,ou situe,c est ou,situe',
       navette: 'navette,navettes,autocar,autocars,bus,transfert,transferts',
       regime: 'vegetarien,vegetariens,vegetarienne,vegan,allergie,allergies,allergique,regime,alimentaire,alimentaires,sans gluten,gluten,halal,casher',
       surface: 'surface,surfaces,m2,metres carres,superficie,taille,dimensions,dimension,hauteur,hauteur sous plafond'
     };
+    /* v1.4 : mêmes familles en anglais et en néerlandais */
+    if (LANG !== 'fr') {
+      var SYNX = {
+        capacite: 'people,persons,person,guests,guest,attendees,delegates,seats,seat,capacity,how many people,personen,persoon,deelnemers,gasten,plaatsen,capaciteit',
+        auditorium: 'plenary,plenary room,conference hall,plenaire,plenaire zaal,aula',
+        atelier: 'breakout,breakout room,breakout rooms,meeting room,meeting rooms,workshop,workshops,vergaderzaal,vergaderzalen,vergaderruimte,vergaderruimtes,subcommissie',
+        exposition: 'exhibition,exhibit,trade show,stand,stands,tentoonstelling,beurs',
+        restauration: 'meal,meals,lunch,dinner,catering,food,buffet,eat,eating,dine,maaltijd,maaltijden,eten,diner',
+        soiree: 'gala,party,evening,gala dinner,feest,avond,galadiner',
+        hebergement: 'bedroom,bedrooms,accommodation,overnight,sleep,stay,hotel,kamers,kamer,overnachting,overnachten,slapen,logies,verblijf',
+        train: 'train,trains,station,railway,trein,treinen,station',
+        avion: 'airport,airports,plane,flight,flights,luchthaven,vliegveld,vlucht',
+        voiture: 'car,cars,drive,driving,road,motorway,auto,wagen,snelweg,rijden',
+        acces: 'get there,getting there,access,reach,directions,how to get,bereikbaar,bereikbaarheid,route,reizen',
+        parking: 'parking,car park,parking spaces,parkeren,parkeerplaats,parkeerplaatsen',
+        pmr: 'wheelchair,disabled,accessible,accessibility,reduced mobility,rolstoel,toegankelijk,toegankelijkheid,mindervaliden',
+        wifi: 'wifi,wi fi,internet,connection,network,verbinding,netwerk',
+        technique: 'av,audiovisual,projector,screen,screens,sound,microphone,microphones,equipment,beamer,scherm,schermen,geluid,microfoon,uitrusting,materiaal',
+        tarif: 'price,prices,rate,rates,cost,costs,budget,quote,quotation,prijs,prijzen,kosten,offerte,tarief',
+        exterieur: 'outdoor,outdoors,outside,garden,terrace,buiten,tuin,terras',
+        rse: 'sustainable,sustainability,green,eco,label,labels,environment,environmental,duurzaam,duurzaamheid,milieu,groen',
+        contact: 'contact,phone,call,email,e mail,reach you,contacteren,bellen,telefoon,mailen',
+        pause: 'break,breaks,coffee,coffee break,pauze,pauzes,koffie,koffiepauze',
+        activite: 'activity,activities,team building,leisure,things to do,activiteit,activiteiten,ontspanning,teambuilding',
+        adresse: 'address,location,where is,located,adres,ligging,waar ligt,gelegen',
+        navette: 'shuttle,shuttles,bus,coach,transfer,transfers,pendel,pendelbus',
+        regime: 'vegetarian,vegan,allergy,allergies,gluten,gluten free,halal,kosher,diet,dietary,vegetarisch,veganistisch,allergie,glutenvrij,dieet',
+        surface: 'size,square metres,square meters,sqm,m2,oppervlakte,grootte,vierkante meter',
+        grand: 'large,largest,big,biggest,maximum,max,groot,grootste',
+        petit: 'small,smaller,intimate,klein,kleine'
+      };
+      Object.keys(SYNX).forEach(function (k) { SYN[k] = SYN[k] ? SYN[k] + ',' + SYNX[k] : SYNX[k]; });
+    }
     /* Synonymes propres au lieu (fiche client) : ajoutés aux familles existantes ou en créent de nouvelles. */
     Object.keys(OPTIONS.faqSyn || {}).forEach(function (k) { var v = String(OPTIONS.faqSyn[k] || ''); if (v) SYN[k] = SYN[k] ? SYN[k] + ',' + v : v; });
     var phr = [], one = {};
@@ -968,25 +1111,25 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     ask: '<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
   };
   root.innerHTML =
-    '<div class="uvx-zones"><button class="uvx-pill uvx-glass uvx-disc">Découvrir ▾</button></div>' +
+    '<div class="uvx-zones"><button class="uvx-pill uvx-glass uvx-disc">' + T('Découvrir ▾') + '</button></div>' +
     '<div class="uvx-tools">' +
-      '<button class="uvx-tool uvx-glass home" title="Retour à l\'accueil">' + ic.home + '</button>' +
-      '<button class="uvx-tool uvx-glass eye" title="Masquer l\'interface">' + ic.eye + '</button>' +
-      '<button class="uvx-tool uvx-glass blur" title="Flou périphérique">' + ic.blur + '</button>' +
-      '<button class="uvx-tool uvx-glass snd off" title="Musique">' + ic.snd + '</button>' +
-      '<button class="uvx-tool uvx-glass fs" title="Plein écran">' + ic.fs + '</button>' +
-      '<button class="uvx-tool uvx-glass uvx-epbtn" title="Visite guidée en vidéo">' + ic.play + '</button>' +
-      '<button class="uvx-tool uvx-glass menu" title="Tous les espaces">' + ic.menu + '</button>' +
+      '<button class="uvx-tool uvx-glass home" title="' + T('Retour à l\'accueil') + '">' + ic.home + '</button>' +
+      '<button class="uvx-tool uvx-glass eye" title="' + T('Masquer l\'interface') + '">' + ic.eye + '</button>' +
+      '<button class="uvx-tool uvx-glass blur" title="' + T('Flou périphérique') + '">' + ic.blur + '</button>' +
+      '<button class="uvx-tool uvx-glass snd off" title="' + T('Musique') + '">' + ic.snd + '</button>' +
+      '<button class="uvx-tool uvx-glass fs" title="' + T('Plein écran') + '">' + ic.fs + '</button>' +
+      '<button class="uvx-tool uvx-glass uvx-epbtn" title="' + T('Visite guidée en vidéo') + '">' + ic.play + '</button>' +
+      '<button class="uvx-tool uvx-glass menu" title="' + T('Tous les espaces') + '">' + ic.menu + '</button>' +
     '</div>' +
-    '<div class="uvx-card hide"><div class="eb"></div><h2></h2><span class="fig"></span><p></p><button class="more">Voir plus</button></div>' +
+    '<div class="uvx-card hide"><div class="eb"></div><h2></h2><span class="fig"></span><p></p><button class="more">' + T('Voir plus') + '</button></div>' +
     '<div class="uvx-cfg uvx-glass" style="display:none"></div>' +
     '<div class="uvx-ask"><div class="ans uvx-ans uvx-glass"><button class="close" type="button">×</button><div class="txt"></div><div class="links"></div></div>' +
-      '<button class="ceye uvx-glass" type="button" title="Masquer le champ de question"><svg class="on" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="off" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></button>' +
+      '<button class="ceye uvx-glass" type="button" title="' + T('Masquer le champ de question') + '"><svg class="on" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="off" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></button>' +
       '<form class="uvx-glass">' + ic.ask + '<input type="text" autocomplete="off"><button class="send" type="submit">↑</button></form></div>' +
     '<div class="uvx-car"><button class="arr uvx-glass prev">‹</button><button class="mid uvx-glass"><b></b><span></span></button><button class="arr uvx-glass next">›</button></div>' +
     '<div class="uvx-modal"><div class="uvx-sheet"><button class="uvx-x">×</button><div class="eb"></div><h2></h2><div class="body"></div></div></div>' +
-    '<div class="uvx-full"><button class="uvx-x">×</button><div class="col1"><div class="lbl">Tous les espaces</div></div><div class="col2"><div class="uvx-prev"><div class="ph"><div class="none">Photo à venir</div></div><div class="tx"><div class="eb"></div><h3></h3><span class="fig"></span><p></p><button class="goto">Découvrir cet espace →</button></div></div></div></div>' +
-    '<div class="uvx-ep"><div class="box"><div class="eb">Visite guidée en vidéo</div><h3></h3><button class="uvx-x">×</button><div class="frame"></div><div class="chips"></div></div></div>';
+    '<div class="uvx-full"><button class="uvx-x">×</button><div class="col1"><div class="lbl">' + T('Tous les espaces') + '</div></div><div class="col2"><div class="uvx-prev"><div class="ph"><div class="none">' + T('Photo à venir') + '</div></div><div class="tx"><div class="eb"></div><h3></h3><span class="fig"></span><p></p><button class="goto">Découvrir cet espace →</button></div></div></div></div>' +
+    '<div class="uvx-ep"><div class="box"><div class="eb">' + T('Visite guidée en vidéo') + '</div><h3></h3><button class="uvx-x">×</button><div class="frame"></div><div class="chips"></div></div></div>';
   var q = function (s) { return root.querySelector(s); };
 
   /* F1 + F2 */
@@ -1057,7 +1200,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       var v = b.querySelector('.v'); if (v) v.textContent = visited[b.dataset.key] ? '✓' : '';
     });
     var mid = q('.uvx-car .mid');
-    if (!cur) { mid.querySelector('b').textContent = 'Commencer la visite'; mid.querySelector('span').textContent = all.length + ' espaces'; }
+    if (!cur) { mid.querySelector('b').textContent = T('Commencer la visite'); mid.querySelector('span').textContent = Tn(all.length, '{n} espace', '{n} espaces'); }
     else {
       var z = zones[cur.zi];
       mid.querySelector('b').textContent = cur.parts.name;
@@ -1115,8 +1258,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
   }
   zones.forEach(function (z, zi) {
     var b = document.createElement('button'); b.className = 'uvx-fz'; b.dataset.zi = zi;
-    b.innerHTML = '<span class="ico">' + (zi + 1) + '</span><span><b>' + z.label + '</b><span class="m">' + z.steps.length + (z.steps.length > 1 ? ' espaces' : ' espace') +
-      (z.nFiches ? ' · ' + z.nFiches + ' fiche' + (z.nFiches > 1 ? 's' : '') : '') + '</span></span><span class="chev">›</span>';
+    b.innerHTML = '<span class="ico">' + (zi + 1) + '</span><span><b>' + z.label + '</b><span class="m">' + Tn(z.steps.length, '{n} espace', '{n} espaces') +
+      (z.nFiches ? ' · ' + Tn(z.nFiches, '{n} fiche', '{n} fiches') : '') + '</span></span><span class="chev">›</span>';
     b.addEventListener('click', function () { tick(); openZone(zi); if (z.steps.length) preview(z.steps[0]); });
     c1.appendChild(b);
     var l = document.createElement('div'); l.className = 'uvx-fl'; var h = '', g = null;
@@ -1284,7 +1427,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     cfgHide();
     var list = cur && byKey(OPTIONS.configs, cur.parts.name);
     if (!list) { cfgBox.style.display = 'none'; return; }
-    cfgBox.innerHTML = '<div class="eb">Même salle, autre configuration</div><b>' + cur.parts.name + '</b><div class="chips"><button class="chip on" data-i="-1">Vue 3D</button>' +
+    cfgBox.innerHTML = '<div class="eb">' + T('Même salle, autre configuration') + '</div><b>' + cur.parts.name + '</b><div class="chips"><button class="chip on" data-i="-1">' + T('Vue 3D') + '</button>' +
       list.map(function (c, i) { return '<button class="chip" data-i="' + i + '">' + c.label + '</button>'; }).join('') + '</div>';
     cfgBox.style.display = '';
     cfgBox.querySelectorAll('.chip').forEach(function (b) {
@@ -1336,7 +1479,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 
   /* ---------- F17 (maquette) : une question sur le lieu ---------- */
   var ask = q('.uvx-ask'), askIn = ask.querySelector('input'), ans = ask.querySelector('.ans');
-  askIn.placeholder = OPTIONS.askLabel || 'Une question ?';   /* le libellé du lieu (« Une question sur le CID ? ») vient de la fiche client */
+  askIn.placeholder = OPTIONS.askLabel || T('Une question ?');   /* le libellé du lieu (« Une question sur le CID ? ») vient de la fiche client */
   ['keydown', 'keyup', 'keypress'].forEach(function (t) { askIn.addEventListener(t, function (e) { e.stopPropagation(); }); });
   function esc(x) { return String(x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function stepFor(name) {
@@ -1354,12 +1497,12 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
   }
   function mailto(question) {
     var c = OPTIONS.contact; if (!c || !c.email) return '';
-    var body = 'Bonjour,\n\nMa question : ' + question + '\n\n(Question posée depuis la visite virtuelle' + (cur ? ', espace « ' + cur.parts.name + ' »' : '') + '.)\n';
-    return 'mailto:' + (c.envoi || c.email) + '?subject=' + encodeURIComponent('Question depuis la visite virtuelle') + '&body=' + encodeURIComponent(body);
+    var body = T('Bonjour,\n\nMa question : ') + question + '\n\n' + T('(Question posée depuis la visite virtuelle') + (cur ? T(', espace « {s} »', { s: cur.parts.name }) : '') + '.)\n';
+    return 'mailto:' + (c.envoi || c.email) + '?subject=' + encodeURIComponent(T('Question depuis la visite virtuelle')) + '&body=' + encodeURIComponent(body);
   }
   function contactBtns(question) {
     var c = OPTIONS.contact; if (!c) return '';
-    return (c.email ? '<a class="lnk" href="' + mailto(question) + '">✉ Écrire à ' + esc(c.nom || "l'équipe") + '</a>' : '') +
+    return (c.email ? '<a class="lnk" href="' + mailto(question) + '">' + esc(T('✉ Écrire à {nom}', { nom: c.nom || T("l'équipe") })) + '</a>' : '') +
       (c.tel ? '<a class="lnk ghost" href="tel:' + c.tel.replace(/[^\d+]/g, '') + '">☎ ' + esc(c.tel) + '</a>' : '');
   }
   function logMiss(question) {   /* questions sans réponse : matière première pour enrichir la FAQ */
@@ -1368,19 +1511,27 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
   function showEntry(e, question, others, spaces) {
     var t = ans.querySelector('.txt'), l = ans.querySelector('.links');
     var st = stepFor(e.step), btn = [];
-    if (st) btn.push({ st: st, lbl: 'Voir ' + st.parts.name + ' →' });
+    if (st) btn.push({ st: st, lbl: T('Voir {s} →', { s: st.parts.name }) });
     (spaces || []).forEach(function (h) { if (btn.length < 3 && !btn.some(function (b) { return b.st === h.st; })) btn.push({ st: h.st, lbl: h.st.parts.name + ' →', ghost: 1 }); });
-    t.innerHTML = '<div class="eb">' + esc(e.theme || 'Questions fréquentes') + '</div><div class="qq">' + esc(e.q) + '</div>' + esc(e.r) +
-      (others && others.length ? '<div class="also"><div class="eb">Voir aussi</div>' + others.map(function (o, i) { return '<button type="button" data-o="' + i + '">' + esc(o.e.q) + '</button>'; }).join('') + '</div>' : '') +
-      (OPTIONS.contact && OPTIONS.contact.email ? '<div class="foot">Besoin d\'une précision ? <a href="' + mailto(question) + '">Écrire à ' + esc(OPTIONS.contact.nom || "l'équipe") + '</a></div>' : '');
+    t.innerHTML = '<div class="eb">' + esc(e.theme || T('Questions fréquentes')) + '</div><div class="qq">' + esc(e.q) + '</div>' + esc(e.r) +
+      (others && others.length ? '<div class="also"><div class="eb">' + T('Voir aussi') + '</div>' + others.map(function (o, i) { return '<button type="button" data-o="' + i + '">' + esc(o.e.q) + '</button>'; }).join('') + '</div>' : '') +
+      (OPTIONS.contact && OPTIONS.contact.email ? '<div class="foot">' + T('Besoin d\'une précision ?') + ' <a href="' + mailto(question) + '">' + esc(T('Écrire à {nom}', { nom: OPTIONS.contact.nom || T("l'équipe") })) + '</a></div>' : '');
     l.innerHTML = btn.map(function (b, i) { return '<button class="lnk' + (b.ghost ? ' ghost' : '') + '" type="button" data-i="' + i + '">' + esc(b.lbl) + '</button>'; }).join('');
     l.querySelectorAll('.lnk').forEach(function (b) { b.onclick = function () { go(btn[+b.dataset.i].st); ans.classList.remove('on'); }; });
     t.querySelectorAll('.also button').forEach(function (b) { b.onclick = function () { showEntry(others[+b.dataset.o].e, question, [], []); }; });
     ans.scrollTop = 0;
   }
+  /* v1.4 — décision de Mickaël : une question d'hébergement (chambres, couchage, résidentiel…) ne reçoit que la capacité
+     d'hébergement ; une question de stationnement, que la capacité de stationnement. Le chercheur de salles se retire,
+     et la FAQ reçoit la question débarrassée de la jauge (« 80 personnes ») pour viser le bon thème. */
+  var HEB = /(chambres?|h[ée]bergement|h[ée]berger|couchages?|dormir|nuit[ée]?e?s?\b|r[ée]sidences?\b|lits?\b|loger|logement|bedrooms?|accommodation|overnight|sleep\w*|kamers?|overnacht\w*|slapen|logies)/i;
+  var PARK = /(parkings?|stationn\w*|garer|se garer|car ?park|parkeer\w*|parkeren)/i;
+  var JAUGEW = /\d[\d\s.]*|\b(personnes?|pers|participants?|pax|places?|invit[ée]s?|collaborateurs?|convives|gens|people|persons?|guests?|personen|deelnemers|gasten|plaatsen)\b/gi;
   function answer(text) {
     if (v13 && v13.finder(text)) return;
-    var r = FAQ.ask(text), h = FAQ.decide(r, OPTIONS.faqSeuil), sp = spaceHits(text);
+    var topic = HEB.test(text) ? 'heb' : PARK.test(text) ? 'park' : '';
+    var ftext = topic ? text.replace(JAUGEW, ' ') + (topic === 'heb' ? ' hébergement chambres' : ' parking') : text;
+    var r = FAQ.ask(ftext), h = FAQ.decide(r, OPTIONS.faqSeuil), sp = topic ? [] : spaceHits(text);
     var t = ans.querySelector('.txt'), l = ans.querySelector('.links');
     var named = sp.filter(function (x) { return norm(x.st.parts.name).some(function (w) { return norm(text).indexOf(w) >= 0 && w.length > 4; }); });
     /* la question n'est qu'un nom d'espace (« salle Gatsby ») et la FAQ ne parle pas de cet espace : on y conduit */
@@ -1398,8 +1549,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     } else {
       logMiss(text);
       var c = OPTIONS.contact;
-      t.innerHTML = '<div class="eb">Une question précise</div>Je n\'ai pas de réponse fiable à cette question dans les informations du lieu.' +
-        (c ? ' ' + esc(c.nom ? c.nom.charAt(0).toUpperCase() + c.nom.slice(1) : "L'équipe") + ' vous répond directement' + (c.libelle ? ' (' + esc(c.libelle) + ')' : '') + '.' : ' Essayez avec le nom d\'une salle, une capacité ou un usage.');
+      t.innerHTML = '<div class="eb">' + T('Une question précise') + '</div>' + T('Je n\'ai pas de réponse fiable à cette question dans les informations du lieu.') +
+        (c ? ' ' + esc(T('{nom} vous répond directement', { nom: c.nom ? c.nom.charAt(0).toUpperCase() + c.nom.slice(1) : T("L'équipe") })) + (c.libelle ? ' (' + esc(c.libelle) + ')' : '') + '.' : T(' Essayez avec le nom d\'une salle, une capacité ou un usage.'));
       l.innerHTML = contactBtns(text);
     }
     ans.classList.add('on');
@@ -1440,7 +1591,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     if (MODULES) { root.style.display = 'none'; document.body.classList.add('uvx-modules-on'); }
     ask.querySelector('.ceye').addEventListener('click', function () {
       tick(); var h = ask.classList.toggle('hid'); if (h) ans.classList.remove('on');
-      this.title = h ? 'Afficher le champ de question' : 'Masquer le champ de question';
+      this.title = h ? T('Afficher le champ de question') : T('Masquer le champ de question');
     });
     champObs = new MutationObserver(champSoon);
     ['.nav-box', '.nav-cnt', '.action-box.my-ui.bottom'].forEach(function (s) { var n = document.querySelector(s); if (n) champObs.observe(n, { attributes: true, attributeFilter: ['class', 'style'] }); });
@@ -1543,14 +1694,15 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
      ===================================================================== */
   var v13 = CHAMP ? null : (function () {
     var LB = {   /* libellés de l'interface — réglables par client (fiche client « libelles ») ; les noms d'espaces et de zones, jamais */
-      espaces: 'Salles & espaces', reperage: 'Mon repérage', proposer: 'Demander une proposition', ajouter: 'Ajouter à mon repérage',
+      espaces: 'Salles & espaces', reperage: 'Mon repérage', reperageCourt: 'Repérage', dansReperage: 'Dans mon repérage', proposer: 'Demander une proposition', ajouter: 'Ajouter à mon repérage',
       retirer: 'Retiré du repérage', aller: 'Y aller', plan: 'Plan', recherche: 'Salle, jauge, question…', fiche: 'Lire la fiche',
       briefTitre: 'Préparez votre repérage', briefTexte: 'Deux réponses facultatives : la visite met ensuite en avant les espaces adaptés à votre événement.',
       briefGo: 'Commencer le repérage', briefLibre: 'Visiter librement', participants: 'Nombre de participants', format: 'Format',
       tout: 'Tout', trouver: 'Trouver une salle pour', voir: 'Voir', convient: 'Convient à', personnes: 'personnes', evenement: 'Votre événement'
     };
+    Object.keys(LB).forEach(function (k) { LB[k] = T(LB[k]); });
     Object.keys(OPTIONS.libelles || {}).forEach(function (k) { if (OPTIONS.libelles[k]) LB[k] = OPTIONS.libelles[k]; });
-    var FORMATS = OPTIONS.formats || ['Séminaire résidentiel', 'Journée d\'étude', 'Convention / plénière', 'Soirée de gala', 'Team building', 'Comité de direction'];
+    var FORMATS = OPTIONS.formats || ['Séminaire résidentiel', 'Journée d\'étude', 'Convention / plénière', 'Soirée de gala', 'Team building', 'Comité de direction'].map(function (f) { return T(f); });
     var LIEU = OPTIONS.introTitle || (document.querySelector('.nav-cnt .section.title .project') || {}).textContent || baseTitle;
     LIEU = String(LIEU).trim();
     /* v1.3.2 : le nom dans une phrase, avec son article (« Découvrir l'Abbaye de La Ramée ») — fiche client « lieuPhrase » */
@@ -1573,14 +1725,33 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
        « 159 m² : 120 en théâtre, 64 en classe, 64 en îlots, 30 en U, 24 en conférence. » ; « 46 couverts au déjeuner » ;
        « jusqu'à 350 personnes en théâtre ou en cocktail » ; « 1 497 places » (libellé du menu). Fiche client « capacites »
        = priorité : { 'Nom': { m2: 129, 'Théâtre': 127, 'Classe': 58 } }. */
-    var CONF = [['th[ée][âa]tre', 'Théâtre'], ['classe', 'Classe'], ['[îi]lots?', 'Îlots'], ['u', 'U'], ['conf[ée]rence', 'Conférence'],
-      ['cabaret', 'Cabaret'], ['pav[ée]', 'Pavé'], ['banquet', 'Banquet'], ['cocktail', 'Cocktail'], ['tables? rondes?', 'Tables rondes'],
-      ['carr[ée]', 'Carré'], ['r[ée]union', 'Réunion'], ['d[ée]jeuner', 'Déjeuner'], ['d[îi]ner', 'Dîner'], ['assis', 'Assis'], ['debout', 'Debout']];
+    /* v1.4 : les mêmes configurations en anglais et en néerlandais (fiches et questions dans la langue de la visite) */
+    var CONF = [['th[ée][âa]tre|theat(?:re|er)(?:[- ]style)?', 'Théâtre'], ['classe|classroom|klas(?:lokaal|opstelling)?', 'Classe'], ['[îi]lots?|islands?|eilandjes?', 'Îlots'],
+      ['u|u[- ]?shape|u[- ]?vorm', 'U'], ['conf[ée]rence|boardroom', 'Conférence'],
+      ['cabaret', 'Cabaret'], ['pav[ée]', 'Pavé'], ['banquet|banket', 'Banquet'], ['cocktail|reception|receptie', 'Cocktail'], ['tables? rondes?|round tables?|ronde tafels?', 'Tables rondes'],
+      ['carr[ée]|hollow square', 'Carré'], ['r[ée]union|meeting|vergadering', 'Réunion'], ['d[ée]jeuner|lunch', 'Déjeuner'], ['d[îi]ner|dinner', 'Dîner'],
+      ['assis|seated|zittend', 'Assis'], ['debout|standing|staand', 'Debout']];
     var CW = '(' + CONF.map(function (c) { return c[0]; }).join('|') + ')';
-    function confName(w) { w = String(w || '').toLowerCase(); for (var i = 0; i < CONF.length; i++) if (new RegExp('^' + CONF[i][0] + '$', 'i').test(w)) return (OPTIONS.configsLibelles && OPTIONS.configsLibelles[CONF[i][1]]) || CONF[i][1]; return null; }
-    function num(s) { return parseInt(String(s).replace(/[\s  .]/g, ''), 10); }
+    function confName(w) { w = String(w || '').toLowerCase(); for (var i = 0; i < CONF.length; i++) if (new RegExp('^(?:' + CONF[i][0] + ')$', 'i').test(w)) return (OPTIONS.configsLibelles && OPTIONS.configsLibelles[CONF[i][1]]) || CONF[i][1]; return null; }
+    /* v1.4 : la clé reste le nom français (Théâtre…) ; l'affichage passe par la langue de la visite */
+    function confTxt(k) { return T(k); }
+    function num(s) { return parseInt(String(s).replace(/[\s  .,]/g, ''), 10); }
     function clean(t) { return String(t || '').replace(/­/g, '').replace(/[  ]/g, ' '); }
     var capCache = {};
+    /* v1.4 — un espace n'est proposé pour une jauge que s'il sert à travailler, se réunir ou se restaurer.
+       Décision de Mickaël (10/10/2026) : jamais les parkings, chambres, salons, bien-être, détente, bagagerie, accueil.
+       Règle par usage : il faut une capacité dans une configuration d'événement (théâtre, classe, U, îlots, réunion,
+       cocktail, repas…) ; « 200 places » seules (parking, salon) ne suffisent pas. Fiche client : jaugeExclure / jaugeInclure
+       (noms d'espaces ou de zones) pour les cas particuliers. */
+    var JX = /\b(chambres?|parkings?|stationnement|bagagerie|vestiaire|hammam|fitness|sport|yoga|bien[- ]?[êe]tre|spa|wellness|piscine|boutique|bedrooms?|kamers?|parkeer\w*)\b/i;
+    function inList(l, st) { if (!l) return false; var n = key(st.parts.name), z = key(zoneOf(st) || ''), g = key(st.group || '');
+      return [].concat(l).some(function (x) { x = key(String(x)); return x && (x === n || x === z || g.indexOf(x) >= 0); }); }
+    function jaugeOk(st, c) {
+      if (inList(OPTIONS.jaugeInclure, st)) return true;
+      if (inList(OPTIONS.jaugeExclure, st)) return false;
+      if (JX.test(st.parts.name + ' ' + (zoneOf(st) || '') + ' ' + (st.group || ''))) return false;
+      return c.rows.some(function (r) { return !/^places$/i.test(r.k); });
+    }
     function caps(st) {
       if (!st) return null;
       if (capCache[st.key] !== undefined) return capCache[st.key];
@@ -1591,22 +1762,24 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       } else {
         var t = clean((typeof o === 'string' ? o + ' ' : '') + (st.fiche ? htmlText(st.fiche.html) : '') + ' ' + st.label), m;
         var mm = /(\d[\d\s.]*)\s*m(?:²|2)(?![a-z])/i.exec(t); if (mm) out.m2 = num(mm[1]);
-        var re = new RegExp('(\\d{1,3}(?:[\\s.]\\d{3})*|\\d+)\\s+(?:personnes?\\s+|places?\\s+|pers\\.?\\s+|invit[ée]s\\s+)?(?:en|au|à)\\s+' + CW + '\\b((?:\\s+ou\\s+en\\s+' + CW + '\\b)*)', 'gi');
+        var PREP = LANG === 'fr' ? '(?:en|au|à)\\s+' : '(?:(?:en|au|à|in|op|als)\\s+)?';
+        var re = new RegExp('(\\d{1,3}(?:[\\s.]\\d{3})*|\\d+)\\s+(?:personnes?\\s+|places?\\s+|pers\\.?\\s+|invit[ée]s\\s+|people\\s+|persons\\s+|guests\\s+|personen\\s+|gasten\\s+)?' + PREP + CW + '\\b((?:\\s+ou\\s+en\\s+' + CW + '\\b)*)', 'gi');
         while ((m = re.exec(t))) {
           var n = num(m[1]), names = [m[2]].concat((m[3] || '').split(/\s+ou\s+en\s+/i).slice(1));
           names.forEach(function (w) { var c = confName(w.trim()); if (c && !out.rows.some(function (r) { return r.k === c; })) out.rows.push({ k: c, n: n }); });
         }
-        var cv = /(\d+)\s+couverts?(?:\s+(?:au|à|en)\s+(d[ée]jeuner|d[îi]ner))?/gi;
+        var cv = /(\d+)\s+(?:couverts?|covers?)(?:\s+(?:au|à|en|at|for|bij)\s+(d[ée]jeuner|d[îi]ner|lunch|dinner))?/gi;
         while ((m = cv.exec(t))) { var c2 = m[2] ? confName(m[2]) : 'Couverts'; if (!out.rows.some(function (r) { return r.k === c2; })) out.rows.push({ k: c2, n: +m[1] }); }
         if (!out.rows.length) {   /* « 10 personnes autour d'une table » ; « 1 497 places » */
-          var pp = /(\d{1,3}(?:[\s.]\d{3})*|\d+)\s+(personnes|places)\b/i.exec(t);
-          if (pp) out.rows.push({ k: /places/i.test(pp[2]) ? 'Places' : 'Personnes', n: num(pp[1]) });
+          var pp = /(\d{1,3}(?:[\s.,]\d{3})*|\d+)\s+(personnes|places|people|persons|guests|seats|personen|plaatsen)\b/i.exec(t);
+          if (pp) out.rows.push({ k: /places|seats|plaatsen/i.test(pp[2]) ? 'Places' : 'Personnes', n: num(pp[1]) });
         }
         var sm = /\d[\d\s.]*\s*m(?:²|2)\s*:[^.]*\./.exec(t); if (sm && out.rows.length) out.sentence = sm[0];
       }
       out.rows.forEach(function (r) { if (!/d[ée]jeuner|d[îi]ner|couverts/i.test(r.k)) out.max = Math.max(out.max, r.n); });
       if (!out.max) out.rows.forEach(function (r) { out.max = Math.max(out.max, r.n); });
       if (!out.m2 && !out.rows.length && !out.note) out = null;
+      if (out) out.jauge = jaugeOk(st, out);
       capCache[st.key] = out;
       return out;
     }
@@ -1617,14 +1790,14 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       var top = c.rows.slice().sort(function (a, b) { return b.n - a.n; })[0];
       return top ? rowTxt(top) : '';
     }
-    function lc(k) { return k.length < 3 ? k : k.toLowerCase(); }
+    function lc(k) { k = confTxt(k); return k.length < 3 ? k : k.toLowerCase(); }
     /* « 120 en théâtre », « 46 couverts », « 1 497 places » (1re configuration), « 10 places PMR » */
     function rowTxt(r) {
-      var n = r.n.toLocaleString('fr-FR');
-      if (/configuration/i.test(r.k) || /^(places|personnes)$/i.test(r.k)) return n + ' ' + (/personnes/i.test(r.k) ? 'personnes' : 'places');
+      var n = r.n.toLocaleString(LOC);
+      if (/configuration/i.test(r.k) || /^(places|personnes)$/i.test(r.k)) return n + ' ' + (/personnes/i.test(r.k) ? LB.personnes : T('places'));
       if (/^places\s/i.test(r.k)) return n + ' ' + lc(r.k);
-      if (/couverts|d[ée]jeuner|d[îi]ner/i.test(r.k)) return n + ' couverts';
-      return n + ' en ' + lc(r.k);
+      if (/couverts|d[ée]jeuner|d[îi]ner/i.test(r.k)) return n + ' ' + T('couverts');
+      return LANG === 'fr' ? n + ' en ' + lc(r.k) : n + ' ' + lc(r.k);
     }
     function photo(st) { return photoFor(st); }
     /* photos en <img loading=lazy> : le catalogue ne charge que ce qui est à l'écran */
@@ -1644,7 +1817,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         '<div class="v-act">' +
           '<button class="srch" type="button" style="display:none">' + SV.search + '</button>' +
           '<button class="plan" type="button" style="display:none">' + SV.map + '<span class="l">' + esc(LB.plan) + '</span></button>' +
-          '<button class="rep" type="button">' + SV.heart + '<span class="l">' + esc(LB.reperage.replace(/^Mon\s+/i, '').replace(/^./, function (c) { return c.toUpperCase(); })) + '</span><span class="v-badge"></span></button>' +
+          '<button class="rep" type="button">' + SV.heart + '<span class="l">' + esc(LB.reperageCourt) + '</span><span class="v-badge"></span></button>' +
           '<button class="main cat" type="button">' + SV.grid + '<span class="l">' + esc(LB.espaces) + '</span></button>' +
         '</div></div>' +
       '<div class="v-ft v-panel"><button class="v-x" type="button">×</button><div class="ph"><span class="fit" style="display:none"></span></div><div class="bd"><div class="sc"></div><div class="add"></div></div></div>' +
@@ -1654,9 +1827,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         '<div class="v-tabs"></div><div class="v-grid"></div></div>' +
       '<div class="v-plan"><button class="v-x" type="button">×</button><div class="lv"></div><div class="ttl"><b></b><span></span></div><div class="stage"><div class="wrap"><img alt=""></div></div><div class="leg"></div></div>' +
       '<div class="v-brief"><div class="in v-panel"><div class="v-eb"></div><h1>' + esc(LB.briefTitre) + '</h1><div class="sub">' + esc(LB.briefTexte) + '</div>' +
-        '<label>' + esc(LB.participants) + '</label><div class="v-num"><div class="box"><button type="button" data-d="-10">−</button><input type="number" min="1" max="99999" inputmode="numeric"><button type="button" data-d="10">+</button></div><span>jauge indicative</span></div>' +
+        '<label>' + esc(LB.participants) + '</label><div class="v-num"><div class="box"><button type="button" data-d="-10">−</button><input type="number" min="1" max="99999" inputmode="numeric"><button type="button" data-d="10">+</button></div><span>' + T('jauge indicative') + '</span></div>' +
         '<label>' + esc(LB.format) + '</label><div class="v-fmt"></div>' +
-        '<div class="btns"><button class="v-btn p go" type="button">' + esc(LB.briefGo) + '</button><button class="free" type="button">' + esc(LB.briefLibre) + '</button><span class="note">Modifiable à tout moment</span></div></div></div>';
+        '<div class="btns"><button class="v-btn p go" type="button">' + esc(LB.briefGo) + '</button><button class="free" type="button">' + esc(LB.briefLibre) + '</button><span class="note">' + T('Modifiable à tout moment') + '</span></div></div></div>';
     while (el.firstChild) root.appendChild(el.firstChild);
     root.classList.add('v13');
     var Q = function (s) { return root.querySelector(s); };
@@ -1670,10 +1843,21 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     /* coin : accueil (s'il y a une vue aérienne ou un écran d'accueil), visite vidéo, musique, plein écran */
     var corner = Q('.v-corner');
     function cbtn(cls, title, svg, fn) { var b = document.createElement('button'); b.type = 'button'; b.className = 'uvx-glass ' + cls; b.title = title; b.innerHTML = svg; b.onclick = fn; corner.appendChild(b); return b; }
-    if (aero || OPTIONS.intro) cbtn('home', aero ? 'Vue d\'ensemble' : 'Retour à l\'accueil', ic.home, function () { goHome(); });
-    if (eps.length) cbtn('ep', 'Visite guidée en vidéo', ic.play, function () { epPlay(0); });
-    var snd = cbtn('snd off', 'Musique', ic.snd, function () { root.querySelector('.uvx-tool.snd').click(); snd.classList.toggle('off', !sndOn); });
-    cbtn('fs', 'Plein écran', ic.fs, function () { root.querySelector('.uvx-tool.fs').click(); });
+    if (aero || OPTIONS.intro) cbtn('home', aero ? T('Vue d\'ensemble') : T('Retour à l\'accueil'), ic.home, function () { goHome(); });
+    if (eps.length) cbtn('ep', T('Visite guidée en vidéo'), ic.play, function () { epPlay(0); });
+    var snd = cbtn('snd off', T('Musique'), ic.snd, function () { root.querySelector('.uvx-tool.snd').click(); snd.classList.toggle('off', !sndOn); });
+    cbtn('fs', T('Plein écran'), ic.fs, function () { root.querySelector('.uvx-tool.fs').click(); });
+    /* v1.4 — sélecteur de langue : il reprend les liens de langue natifs de MPskin (versions créées dans MPskin) ;
+       un clic déclenche le lien natif, MPskin change la langue et le moteur se relance dans la nouvelle langue. */
+    var lngLinks = [].slice.call(document.querySelectorAll('.nav-cnt .section.lng .lng-box a')).filter(function (a) { return /^[a-z]{2}$/i.test(a.textContent.trim()); });
+    if (lngLinks.length) {
+      var lb = cbtn('lng', T('Langue'), '<span>' + esc(LANG.toUpperCase()) + '</span>', function (e) { e.stopPropagation(); lbox.classList.toggle('on'); });
+      var lbox = document.createElement('div'); lbox.className = 'v-lngs uvx-glass';
+      lbox.innerHTML = lngLinks.map(function (a, i) { return '<button type="button" data-i="' + i + '">' + esc(a.textContent.trim().toUpperCase()) + '</button>'; }).join('');
+      lbox.onclick = function (e) { e.stopPropagation(); var b = e.target.closest('button'); if (!b) return; tick(); lbox.classList.remove('on'); lngLinks[+b.dataset.i].click(); };
+      lb.appendChild(lbox);
+      document.addEventListener('click', function () { lbox.classList.remove('on'); });
+    }
     corner.querySelectorAll('svg').forEach(function (s) { s.setAttribute('class', 'v-svg'); });
 
     /* ---- panneaux : un seul ouvert à la fois ---- */
@@ -1710,10 +1894,10 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     function renderDock() {
       var here = dock.querySelector('.v-here');
       here.querySelector('b').textContent = cur ? cur.parts.name : LIEU;
-      here.querySelector('i').textContent = cur ? zoneOf(cur) : zones.length + ' univers · ' + flat().length + ' espaces';
+      here.querySelector('i').textContent = cur ? zoneOf(cur) : T('{z} univers · {n} espaces', { z: zones.length, n: flat().length });
       var cx = dock.querySelector('.v-ctx');
-      if (brief && (brief.n || brief.f)) { cx.textContent = [brief.n ? brief.n + ' pers.' : '', brief.f || ''].filter(Boolean).join(' · '); cx.style.display = ''; }
-      else if (OPTIONS.brief !== false) { cx.textContent = LB.evenement + ' ?'; cx.style.display = ''; }
+      if (brief && (brief.n || brief.f)) { cx.textContent = [brief.n ? T('{n} pers.', { n: brief.n }) : '', brief.f || ''].filter(Boolean).join(' · '); cx.style.display = ''; }
+      else if (OPTIONS.brief !== false) { cx.textContent = T('{e} ?', { e: LB.evenement }); cx.style.display = ''; }
       else cx.style.display = 'none';
       dock.querySelector('.v-badge').textContent = rep.length ? rep.length : '';
       dock.querySelector('.plan').style.display = (OPTIONS.plans && OPTIONS.plans.length) ? '' : 'none';
@@ -1745,7 +1929,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       var h = '<div class="v-eb">' + esc(st.group || zones[st.zi].label) + '</div><h2>' + esc(st.parts.name) + '</h2>';
       var meta = [c && c.m2 ? c.m2 + ' m²' : (st.parts.fig || ''), ok && !ph ? '✓ ' + LB.convient + ' ' + N + ' ' + LB.personnes : ''].filter(Boolean).join(' · ');
       if (meta) h += '<div class="meta">' + esc(meta) + '</div>';
-      if (c && c.rows.length) h += '<table>' + c.rows.map(function (r) { return '<tr class="' + (N && r.n >= N ? 'ok' : '') + '"><td>' + esc(r.k) + '</td><td>' + r.n.toLocaleString('fr-FR') + '</td></tr>'; }).join('') + '</table>';
+      if (c && c.rows.length) h += '<table>' + c.rows.map(function (r) { return '<tr class="' + (N && r.n >= N ? 'ok' : '') + '"><td>' + esc(confTxt(r.k).replace(/^./, function (c) { return c.toUpperCase(); })) + '</td><td>' + r.n.toLocaleString(LOC) + '</td></tr>'; }).join('') + '</table>';
       if (c && c.note) h += '<div class="tx">' + esc(c.note) + '</div>';
       if (st.fiche) {
         var html = st.fiche.html;
@@ -1754,7 +1938,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       }
       ft.querySelector('.sc').innerHTML = h;
       var a = ft.querySelector('.add'), on = inRep(st);
-      a.innerHTML = '<button class="v-btn ' + (on ? 'on' : 'p') + ' heart" type="button">' + (on ? SV.heartF : SV.heart) + esc(on ? LB.reperage.replace(/^Mon /, 'Dans mon ') : LB.ajouter) + '</button>' +
+      a.innerHTML = '<button class="v-btn ' + (on ? 'on' : 'p') + ' heart" type="button">' + (on ? SV.heartF : SV.heart) + esc(on ? LB.dansReperage : LB.ajouter) + '</button>' +
         (cur === st ? '' : '<button class="v-btn goto" type="button">' + esc(LB.aller) + ' →</button>');
       a.querySelector('.heart').onclick = function () { tick(); toggleRep(st); openFiche(st); };
       var g = a.querySelector('.goto'); if (g) g.onclick = function () { closeAll(); go(st); };
@@ -1765,17 +1949,17 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var catZ = -1, catN = 0, catConf = '';
     var allConfs = [];
     flat().forEach(function (st) { var c = caps(st); if (c) c.rows.forEach(function (r) { if (allConfs.indexOf(r.k) < 0 && !/^(Places|Personnes|Couverts|Déjeuner|Dîner)$/.test(r.k)) allConfs.push(r.k); }); });
-    var withCaps = flat().filter(function (st) { var c = caps(st); return c && c.max; }).length;
+    var withCaps = flat().filter(function (st) { var c = caps(st); return c && c.max && c.jauge; }).length;
     var finder = cat.querySelector('.v-finder');
     if (withCaps < 2) finder.style.display = 'none';
-    finder.querySelector('select').innerHTML = '<option value="">toutes configurations</option>' + allConfs.map(function (c) { return '<option>' + esc(c) + '</option>'; }).join('');
+    finder.querySelector('select').innerHTML = '<option value="">' + T('toutes configurations') + '</option>' + allConfs.map(function (c) { return '<option value="' + esc(c) + '">' + esc(confTxt(c)) + '</option>'; }).join('');
     finder.onsubmit = function (e) { e.preventDefault(); catN = +finder.querySelector('input').value || 0; catConf = finder.querySelector('select').value; tick(); fillCat(); };
-    cat.querySelector('h1').textContent = 'Découvrir ' + LIEU_TXT;
-    cat.querySelector('.sub').textContent = flat().length + ' espaces · ' + zones.length + ' univers';
+    cat.querySelector('h1').textContent = T('Découvrir {l}', { l: LIEU_TXT });
+    cat.querySelector('.sub').textContent = T('{n} espaces · {z} univers', { n: flat().length, z: zones.length });
     var tabs = cat.querySelector('.v-tabs');
     tabs.innerHTML = '<button type="button" data-z="-1">' + esc(LB.tout) + '</button>' + zones.map(function (z, i) { return '<button type="button" data-z="' + i + '">' + esc(z.label) + '</button>'; }).join('');
     tabs.onclick = function (e) { var b = e.target.closest('button'); if (!b) return; tick(); catZ = +b.dataset.z; fillCat(); };
-    function fits(st) { if (!catN) return true; var c = caps(st); if (!c || !c.max) return true; return c.rows.some(function (r) { return r.n >= catN && (!catConf || r.k === catConf); }); }
+    function fits(st) { if (!catN) return true; var c = caps(st); if (!c || !c.max) return true; if (!c.jauge) return false; return c.rows.some(function (r) { return r.n >= catN && (!catConf || r.k === catConf); }); }
     function cardHtml(st) {
       var c = caps(st), ph = photo(st), k = [];
       if (c) { if (catConf) { var r = c.rows.filter(function (x) { return x.k === catConf; })[0]; if (r) k.push(rowTxt(r)); } else c.rows.slice(0, 2).forEach(function (r) { k.push(rowTxt(r)); }); }
@@ -1786,10 +1970,11 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       tabs.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', +b.dataset.z === catZ); });
       var g = cat.querySelector('.v-grid'), h = '';
       if (catN) {
-        var best = flat().filter(function (st) { var c = caps(st); return c && c.max && (catZ < 0 || st.zi === catZ) && fits(st); });
+        var best = flat().filter(function (st) { var c = caps(st); return c && c.max && c.jauge && (catZ < 0 || st.zi === catZ) && fits(st); });
         var sn = {}; best = best.filter(function (st) { var k = key(st.parts.name); if (sn[k]) return false; sn[k] = 1; return true; });
-        h += '<div class="grp">' + (best.length ? best.length + ' espace' + (best.length > 1 ? 's' : '') + ' pour ' + catN + ' ' + LB.personnes + (catConf ? ' en ' + lc(catConf) : '') : 'Aucun espace pour ' + catN + ' ' + LB.personnes + (catConf ? ' en ' + lc(catConf) : '')) + '</div>' +
-          (best.length ? '<div class="row">' + best.map(cardHtml).join('') + '</div>' : '') + '<div class="grp" style="margin-top:28px">Tous les espaces</div>';
+        var cf = catConf ? T(' en {c}', { c: lc(catConf) }) : '';
+        h += '<div class="grp">' + esc(best.length ? T(best.length > 1 ? '{k} espaces pour {n} {u}' : '{k} espace pour {n} {u}', { k: best.length, n: catN, u: LB.personnes }) + cf : T('Aucun espace pour {n} {u}', { n: catN, u: LB.personnes }) + cf) + '</div>' +
+          (best.length ? '<div class="row">' + best.map(cardHtml).join('') + '</div>' : '') + '<div class="grp" style="margin-top:28px">' + T('Tous les espaces') + '</div>';
       }
       zones.forEach(function (z, zi) {
         if (catZ >= 0 && zi !== catZ) return;
@@ -1815,36 +2000,39 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     }
 
     /* ---- « Trouver la bonne salle » : une question chiffrée dans la recherche ---- */
-    var CAPW = /(personnes?|pers\b|participants?|pax|places?|invit[ée]s?|collaborateurs?|convives|couverts?|jauge|salle|accueillir|capacit[ée])/i;
+    var CAPW = /(personnes?|pers\b|participants?|pax|places?|invit[ée]s?|collaborateurs?|convives|couverts?|jauge|salle|accueillir|capacit[ée]|people|persons?|guests?|attendees|delegates|seats|capacity|rooms?|personen|deelnemers|gasten|plaatsen|capaciteit|za(?:a|le)l\w*)/i;
     function finderAnswer(text) {
       if (withCaps < 2) return false;
-      var t = clean(text), m = /(\d{1,3}(?:[\s.]\d{3})*|\d+)/.exec(t); if (!m) return false;
+      var t = clean(text), m = /(\d{1,3}(?:[\s.,]\d{3})*|\d+)/.exec(t); if (!m) return false;
       var n = num(m[1]); if (!n || n < 2) return false;
       var cm = new RegExp('(?:^|[^a-zà-ÿ])' + CW + '(?![a-zà-ÿ])', 'i').exec(t), conf = cm ? confName(cm[1]) : '';
       if (conf && allConfs.indexOf(conf) < 0) conf = '';
       if (!CAPW.test(t) && !conf) return false;
-      var food = /couverts?|d[ée]jeuner|d[îi]ner|repas|restauration/i.test(t);
+      /* v1.4 : une question d'hébergement ou de stationnement n'est pas une question de salle → la FAQ répond */
+      if (HEB.test(t) || PARK.test(t)) return false;
+      var food = /couverts?|d[ée]jeuner|d[îi]ner|repas|restauration|covers?|lunch|dinner|meals?|maaltijd\w*/i.test(t);
       var list = flat().map(function (st) {
-        var c = caps(st); if (!c) return null;
+        var c = caps(st); if (!c || !c.jauge) return null;
         var rows = c.rows.filter(function (r) { return conf ? r.k === conf : (food ? /couverts|d[ée]jeuner|d[îi]ner|cocktail|banquet/i.test(r.k) : !/couverts|d[ée]jeuner|d[îi]ner/i.test(r.k)); });
         var best = rows.filter(function (r) { return r.n >= n; }).sort(function (a, b) { return a.n - b.n; })[0];
         return best ? { st: st, r: best, c: c } : null;
       }).filter(Boolean).sort(function (a, b) { return a.r.n - b.r.n; });
       var none = !list.length;
-      if (none) list = flat().map(function (st) { var c = caps(st); if (!c) return null;
+      if (none) list = flat().map(function (st) { var c = caps(st); if (!c || !c.jauge) return null;
           var rows = c.rows.filter(function (r) { return conf ? r.k === conf : !/couverts|d[ée]jeuner|d[îi]ner/i.test(r.k); }).sort(function (a, b) { return b.n - a.n; });
           return rows[0] ? { st: st, r: rows[0], c: c } : null; }).filter(Boolean).sort(function (a, b) { return b.r.n - a.r.n; });
       var seen = {}; list = list.filter(function (x) { var k = key(x.st.parts.name); if (seen[k]) return false; seen[k] = 1; return true; });
       var shown = list.slice(0, 3);
+      var cf = conf ? T(' en {c}', { c: lc(conf) }) : '', unit = food ? T('couverts') : LB.personnes;
       var h = '<button class="close" type="button">×</button><div class="v-fd"><div class="lead"><h3>' +
-        (none ? 'Aucun espace pour ' + n + ' ' + LB.personnes + (conf ? ' en ' + lc(conf) : '') + (shown[0] ? ' — au plus ' + shown[0].r.n.toLocaleString('fr-FR') : '') : shown.length ? list.length + ' espace' + (list.length > 1 ? 's' : '') + ' pour ' + n + ' ' + (food ? 'couverts' : LB.personnes) + (conf ? ' en ' + lc(conf) : '') : 'Aucun espace pour ' + n + ' ' + LB.personnes + (conf ? ' en ' + lc(conf) : '')) +
-        '</h3><span>' + (none ? 'les plus grandes capacités · ' : '') + 'd\'après les capacités indiquées par ' + esc(LIEU_TXT) + '</span></div>';
+        esc(none ? T('Aucun espace pour {n} {u}', { n: n, u: LB.personnes }) + cf + (shown[0] ? T(' — au plus {m}', { m: shown[0].r.n.toLocaleString(LOC) }) : '') : shown.length ? T(list.length > 1 ? '{k} espaces pour {n} {u}' : '{k} espace pour {n} {u}', { k: list.length, n: n, u: unit }) + cf : T('Aucun espace pour {n} {u}', { n: n, u: LB.personnes }) + cf) +
+        '</h3><span>' + (none ? T('les plus grandes capacités · ') : '') + esc(T('d\'après les capacités indiquées par {l}', { l: LIEU_TXT })) + '</span></div>';
       if (shown.length) h += '<div class="v-rooms">' + shown.map(function (x, i) {
         return '<button class="v-room" type="button" data-i="' + i + '"><span class="im">' + im(photo(x.st)) + '</span><span class="tx"><span class="t">' + esc(x.st.parts.name) + '</span>' +
-          '<span class="c"><b>' + x.r.n.toLocaleString('fr-FR') + '</b>' + esc(rowTxt(x.r).replace(/^[\d\s\u202f]+/, '')) + '</span><span class="m">' + esc([x.c.m2 ? x.c.m2 + ' m²' : '', zoneOf(x.st)].filter(Boolean).join(' · ')) + '</span></span></button>';
+          '<span class="c"><b>' + x.r.n.toLocaleString(LOC) + '</b>' + esc(rowTxt(x.r).replace(/^[\d\s\u202f]+/, '')) + '</span><span class="m">' + esc([x.c.m2 ? x.c.m2 + ' m²' : '', zoneOf(x.st)].filter(Boolean).join(' · ')) + '</span></span></button>';
       }).join('') + '</div>';
-      h += '<div class="note">' + (list.length > 3 && !none ? '<button type="button" class="all">Voir les ' + list.length + ' espaces →</button>' : '<span></span>') +
-        (OPTIONS.contact && OPTIONS.contact.email ? '<a href="' + mailto(text) + '">Une question ? Écrire à ' + esc(OPTIONS.contact.nom || "l'équipe") + ' →</a>' : '') + '</div></div>';
+      h += '<div class="note">' + (list.length > 3 && !none ? '<button type="button" class="all">' + T('Voir les {n} espaces →', { n: list.length }) + '</button>' : '<span></span>') +
+        (OPTIONS.contact && OPTIONS.contact.email ? '<a href="' + mailto(text) + '">' + esc(T('Une question ? Écrire à {nom} →', { nom: OPTIONS.contact.nom || T("l'équipe") })) + '</a>' : '') + '</div></div>';
       ans.innerHTML = h;
       ans.querySelector('.close').onclick = function () { ans.classList.remove('on'); restoreAns(); };
       ans.querySelectorAll('.v-room').forEach(function (b) { b.onclick = function () { tick(); var x = shown[+b.dataset.i]; ans.classList.remove('on'); restoreAns(); openFiche(x.st); }; });
@@ -1863,32 +2051,44 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     function openRep() {
       closeAll(repP);
       repP.querySelector('.v-eb').textContent = LIEU;
-      var s = []; if (brief && brief.n) s.push(brief.n + ' ' + LB.personnes); if (brief && brief.f) s.push(brief.f); s.push(rep.length + ' espace' + (rep.length > 1 ? 's' : ''));
+      var s = []; if (brief && brief.n) s.push(brief.n + ' ' + LB.personnes); if (brief && brief.f) s.push(brief.f); s.push(Tn(rep.length, '{n} espace', '{n} espaces'));
       repP.querySelector('.sum').innerHTML = s.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('');
       var ls = repP.querySelector('.ls');
       ls.innerHTML = rep.length ? repSteps().map(function (x, i) {
         var c = x.st && caps(x.st);
         return '<div class="v-ri"><span class="im">' + im(x.st && photo(x.st)) + '</span><button class="go" type="button" data-i="' + i + '"><span class="t">' + esc(x.r.n) + '</span><span class="c">' +
-          esc([x.r.z, c && c.m2 ? c.m2 + ' m²' : '', capLine(c)].filter(Boolean).join(' · ')) + '</span></button><button class="x" type="button" data-i="' + i + '" title="Retirer">×</button></div>';
-      }).join('') : '<div class="empty">Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « ' + esc(LB.ajouter) + ' »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.</div>';
+          esc([x.r.z, c && c.m2 ? c.m2 + ' m²' : '', capLine(c)].filter(Boolean).join(' · ')) + '</span></button><button class="x" type="button" data-i="' + i + '" title="' + T('Retirer') + '">×</button></div>';
+      }).join('') : '<div class="empty">' + esc(T('Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.', { a: LB.ajouter })) + '</div>';
       ls.querySelectorAll('.go').forEach(function (b) { b.onclick = function () { var x = repSteps()[+b.dataset.i]; if (x.st) { tick(); openFiche(x.st); } }; });
       ls.querySelectorAll('.x').forEach(function (b) { b.onclick = function () { tick(); rep.splice(+b.dataset.i, 1); save(); renderDock(); openRep(); }; });
       var f = repP.querySelector('.foot'), c = OPTIONS.contact;
-      f.innerHTML = rep.length && c && c.email ? '<a class="v-btn p" href="' + proposal() + '">' + esc(LB.proposer) + '</a><div class="s">Envoyé à ' + esc(c.nom || "l'équipe commerciale") + (c.libelle ? ' · ' + esc(c.libelle) : '') + '</div>' : '';
+      f.innerHTML = rep.length && c && c.email ? '<a class="v-btn p" href="' + proposal() + '">' + esc(LB.proposer) + '</a><div class="s">' + esc(T('Envoyé à {nom}', { nom: c.nom || T("l'équipe commerciale") })) + (c.libelle ? ' · ' + esc(c.libelle) : '') + '</div>' : '';
     }
     function proposal() {
-      var c = OPTIONS.contact || {}, ev = brief && brief.f ? brief.f.toLowerCase() : 'un événement', n = brief && brief.n;
-      var subj = 'Repérage — ' + (brief && brief.f ? brief.f : 'demande de proposition') + (n ? ', ' + n + ' participants' : '');
-      var body = 'Bonjour,\n\nJe prépare ' + (/^[aeiouéèh]/i.test(ev) ? 'un ' : 'une ') + ev.replace(/^un /, '') + (n ? ' pour ' + n + ' participants' : '') + ' et j\'ai repéré dans votre visite virtuelle :\n' +
-        repSteps().map(function (x) { var cc = x.st && caps(x.st); return '• ' + x.r.n + (x.r.z ? ' (' + x.r.z + ')' : '') + (cc && capLine(cc) ? ' — ' + capLine(cc) : ''); }).join('\n') +
-        '\n\nPourriez-vous m\'adresser une proposition ?\nDates envisagées : \n\nMerci,\n\n— Visite : ' + location.origin + location.pathname + '\n';
-      body = body.replace('une un événement', 'un événement');
+      var c = OPTIONS.contact || {}, n = brief && brief.n, f = brief && brief.f;
+      var list = repSteps().map(function (x) { var cc = x.st && caps(x.st); return '• ' + x.r.n + (x.r.z ? ' (' + x.r.z + ')' : '') + (cc && capLine(cc) ? ' — ' + capLine(cc) : ''); }).join('\n');
+      var subj, body, url = location.origin + location.pathname;
+      if (LANG === 'en') {
+        subj = 'Site inspection — ' + (f || 'proposal request') + (n ? ', ' + n + ' participants' : '');
+        body = 'Hello,\n\nI am planning ' + (f ? 'a ' + f.toLowerCase() : 'an event') + (n ? ' for ' + n + ' participants' : '') + ' and have shortlisted in your virtual tour:\n' + list +
+          '\n\nCould you send me a proposal?\nPreferred dates: \n\nThank you,\n\n— Tour: ' + url + '\n';
+      } else if (LANG === 'nl') {
+        subj = 'Locatiebezoek — ' + (f || 'offerteaanvraag') + (n ? ', ' + n + ' deelnemers' : '');
+        body = 'Hallo,\n\nIk bereid ' + (f ? 'een ' + f.toLowerCase() : 'een evenement') + (n ? ' voor ' + n + ' deelnemers' : '') + ' voor en heb in uw virtuele rondleiding geselecteerd:\n' + list +
+          '\n\nKunt u mij een offerte bezorgen?\nGewenste data: \n\nDank u,\n\n— Rondleiding: ' + url + '\n';
+      } else {
+        var ev = f ? f.toLowerCase() : 'un événement';
+        subj = 'Repérage — ' + (f || 'demande de proposition') + (n ? ', ' + n + ' participants' : '');
+        body = 'Bonjour,\n\nJe prépare ' + (/^[aeiouéèh]/i.test(ev) ? 'un ' : 'une ') + ev.replace(/^un /, '') + (n ? ' pour ' + n + ' participants' : '') + ' et j\'ai repéré dans votre visite virtuelle :\n' + list +
+          '\n\nPourriez-vous m\'adresser une proposition ?\nDates envisagées : \n\nMerci,\n\n— Visite : ' + url + '\n';
+        body = body.replace('une un événement', 'un événement');
+      }
       return 'mailto:' + (c.envoi || c.email || '') + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
     }
 
     /* ---- brief d'entrée (facultatif) ---- */
     var bIn = br.querySelector('input'), bF = brief && brief.f || '';
-    br.querySelector('.v-eb').textContent = LIEU + ' · repérage';
+    br.querySelector('.v-eb').textContent = T('{l} · repérage', { l: LIEU });
     br.querySelector('.v-fmt').innerHTML = FORMATS.map(function (f) { return '<button type="button">' + esc(f) + '</button>'; }).join('');
     br.querySelector('.v-fmt').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; tick(); bF = bF === b.textContent ? '' : b.textContent; paintF(); };
     function paintF() { br.querySelectorAll('.v-fmt button').forEach(function (b) { b.classList.toggle('on', b.textContent === bF); }); }
@@ -1924,11 +2124,11 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         var st = stepByName(name); if (!st) return; n++;
         var xy = p.points[name], b = document.createElement('button'); b.type = 'button'; b.className = 'pt' + (st === cur ? ' here' : '');
         b.style.left = xy[0] + '%'; b.style.top = xy[1] + '%';
-        b.innerHTML = '<span>' + esc(st === cur ? 'Vous êtes ici · ' + st.parts.name : st.parts.name) + '</span>';
+        b.innerHTML = '<span>' + esc(st === cur ? T('Vous êtes ici · {s}', { s: st.parts.name }) : st.parts.name) + '</span>';
         b.onclick = function () { closeAll(); go(st); };
         w.appendChild(b);
       });
-      plan.querySelector('.leg').textContent = n + ' espaces sur ce niveau · cliquez un repère pour y aller';
+      plan.querySelector('.leg').textContent = T('{n} espaces sur ce niveau · cliquez un repère pour y aller', { n: n });
     }
 
     /* ---- la barre ne doit jamais couvrir les icônes de la barre MPskin du bas (visite guidée, vues, mesure, partage…) ----
@@ -1959,11 +2159,12 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     else if (briefAuto && !(OPTIONS.intro && !window.__UVX_NOINTRO)) setTimeout(briefSoon, 1200);
     function stats() {
       var seen = {}, f = 0, mx = 0;
-      flat().forEach(function (st) { var k = key(st.parts.name); if (seen[k]) return; seen[k] = 1; var c = caps(st); if (c && c.rows.length) { f++; c.rows.forEach(function (r) { if (!/pmr/i.test(r.k)) mx = Math.max(mx, r.n); }); } });
+      flat().forEach(function (st) { var k = key(st.parts.name); if (seen[k]) return; seen[k] = 1; var c = caps(st); if (c && c.rows.length) { f++; if (c.jauge) c.rows.forEach(function (r) { if (!/pmr/i.test(r.k)) mx = Math.max(mx, r.n); }); } });
       return { espaces: Object.keys(seen).length, fiches: f, max: mx };
     }
     return {
       stats: stats, briefSkip: function () { briefAuto = false; },
+      capsAll: function () { return flat().map(function (st) { var c = caps(st); return c ? { n: st.parts.name, z: zoneOf(st), j: c.jauge, rows: c.rows.map(function (r) { return r.k + ':' + r.n; }).join(',') } : null; }).filter(Boolean); },
       stop: function () { if (briefIv) clearInterval(briefIv); clearTimeout(capT); fitT.forEach(clearTimeout); window.removeEventListener('resize', fitDock); },
       render: renderDock,
       onGo: function () { closeAll(); dock.classList.remove('srch'); },
@@ -1991,17 +2192,17 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var ttl = OPTIONS.introTitle || (pj ? pj.textContent.trim() : baseTitle);
     if (v13) {   /* v1.3 : accueil « organisateur » — composition en bas à gauche, chiffres clés du lieu, deux entrées */
       var S = v13.stats(), figs = [];
-      if (S.espaces) figs.push(S.espaces + ' espaces à visiter');
-      if (S.fiches >= 2) figs.push(S.fiches + ' fiches techniques');
-      if (S.max) figs.push('jusqu\'à ' + S.max.toLocaleString('fr-FR') + ' personnes');
+      if (S.espaces) figs.push(T('{n} espaces à visiter', { n: S.espaces }));
+      if (S.fiches >= 2) figs.push(T('{n} fiches techniques', { n: S.fiches }));
+      if (S.max) figs.push(T('jusqu\'à {n} personnes', { n: S.max.toLocaleString(LOC) }));
       intro.classList.add('v13i');
-      intro.innerHTML = vid + '<div class="in"><div class="eb">' + esc(OPTIONS.introSurtitre || 'Visite virtuelle · repérage en ligne') + '</div><h1>' + esc(ttl) + '</h1>' +
+      intro.innerHTML = vid + '<div class="in"><div class="eb">' + esc(OPTIONS.introSurtitre || T('Visite virtuelle · repérage en ligne')) + '</div><h1>' + esc(ttl) + '</h1>' +
         (figs.length ? '<div class="figs">' + figs.map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') + '</div>' : '') +
-        '<div class="btns">' + (OPTIONS.brief !== false ? '<button class="go-btn rep" type="button">' + esc(OPTIONS.introRepere || 'Préparer mon repérage') + '</button>' : '') +
-        '<button class="go-btn free" type="button">' + esc(OPTIONS.brief !== false ? 'Visiter librement' : OPTIONS.introButton) + '</button></div></div>';
+        '<div class="btns">' + (OPTIONS.brief !== false ? '<button class="go-btn rep" type="button">' + esc(OPTIONS.introRepere || T('Préparer mon repérage')) + '</button>' : '') +
+        '<button class="go-btn free" type="button">' + esc(OPTIONS.brief !== false ? T('Visiter librement') : T(OPTIONS.introButton)) + '</button></div></div>';
     } else
-    intro.innerHTML = vid + '<div class="in"><div class="eb">Bienvenue</div><h1>' + ttl + '</h1>' +
-      '<button class="go-btn">' + OPTIONS.introButton + '</button></div>' + (vid ? '' : '<button class="skip">Passer l\'intro</button>');
+    intro.innerHTML = vid + '<div class="in"><div class="eb">' + T('Bienvenue') + '</div><h1>' + ttl + '</h1>' +
+      '<button class="go-btn">' + T(OPTIONS.introButton) + '</button></div>' + (vid ? '' : '<button class="skip">' + T('Passer l\'intro') + '</button>');
     root.appendChild(intro);
     if (aero) aero.hold();
     var leave = function (e) { tick(); intro.classList.add('go'); setTimeout(function () { intro.remove(); }, 2400);
