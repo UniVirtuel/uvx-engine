@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.3.1
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.3.2
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.3.1/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.3.2/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.3.1';
+  var VERSION = '1.3.2';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -1547,6 +1547,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var FORMATS = OPTIONS.formats || ['Séminaire résidentiel', 'Journée d\'étude', 'Convention / plénière', 'Soirée de gala', 'Team building', 'Comité de direction'];
     var LIEU = OPTIONS.introTitle || (document.querySelector('.nav-cnt .section.title .project') || {}).textContent || baseTitle;
     LIEU = String(LIEU).trim();
+    /* v1.3.2 : le nom dans une phrase, avec son article (« Découvrir l'Abbaye de La Ramée ») — fiche client « lieuPhrase » */
+    var LIEU_TXT = OPTIONS.lieuPhrase || LIEU;
     var LSR = 'uvx-rep-' + location.pathname, LSB = 'uvx-brief-' + location.pathname;
     var demo = /[?&]demo(=|&|$)/.test(location.search);
     var rep = [], brief = null;
@@ -1761,7 +1763,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     if (withCaps < 2) finder.style.display = 'none';
     finder.querySelector('select').innerHTML = '<option value="">toutes configurations</option>' + allConfs.map(function (c) { return '<option>' + esc(c) + '</option>'; }).join('');
     finder.onsubmit = function (e) { e.preventDefault(); catN = +finder.querySelector('input').value || 0; catConf = finder.querySelector('select').value; tick(); fillCat(); };
-    cat.querySelector('h1').textContent = 'Découvrir ' + LIEU;
+    cat.querySelector('h1').textContent = 'Découvrir ' + LIEU_TXT;
     cat.querySelector('.sub').textContent = flat().length + ' espaces · ' + zones.length + ' univers';
     var tabs = cat.querySelector('.v-tabs');
     tabs.innerHTML = '<button type="button" data-z="-1">' + esc(LB.tout) + '</button>' + zones.map(function (z, i) { return '<button type="button" data-z="' + i + '">' + esc(z.label) + '</button>'; }).join('');
@@ -1829,7 +1831,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       var shown = list.slice(0, 3);
       var h = '<button class="close" type="button">×</button><div class="v-fd"><div class="lead"><h3>' +
         (none ? 'Aucun espace pour ' + n + ' ' + LB.personnes + (conf ? ' en ' + lc(conf) : '') + (shown[0] ? ' — au plus ' + shown[0].r.n.toLocaleString('fr-FR') : '') : shown.length ? list.length + ' espace' + (list.length > 1 ? 's' : '') + ' pour ' + n + ' ' + (food ? 'couverts' : LB.personnes) + (conf ? ' en ' + lc(conf) : '') : 'Aucun espace pour ' + n + ' ' + LB.personnes + (conf ? ' en ' + lc(conf) : '')) +
-        '</h3><span>' + (none ? 'les plus grandes capacités · ' : '') + 'd\'après les capacités indiquées par ' + esc(LIEU) + '</span></div>';
+        '</h3><span>' + (none ? 'les plus grandes capacités · ' : '') + 'd\'après les capacités indiquées par ' + esc(LIEU_TXT) + '</span></div>';
       if (shown.length) h += '<div class="v-rooms">' + shown.map(function (x, i) {
         return '<button class="v-room" type="button" data-i="' + i + '"><span class="im">' + im(photo(x.st)) + '</span><span class="tx"><span class="t">' + esc(x.st.parts.name) + '</span>' +
           '<span class="c"><b>' + x.r.n.toLocaleString('fr-FR') + '</b>' + esc(rowTxt(x.r).replace(/^[\d\s\u202f]+/, '')) + '</span><span class="m">' + esc([x.c.m2 ? x.c.m2 + ' m²' : '', zoneOf(x.st)].filter(Boolean).join(' · ')) + '</span></span></button>';
