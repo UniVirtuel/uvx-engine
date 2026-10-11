@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.5
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.6
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.5/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.6/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.5';
+  var VERSION = '1.5.6';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -680,6 +680,11 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-ft .tx p{margin:0 0 8px}
 #uvx .v-ft .add{display:flex;gap:10px;margin-top:14px;flex:none}
 #uvx .v-ft .add .v-btn{flex:1}
+/* v1.5.6 (Mickaël) : halo battant sur « Y aller », même rythme que les points de la vue aérienne */
+@keyframes uvxGoHalo{0%{box-shadow:0 0 0 0 rgba(255,255,255,.7)}60%{box-shadow:0 0 0 12px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+#uvx .v-ft .add .v-btn.goto{animation:uvxGoHalo 2.2s cubic-bezier(.25,.6,.3,1) infinite}
+#uvx .v-ft .add .v-btn.goto:hover{animation:none}
+@media (prefers-reduced-motion:reduce){#uvx .v-ft .add .v-btn.goto{animation:none}}
 /* catalogue « Salles & espaces » */
 #uvx .v-cat{position:absolute;left:32px;right:32px;top:72px;bottom:0;border-radius:26px 26px 0 0;padding:28px 36px 0;display:none;flex-direction:column;z-index:3}
 #uvx .v-cat.on{display:flex}
@@ -2156,7 +2161,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var finder = cat.querySelector('.v-finder');
     if (withCaps < 2) finder.style.display = 'none';
     finder.querySelector('select').innerHTML = '<option value="">' + T('toutes configurations') + '</option>' + allConfs.map(function (c) { return '<option value="' + esc(c) + '">' + esc(confTxt(c)) + '</option>'; }).join('');
-    finder.onsubmit = function (e) { e.preventDefault(); catN = +finder.querySelector('input').value || 0; catConf = finder.querySelector('select').value; tick(); fillCat(); };
+    /* v1.5.6 (Mickaël) : une recherche porte sur tout le lieu — « Voir » remet le filtre de catégorie sur « Tous » */
+    finder.onsubmit = function (e) { e.preventDefault(); catN = +finder.querySelector('input').value || 0; catConf = finder.querySelector('select').value; catZ = -1; tick(); fillCat(); };
     cat.querySelector('h1').textContent = T('Découvrir {l}', { l: LIEU_TXT });
     cat.querySelector('.sub').textContent = T('{n} espaces · {z} univers', { n: nbEspaces(), z: zones.length });
     var tabs = cat.querySelector('.v-tabs');
