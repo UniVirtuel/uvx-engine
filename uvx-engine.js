@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.6
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.7
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.6/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.7/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.6';
+  var VERSION = '1.5.7';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -94,7 +94,7 @@
       'Team building': 'Team building', 'Comité de direction': 'Board meeting', 'jauge indicative': 'approximate', 'Modifiable à tout moment': 'Can be changed at any time',
       'Vue d\'ensemble': 'Overview', '{z} univers · {n} espaces': '{z} areas · {n} spaces', '{n} pers.': '{n} ppl', '{e} ?': '{e}?',
       '✓ {c} {n} {p}': '✓ {c} {n} {p}', 'toutes configurations': 'all layouts', 'Découvrir {l}': 'Discover {l}', '{n} espaces · {z} univers': '{n} spaces · {z} areas',
-      '{k} espace pour {n} {u}': '{k} space for {n} {u}', '{k} espaces pour {n} {u}': '{k} spaces for {n} {u}', 'Aucun espace pour {n} {u}': 'No space for {n} {u}',
+      '{k} espace pour {n} {u}': '{k} space for {n} {u}', '{k} espaces pour {n} {u}': '{k} spaces for {n} {u}', 'Aucun espace pour {n} {u}': 'No space for {n} {u}', ' — en table de conférence, {m} places au plus': ' — boardroom seats {m} at most',
       ' en {c}': ' · {c}', ' — au plus {m}': ' — {m} at most', 'les plus grandes capacités · ': 'largest capacities · ', 'd\'après les capacités indiquées par {l}': 'based on the capacities provided by {l}',
       'Voir les {n} espaces →': 'See all {n} spaces →', 'Une question ? Écrire à {nom} →': 'A question? Write to {nom} →', 'couverts': 'covers', 'places': 'seats',
       'Retirer': 'Remove', 'Ajouter d\'autres espaces': 'Add more spaces', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
@@ -131,7 +131,7 @@
       'Team building': 'Team building', 'Comité de direction': 'Comité de dirección', 'jauge indicative': 'orientativo', 'Modifiable à tout moment': 'Modificable en cualquier momento',
       'Vue d\'ensemble': 'Vista general', '{z} univers · {n} espaces': '{z} zonas · {n} espacios', '{n} pers.': '{n} pers.', '{e} ?': '¿{e}?',
       '✓ {c} {n} {p}': '✓ {c} {n} {p}', 'toutes configurations': 'todos los montajes', 'Découvrir {l}': 'Descubrir {l}', '{n} espaces · {z} univers': '{n} espacios · {z} zonas',
-      '{k} espace pour {n} {u}': '{k} espacio para {n} {u}', '{k} espaces pour {n} {u}': '{k} espacios para {n} {u}', 'Aucun espace pour {n} {u}': 'Ningún espacio para {n} {u}',
+      '{k} espace pour {n} {u}': '{k} espacio para {n} {u}', '{k} espaces pour {n} {u}': '{k} espacios para {n} {u}', 'Aucun espace pour {n} {u}': 'Ningún espacio para {n} {u}', ' — en table de conférence, {m} places au plus': ' — en mesa imperial, {m} plazas como máximo',
       ' en {c}': ' en {c}', ' — au plus {m}': ' — {m} como máximo', 'les plus grandes capacités · ': 'mayores capacidades · ', 'd\'après les capacités indiquées par {l}': 'según las capacidades indicadas por {l}',
       'Voir les {n} espaces →': 'Ver los {n} espacios →', 'Une question ? Écrire à {nom} →': '¿Una pregunta? Escribir a {nom} →', 'couverts': 'cubiertos', 'places': 'plazas',
       'Retirer': 'Quitar', 'Ajouter d\'autres espaces': 'Añadir más espacios', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
@@ -168,7 +168,7 @@
       'Team building': 'Teambuilding', 'Comité de direction': 'Vorstandssitzung', 'jauge indicative': 'Richtwert', 'Modifiable à tout moment': 'Jederzeit änderbar',
       'Vue d\'ensemble': 'Überblick', '{z} univers · {n} espaces': '{z} Bereiche · {n} Räume', '{n} pers.': '{n} Pers.', '{e} ?': '{e}?',
       '✓ {c} {n} {p}': '✓ {c} {n} {p}', 'toutes configurations': 'alle Bestuhlungen', 'Découvrir {l}': '{l} entdecken', '{n} espaces · {z} univers': '{n} Räume · {z} Bereiche',
-      '{k} espace pour {n} {u}': '{k} Raum für {n} {u}', '{k} espaces pour {n} {u}': '{k} Räume für {n} {u}', 'Aucun espace pour {n} {u}': 'Kein Raum für {n} {u}',
+      '{k} espace pour {n} {u}': '{k} Raum für {n} {u}', '{k} espaces pour {n} {u}': '{k} Räume für {n} {u}', 'Aucun espace pour {n} {u}': 'Kein Raum für {n} {u}', ' — en table de conférence, {m} places au plus': ' — als Blocktafel höchstens {m} Plätze',
       ' en {c}': ' · {c}', ' — au plus {m}': ' — höchstens {m}', 'les plus grandes capacités · ': 'größte Kapazitäten · ', 'd\'après les capacités indiquées par {l}': 'laut den Kapazitätsangaben von {l}',
       'Voir les {n} espaces →': 'Alle {n} Räume ansehen →', 'Une question ? Écrire à {nom} →': 'Eine Frage? An {nom} schreiben →', 'couverts': 'Gedecke', 'places': 'Plätze',
       'Retirer': 'Entfernen', 'Ajouter d\'autres espaces': 'Weitere Räume hinzufügen', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
@@ -205,7 +205,7 @@
       'Team building': 'Teambuilding', 'Comité de direction': 'Directiecomité', 'jauge indicative': 'indicatief', 'Modifiable à tout moment': 'Altijd aan te passen',
       'Vue d\'ensemble': 'Overzicht', '{z} univers · {n} espaces': '{z} zones · {n} ruimtes', '{n} pers.': '{n} pers.', '{e} ?': '{e}?',
       '✓ {c} {n} {p}': '✓ {c} {n} {p}', 'toutes configurations': 'alle opstellingen', 'Découvrir {l}': 'Ontdek {l}', '{n} espaces · {z} univers': '{n} ruimtes · {z} zones',
-      '{k} espace pour {n} {u}': '{k} ruimte voor {n} {u}', '{k} espaces pour {n} {u}': '{k} ruimtes voor {n} {u}', 'Aucun espace pour {n} {u}': 'Geen ruimte voor {n} {u}',
+      '{k} espace pour {n} {u}': '{k} ruimte voor {n} {u}', '{k} espaces pour {n} {u}': '{k} ruimtes voor {n} {u}', 'Aucun espace pour {n} {u}': 'Geen ruimte voor {n} {u}', ' — en table de conférence, {m} places au plus': ' — in boardroom-opstelling maximaal {m} plaatsen',
       ' en {c}': ' · {c}', ' — au plus {m}': ' — maximaal {m}', 'les plus grandes capacités · ': 'grootste capaciteiten · ', 'd\'après les capacités indiquées par {l}': 'volgens de capaciteiten opgegeven door {l}',
       'Voir les {n} espaces →': 'Bekijk de {n} ruimtes →', 'Une question ? Écrire à {nom} →': 'Een vraag? Schrijf naar {nom} →', 'couverts': 'couverts', 'places': 'plaatsen',
       'Retirer': 'Verwijderen', 'Ajouter d\'autres espaces': 'Meer ruimtes toevoegen', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
@@ -1939,7 +1939,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var CW = '(' + CONF.map(function (c) { return c[0]; }).join('|') + ')';
     function confName(w) { w = String(w || '').toLowerCase(); for (var i = 0; i < CONF.length; i++) if (new RegExp('^(?:' + CONF[i][0] + ')$', 'i').test(w)) return (OPTIONS.configsLibelles && OPTIONS.configsLibelles[CONF[i][1]]) || CONF[i][1]; return null; }
     /* v1.4 : la clé reste le nom français (Théâtre…) ; l'affichage passe par la langue de la visite */
-    function confTxt(k) { return T(k); }
+    function confTxt(k) { return (LANG === 'fr' && k === 'Conférence') ? 'Table de conférence' : T(k); }   /* v1.5.7 : « conférence » des fiches = table unique (boardroom), pas une plénière */
     function num(s) { return parseInt(String(s).replace(/[\s  .,]/g, ''), 10); }
     function clean(t) { return String(t || '').replace(/­/g, '').replace(/[  ]/g, ' '); }
     var capCache = {};
@@ -2214,18 +2214,25 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       if (withCaps < 2) return false;
       var t = clean(text), m = /(\d{1,3}(?:[\s.,]\d{3})+(?!\d)|\d+)/.exec(t); if (!m) return false;   /* v1.4.1 : « 2000 » était lu 200 (signalé par Mickaël sur le CID) */
       var n = num(m[1]); if (!n || n < 2) return false;
-      var cm = new RegExp('(?:^|[^a-zà-ÿ])' + CW + '(?![a-zà-ÿ])', 'i').exec(t), conf = cm ? confName(cm[1]) : '';
+      var cm = new RegExp('(?:^|[^a-zà-ÿ])' + CW + 's?(?![a-zà-ÿ])', 'i').exec(t), conf = cm ? confName(cm[1]) : '';
       if (conf && allConfs.indexOf(conf) < 0) conf = '';
       if (!CAPW.test(t) && !conf) return false;
       /* v1.4 : une question d'hébergement ou de stationnement n'est pas une question de salle → la FAQ répond */
       if (HEB.test(t) || PARK.test(t)) return false;
       var food = /couverts?|d[ée]jeuner|d[îi]ner|repas|restauration|covers?|lunch|dinner|meals?|maaltijd\w*|mittagessen|abendessen|gedecke|essen|cubiertos|almuerzo|comida|cena/i.test(t);
-      var list = flat().map(function (st) {
+      function build(conf) { return flat().map(function (st) {
         var c = caps(st); if (!c || !c.jauge) return null;
         var rows = c.rows.filter(function (r) { return conf ? r.k === conf : (food ? /couverts|d[ée]jeuner|d[îi]ner|cocktail|banquet/i.test(r.k) : !/couverts|d[ée]jeuner|d[îi]ner/i.test(r.k)); });
         var best = rows.filter(function (r) { return r.n >= n; }).sort(function (a, b) { return a.n - b.n; })[0];
         return best ? { st: st, r: best, c: c } : null;
-      }).filter(Boolean).sort(function (a, b) { return a.r.n - b.r.n; });
+      }).filter(Boolean).sort(function (a, b) { return a.r.n - b.r.n; }); }
+      var list = build(conf), boardMax = 0, CL = OPTIONS.configsLibelles || {};
+      /* v1.5.7 : « 50 personnes en conférence » → pour un organisateur, c'est une plénière. Si aucune table de conférence
+         ne suffit, on répond en théâtre et on le dit (signalé par Mickaël sur la Ramée). */
+      if (!list.length && conf && conf === (CL['Conférence'] || 'Conférence') && allConfs.indexOf(CL['Théâtre'] || 'Théâtre') >= 0) {
+        var th = build(CL['Théâtre'] || 'Théâtre');
+        { flat().forEach(function (st) { var c = caps(st); if (c && c.jauge) c.rows.forEach(function (r) { if (r.k === conf) boardMax = Math.max(boardMax, r.n); }); }); conf = CL['Théâtre'] || 'Théâtre'; list = th; }
+      }
       var none = !list.length;
       if (none) list = flat().map(function (st) { var c = caps(st); if (!c || !c.jauge) return null;
           var rows = c.rows.filter(function (r) { return conf ? r.k === conf : !/couverts|d[ée]jeuner|d[îi]ner/i.test(r.k); }).sort(function (a, b) { return b.n - a.n; });
@@ -2235,7 +2242,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       var cf = conf ? T(' en {c}', { c: lc(conf) }) : '', unit = food ? T('couverts') : LB.personnes;
       var h = '<button class="close" type="button">×</button><div class="v-fd"><div class="lead"><h3>' +
         esc(none ? T('Aucun espace pour {n} {u}', { n: n, u: LB.personnes }) + cf + (shown[0] ? T(' — au plus {m}', { m: shown[0].r.n.toLocaleString(LOC) }) : '') : shown.length ? T(list.length > 1 ? '{k} espaces pour {n} {u}' : '{k} espace pour {n} {u}', { k: list.length, n: n, u: unit }) + cf : T('Aucun espace pour {n} {u}', { n: n, u: LB.personnes }) + cf) +
-        '</h3><span>' + (none ? T('les plus grandes capacités · ') : '') + esc(T('d\'après les capacités indiquées par {l}', { l: LIEU_TXT })) + '</span></div>';
+        '</h3><span>' + (none ? T('les plus grandes capacités · ') : '') + (boardMax ? esc(T(' — en table de conférence, {m} places au plus', { m: boardMax }).replace(/^\s*—\s*/, '')) + ' · ' : '') + esc(T('d\'après les capacités indiquées par {l}', { l: LIEU_TXT })) + '</span></div>';
       if (shown.length) h += '<div class="v-rooms">' + shown.map(function (x, i) {
         return '<button class="v-room" type="button" data-i="' + i + '"><span class="im">' + im(photo(x.st)) + '</span><span class="tx"><span class="t">' + esc(x.st.parts.name) + '</span>' +
           '<span class="c"><b>' + x.r.n.toLocaleString(LOC) + '</b>' + esc(rowTxt(x.r).replace(/^[\d\s\u202f]+/, '')) + '</span><span class="m">' + esc([x.c.m2 ? x.c.m2 + ' m²' : '', zoneOf(x.st)].filter(Boolean).join(' · ')) + '</span></span></button>';
