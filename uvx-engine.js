@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.4.1
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.0
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.4.1/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.0/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.4.1';
+  var VERSION = '1.5.0';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -789,6 +789,21 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .uvx-intro.v13i .go-btn.rep{background:var(--uvx-accent)!important;color:var(--uvx-on-accent)}
 #uvx .uvx-intro.v13i .go-btn.free{background:rgba(255,255,255,.14)!important;color:#fff;border:1px solid rgba(255,255,255,.35)!important}
 #uvx .uvx-intro.v13i .go-btn.free:only-child{background:var(--uvx-accent)!important;color:var(--uvx-on-accent);border:0!important}
+/* v1.5 : même bloc posé sur la vue aérienne d'accueil (hors #uvx : il vit dans la popup MPskin). Vue nette, points cliquables. */
+.uvx-aacc{position:absolute;inset:0;z-index:99994;pointer-events:none;display:grid;place-items:end start;text-align:left;font-family:var(--uvx-font);color:#fff;opacity:0;transition:opacity .9s ease}
+.uvx-aacc.on{opacity:1}.uvx-aacc.go{opacity:0;transition:opacity .6s ease}
+.uvx-aacc *{box-sizing:border-box}
+.uvx-aacc::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.82),rgba(var(--uvx-scene-rgb),.3) 38%,transparent 62%),linear-gradient(to right,rgba(var(--uvx-scene-rgb),.4),transparent 50%)}
+.uvx-aacc .in{position:relative;pointer-events:auto;margin:0 0 72px 64px;max-width:min(760px,calc(100vw - 64px))}
+.uvx-aacc .eb{font-size:11px;letter-spacing:.22em;font-weight:600;text-transform:uppercase;color:var(--uvx-accent-scene)}
+.uvx-aacc h1{font:300 56px/1.05 var(--uvx-font)!important;margin:14px 0 18px!important;padding:0!important;letter-spacing:-.01em;color:#fff!important;text-shadow:0 2px 30px rgba(0,0,0,.45);text-transform:none!important}
+.uvx-aacc .figs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.uvx-aacc .figs span{font-size:13px;line-height:1.3;padding:7px 14px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.uvx-aacc .btns{display:flex;gap:12px;flex-wrap:wrap}
+.uvx-aacc .go-btn{height:52px;padding:0 26px;border-radius:14px;font:600 14.5px var(--uvx-font)!important;cursor:pointer;border:0;box-shadow:none;margin:0;text-transform:none!important;letter-spacing:normal}
+.uvx-aacc .go-btn.rep{background:var(--uvx-accent)!important;color:var(--uvx-on-accent)!important}
+.uvx-aacc .go-btn.free{background:rgba(255,255,255,.14)!important;color:#fff!important;border:1px solid rgba(255,255,255,.35)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.uvx-aacc .go-btn.free:only-child{background:var(--uvx-accent)!important;color:var(--uvx-on-accent)!important;border:0!important}
 /* tablette */
 @media (min-width:761px) and (max-width:1100px){
  #uvx .v-dock{width:calc(100vw - 48px)}
@@ -805,6 +820,10 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
  #uvx .uvx-intro.v13i h1{font-size:34px}
  #uvx .uvx-intro.v13i .btns{flex-direction:column}
  #uvx .uvx-intro.v13i .go-btn{width:100%}
+ .uvx-aacc .in{margin:0 18px 34px 18px}
+ .uvx-aacc h1{font-size:34px!important}
+ .uvx-aacc .btns{flex-direction:column}
+ .uvx-aacc .go-btn{width:100%}
  #uvx .v-corner{top:12px;right:12px;flex-direction:column}
  #uvx .v-corner button{width:40px;height:40px}
  #uvx .v-cap{bottom:150px;width:calc(100vw - 32px)}
@@ -1806,7 +1825,14 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       enhance(fr); if (!fr.__uvxAero) { fr.__uvxAero = 1; fr.addEventListener('load', function () { enhance(fr); }); }
     }); }
     function popOpen() { return !!document.querySelector('.fancybox-container.open-fancybox-pano, .fancybox-container iframe[src*="/pano/"]'); }
-    obs = new MutationObserver(function () { scan(); });
+    var acc = null, accDue = false;   /* v1.5 : bloc d'accueil sur la vue aérienne (fourni après la création de v13) */
+    function accTick() {
+      var cont = document.querySelector('.fancybox-container.open-fancybox-pano') || (function () { var f = document.querySelector('.fancybox-container iframe[src*="/pano/"]'); return f ? f.closest('.fancybox-container') : null; })();
+      var cur = document.querySelector('.uvx-aacc');
+      if (cur && (!cont || !cont.contains(cur))) cur.remove();   /* vue fermée (point cliqué, croix) : le bloc part avec elle */
+      if (accDue && acc && cont && !(window.cfg && cfg.targetUrl)) { accDue = false; acc(cont); }
+    }
+    obs = new MutationObserver(function () { scan(); accTick(); });
     obs.observe(document.body, { childList: true, subtree: true });
     scan();
     return {
@@ -1819,8 +1845,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         }, 450));
         timers.push(setTimeout(scan, 600), setTimeout(scan, 2000));
       },
-      open: function () { if (!popOpen() && window.jQuery) jQuery('.click-trigger-cnt-start').first().trigger('click'); timers.push(setTimeout(scan, 800)); },
-      stop: function () { if (obs) obs.disconnect(); timers.forEach(clearTimeout); },
+      open: function () { accDue = !!acc; if (!popOpen() && window.jQuery) jQuery('.click-trigger-cnt-start').first().trigger('click'); timers.push(setTimeout(scan, 800), setTimeout(accTick, 900)); },
+      accueil: function (fn, now) { acc = fn; accDue = !!(fn && now); accTick(); },
+      stop: function () { if (obs) obs.disconnect(); timers.forEach(clearTimeout); var a = document.querySelector('.uvx-aacc'); if (a) a.remove(); },
       scan: scan
     };
   })();
@@ -2292,8 +2319,15 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         if (r.left + r.width / 2 < W / 2) lE = Math.max(lE, r.right); else rS = Math.min(rS, r.left);
         top = Math.min(top, r.top);
       });
-      var side = Math.max(lE, W - rS) + 16, w = Math.min(1000, W - 2 * side);
-      if (w >= 560) { dock.style.width = w + 'px'; return; }
+      /* v1.5 (décision de Mickaël, 11/10/2026) : la barre reste sur la ligne des widgets MPskin et occupe tout l'espace
+         libre entre le dernier widget de gauche et le premier de droite (plus de centrage symétrique). Si, dans cet espace,
+         le champ de question n'a plus ~220 px (« Salle, jauge, question… » lisible), elle monte au-dessus des widgets. */
+      var askEl = dock.querySelector('.uvx-ask'), fixed = dock.getBoundingClientRect().width - (askEl ? askEl.getBoundingClientRect().width : 0);
+      var gL = lE + 16, gR = rS - 16, avail = gR - gL;
+      if (avail - fixed >= 220) {
+        var w = Math.min(avail, 1100);
+        dock.style.left = Math.round(gL + (avail - w) / 2) + 'px'; dock.style.transform = 'none'; dock.style.width = Math.round(w) + 'px'; return;
+      }
       var b = Math.round(H - top + 8);
       dock.style.left = '24px'; dock.style.right = '24px'; dock.style.width = 'auto'; dock.style.transform = 'none'; dock.style.bottom = b + 'px';
       pop.style.bottom = (b + 74) + 'px'; cap.style.bottom = (b + 84) + 'px'; root.style.setProperty('--v-db', (b + 76) + 'px');
@@ -2325,6 +2359,39 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
   })();
 
   /* ---------- F18 : intro (rappelable par le bouton Accueil) ---------- */
+  /* v1.5 : composition « organisateur » commune à l'écran d'accueil et à la vue aérienne */
+  function v13IntroHTML(ttl) {
+    var S = v13.stats(), figs = [];
+    if (S.espaces) figs.push(T('{n} espaces à visiter', { n: S.espaces }));
+    if (S.fiches >= 2) figs.push(T('{n} fiches techniques', { n: S.fiches }));
+    if (S.max) figs.push(T('jusqu\'à {n} personnes', { n: S.max.toLocaleString(LOC) }));
+    return '<div class="in"><div class="eb">' + esc(OPTIONS.introSurtitre || T('Visite virtuelle · repérage en ligne')) + '</div><h1>' + esc(ttl) + '</h1>' +
+      (figs.length ? '<div class="figs">' + figs.map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') + '</div>' : '') +
+      '<div class="btns">' + (OPTIONS.brief !== false ? '<button class="go-btn rep" type="button">' + esc(OPTIONS.introRepere || T('Préparer mon repérage')) + '</button>' : '') +
+      '<button class="go-btn free" type="button">' + esc(OPTIONS.brief !== false ? T('Visiter librement') : T(OPTIONS.introButton)) + '</button></div></div>';
+  }
+  function introTitle() { var pj = document.querySelector('.nav-cnt .section.title .project'); return OPTIONS.introTitle || (pj ? pj.textContent.trim() : baseTitle); }
+  /* v1.5 (demande de Mickaël, 11/10/2026) : la même composition posée sur la vue aérienne d'accueil.
+     La vue reste nette et ses points restent cliquables ; seul le bloc de texte capte les clics.
+     « Visiter librement » entre dans la visite ; « Préparer mon repérage » y entre et ouvre le repérage. */
+  function aeroIntro(box) {
+    var old = document.querySelector('.uvx-aacc'); if (old) old.remove();
+    var el = document.createElement('div'); el.className = 'uvx-aacc';
+    el.innerHTML = v13IntroHTML(introTitle());
+    ['keydown', 'keyup', 'keypress'].forEach(function (t) { el.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    box.appendChild(el);
+    requestAnimationFrame(function () { requestAnimationFrame(function () { el.classList.add('on'); }); });
+    function off() { el.classList.remove('on'); el.classList.add('go'); setTimeout(function () { el.remove(); }, 700); }
+    /* précision de Mickaël (11/10/2026) : le bloc donne accès à la visite sans passer par un point de la vue aérienne —
+       les deux boutons ferment la vue aérienne et entrent dans la visite ; « Préparer mon repérage » ouvre en plus le repérage. */
+    function enter() { off();
+      if (window.jQuery && jQuery.fancybox && jQuery.fancybox.close) jQuery.fancybox.close();
+      else { var x = document.querySelector('.fancybox-container .fancybox-button--close'); if (x) x.click(); } }
+    var fr = el.querySelector('.go-btn.free'), rp = el.querySelector('.go-btn.rep');
+    fr.addEventListener('click', function () { tick(); enter(); });
+    if (rp) rp.addEventListener('click', function () { tick(); v13.briefSkip(); enter(); setTimeout(v13.openBrief, 700); });
+    return el;
+  }
   function showIntro() {
     var old = root.querySelector('.uvx-intro'); if (old) old.remove();
     var intro = document.createElement('div'); intro.className = 'uvx-intro';
@@ -2339,15 +2406,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     if (vid) intro.classList.add('vid');
     var ttl = OPTIONS.introTitle || (pj ? pj.textContent.trim() : baseTitle);
     if (v13) {   /* v1.3 : accueil « organisateur » — composition en bas à gauche, chiffres clés du lieu, deux entrées */
-      var S = v13.stats(), figs = [];
-      if (S.espaces) figs.push(T('{n} espaces à visiter', { n: S.espaces }));
-      if (S.fiches >= 2) figs.push(T('{n} fiches techniques', { n: S.fiches }));
-      if (S.max) figs.push(T('jusqu\'à {n} personnes', { n: S.max.toLocaleString(LOC) }));
       intro.classList.add('v13i');
-      intro.innerHTML = vid + '<div class="in"><div class="eb">' + esc(OPTIONS.introSurtitre || T('Visite virtuelle · repérage en ligne')) + '</div><h1>' + esc(ttl) + '</h1>' +
-        (figs.length ? '<div class="figs">' + figs.map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') + '</div>' : '') +
-        '<div class="btns">' + (OPTIONS.brief !== false ? '<button class="go-btn rep" type="button">' + esc(OPTIONS.introRepere || T('Préparer mon repérage')) + '</button>' : '') +
-        '<button class="go-btn free" type="button">' + esc(OPTIONS.brief !== false ? T('Visiter librement') : T(OPTIONS.introButton)) + '</button></div></div>';
+      intro.innerHTML = vid + v13IntroHTML(ttl);
     } else
     intro.innerHTML = vid + '<div class="in"><div class="eb">' + T('Bienvenue') + '</div><h1>' + ttl + '</h1>' +
       '<button class="go-btn">' + T(OPTIONS.introButton) + '</button></div>' + (vid ? '' : '<button class="skip">' + T('Passer l\'intro') + '</button>');
@@ -2374,6 +2434,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
   root.querySelector('.uvx-tool.home').addEventListener('click', goHome);
   /* v1.2.1 (décision de Mickaël) : s'il y a une vue aérienne d'accueil, pas d'écran d'accueil — elle s'affiche en premier */
   if (OPTIONS.intro && !CHAMP && !aero && !window.__UVX_NOINTRO) showIntro();
+  /* v1.5 : avec une vue aérienne, le bloc d'accueil s'y pose (option aerienAccueil:false pour s'en passer) ; rappelé par la maison */
+  if (aero && v13 && OPTIONS.intro && OPTIONS.aerienAccueil !== false) aero.accueil(aeroIntro, !window.__UVX_NOINTRO);
 
   render();
   window.UVX = {
