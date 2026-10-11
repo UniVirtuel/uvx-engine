@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.0
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.1
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.0/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.1/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.0';
+  var VERSION = '1.5.1';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -804,6 +804,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 .uvx-aacc .go-btn.rep{background:var(--uvx-accent)!important;color:var(--uvx-on-accent)!important}
 .uvx-aacc .go-btn.free{background:rgba(255,255,255,.14)!important;color:#fff!important;border:1px solid rgba(255,255,255,.35)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .uvx-aacc .go-btn.free:only-child{background:var(--uvx-accent)!important;color:var(--uvx-on-accent)!important;border:0!important}
+/* v1.5.1 (Mickaël) : écrans tactiles — seulement le nom du lieu et les deux boutons, la vue aérienne reste dégagée */
+@media (hover:none){.uvx-aacc .eb,.uvx-aacc .figs{display:none}.uvx-aacc h1{margin-top:0!important}
+ .uvx-aacc::before{background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.7),rgba(var(--uvx-scene-rgb),.2) 26%,transparent 42%)}}
 /* tablette */
 @media (min-width:761px) and (max-width:1100px){
  #uvx .v-dock{width:calc(100vw - 48px)}
@@ -823,7 +826,10 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
  .uvx-aacc .in{margin:0 18px 34px 18px}
  .uvx-aacc h1{font-size:34px!important}
  .uvx-aacc .btns{flex-direction:column}
- .uvx-aacc .go-btn{width:100%}
+ .uvx-aacc .go-btn{width:100%;height:46px}
+ .uvx-aacc h1{font-size:30px!important;margin:0 0 14px!important}
+ .uvx-aacc .in{margin:0 18px 26px 18px}
+ .uvx-aacc .btns{gap:8px}
  #uvx .v-corner{top:12px;right:12px;flex-direction:column}
  #uvx .v-corner button{width:40px;height:40px}
  #uvx .v-cap{bottom:150px;width:calc(100vw - 32px)}
@@ -2059,7 +2065,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       var here = dock.querySelector('.v-here');
       here.classList.toggle('inert', !(cur && (cur.fiche || caps(cur))) && !aero);
       here.querySelector('b').textContent = cur ? cur.parts.name : LIEU;
-      here.querySelector('i').textContent = cur ? zoneOf(cur) : T('{z} univers · {n} espaces', { z: zones.length, n: flat().length });
+      here.querySelector('i').textContent = cur ? zoneOf(cur) : T('{z} univers · {n} espaces', { z: zones.length, n: nbEspaces() });
       var cx = dock.querySelector('.v-ctx');
       if (brief && (brief.n || brief.f)) { cx.textContent = [brief.n ? T('{n} pers.', { n: brief.n }) : '', brief.f || ''].filter(Boolean).join(' · '); cx.style.display = ''; }
       else if (OPTIONS.brief !== false) { cx.textContent = T('{e} ?', { e: LB.evenement }); cx.style.display = ''; }
@@ -2122,7 +2128,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     finder.querySelector('select').innerHTML = '<option value="">' + T('toutes configurations') + '</option>' + allConfs.map(function (c) { return '<option value="' + esc(c) + '">' + esc(confTxt(c)) + '</option>'; }).join('');
     finder.onsubmit = function (e) { e.preventDefault(); catN = +finder.querySelector('input').value || 0; catConf = finder.querySelector('select').value; tick(); fillCat(); };
     cat.querySelector('h1').textContent = T('Découvrir {l}', { l: LIEU_TXT });
-    cat.querySelector('.sub').textContent = T('{n} espaces · {z} univers', { n: flat().length, z: zones.length });
+    cat.querySelector('.sub').textContent = T('{n} espaces · {z} univers', { n: nbEspaces(), z: zones.length });
     var tabs = cat.querySelector('.v-tabs');
     tabs.innerHTML = '<button type="button" data-z="-1">' + esc(LB.tout) + '</button>' + zones.map(function (z, i) { return '<button type="button" data-z="' + i + '">' + esc(z.label) + '</button>'; }).join('');
     tabs.onclick = function (e) { var b = e.target.closest('button'); if (!b) return; tick(); catZ = +b.dataset.z; fillCat(); };
@@ -2339,6 +2345,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       var o = !!document.querySelector('.fancybox-container.open-fancybox-pano'); if (o) popWas = true;
       else if (popWas) { clearInterval(briefIv); briefIv = null; briefSoon(); } }, 500); }
     else if (briefAuto && !(OPTIONS.intro && !window.__UVX_NOINTRO)) setTimeout(briefSoon, 1200);
+    /* v1.5.1 : un espace présent dans plusieurs rubriques du menu (ou vu sous plusieurs angles) ne compte qu'une fois —
+       même chiffre partout (accueil, barre du bas, catalogue). */
+    function nbEspaces() { var seen = {}; flat().forEach(function (st) { seen[key(st.parts.name)] = 1; }); return Object.keys(seen).length; }
     function stats() {
       var seen = {}, f = 0, mx = 0;
       flat().forEach(function (st) { var k = key(st.parts.name); if (seen[k]) return; seen[k] = 1; var c = caps(st); if (c && c.rows.length) { f++; if (c.jauge) c.rows.forEach(function (r) { if (!/pmr/i.test(r.k)) mx = Math.max(mx, r.n); }); } });
