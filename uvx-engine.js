@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.1
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.2
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.1/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.2/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.1';
+  var VERSION = '1.5.2';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -806,6 +806,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 .uvx-aacc .go-btn.free:only-child{background:var(--uvx-accent)!important;color:var(--uvx-on-accent)!important;border:0!important}
 /* v1.5.1 (Mickaël) : écrans tactiles — seulement le nom du lieu et les deux boutons, la vue aérienne reste dégagée */
 @media (hover:none){.uvx-aacc .eb,.uvx-aacc .figs{display:none}.uvx-aacc h1{margin-top:0!important}
+ /* centré quand il ne reste que le titre et les boutons (Mickaël, 11/10/2026) */
+ .uvx-aacc{place-items:end center;text-align:center}.uvx-aacc .in{margin-left:auto;margin-right:auto;width:min(760px,calc(100% - 36px))}.uvx-aacc .btns{justify-content:center}
  .uvx-aacc::before{background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.7),rgba(var(--uvx-scene-rgb),.2) 26%,transparent 42%)}}
 /* tablette */
 @media (min-width:761px) and (max-width:1100px){
@@ -1331,10 +1333,21 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
   });
 
   /* Navigation : on déclenche le lien natif du menu (jQuery obligatoire, a.click() ne fait rien) */
+  /* v1.5.2 : le moteur démarre avant la 3D. Constaté au CID : un déplacement demandé avant que le modèle soit prêt
+     est annulé par MPskin, qui replace la visite sur l'étape de départ ~1,5 s après la phase « playing ».
+     Un déplacement demandé trop tôt est donc rejoué une fois la 3D prête et MPskin posé. */
+  var ready3d = false, pendingGo = null, t3d0 = Date.now();
+  function set3dReady() { if (ready3d) return; ready3d = true; var g = pendingGo; pendingGo = null; if (g && g === cur) clickStep(g); }
+  function clickStep(st) {
+    var el = st && liveEl(st); if (!el) return;
+    if ($) $(el).trigger('click'); else el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    if (!CHAMP) try { document.title = st.parts.name + ' — ' + baseTitle; } catch (e) {}
+  }
   function go(st) {
     var el = st && liveEl(st);
     if (!el) return;
     tick();
+    if (!ready3d) pendingGo = st;
     if ($) $(el).trigger('click'); else el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     cur = st; visited[st.key] = 1; cardAway = false;
     try { localStorage.setItem(LS, JSON.stringify(visited)); } catch (e) {}
@@ -1489,6 +1502,14 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         console.warn('[UVX] SDK Matterport absent après 30 s : modules qui en dépendent désactivés'); }
     }, 100);
   }
+  /* v1.5.2 : 3D prête → les déplacements demandés trop tôt sont rejoués (voir go) */
+  withSdk(function (s) {
+    try { s.App.state.subscribe(function (a) {
+      if (ready3d || !/playing/i.test(String(a && a.phase))) return;
+      if (Date.now() - t3d0 < 400) set3dReady(); else setTimeout(set3dReady, 2500);   /* déjà prêt (relance) : tout de suite */
+    }); } catch (e) { set3dReady(); }
+  });
+  setTimeout(set3dReady, 40000);   /* filet : jamais de navigation bloquée */
   /* v1.2.3 : le « ss » des liens MPskin compte à partir de 1, l'index Matterport (cfg.sweepR) à partir de 0.
      Vérifié en ouvrant ?ss=451 / 447 / 624 : le point atteint a l'index 450 / 446 / 623. */
   var byIdx = {}; try { Object.values(cfg.sweepR || {}).forEach(function (r) { byIdx[r.index + 1] = r.uuid; }); } catch (e) {}
@@ -2452,6 +2473,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     setCharte: function (ch) { CHARTE = uvxCharte(ch); OPTIONS.charte = ch; style.textContent = CHARTE.css + css; window.UVX.charte = CHARTE; return CHARTE.report; },
     home: goHome, mode: OPTIONS.mode, champPlace: champPlace,
     faq: FAQ, ask: answer, aero: aero, v13: v13,
+    ready3d: function () { return ready3d; },
     faqMisses: function () { try { return JSON.parse(localStorage.getItem('uvx-faq-miss') || '[]'); } catch (e) { return []; } },
     destroy: function () {
       hsSubs.forEach(function (s) { try { s.cancel(); } catch (e) {} });
@@ -2491,7 +2513,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var t0 = Date.now();
     (function poll() {
       var waited = Date.now() - t0;
-      if (menuReady() && ((window.cfg && window.cfg.mpSdk) || waited > 20000)) return setTimeout(fn, 300);
+      /* v1.5.2 : démarrage dès que le menu MPskin est en place, sans attendre la connexion au SDK Matterport
+         (3 à 6 s de plus) ; les modules qui en dépendent s'y raccrochent d'eux-mêmes (file sdkWait). */
+      if (menuReady()) return setTimeout(fn, 0);
       if (waited > 45000) return console.warn('[UVX] ' + label + ' : page MPskin non prête après 45 s, moteur non démarré');
       setTimeout(poll, 250);
     })();
