@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.2
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.3
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.2/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.3/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.2';
+  var VERSION = '1.5.3';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -852,6 +852,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
  #uvx .v-room .im{width:96px;height:auto;min-height:78px;flex:none}
  #uvx .v-ft,#uvx .v-rep{left:0;right:0;width:auto;top:auto;bottom:0;max-height:82vh;border-radius:24px 24px 0 0}
  #uvx .v-ft .ph{height:150px}
+ #uvx .v-ft.here .ph{height:0}
+ #uvx .v-ft.here .sc{padding-top:22px}
+ #uvx .v-ft,#uvx .v-rep{background:rgb(var(--uvx-panel-rgb))!important}
  #uvx .v-cat{left:0;right:0;top:56px;padding:18px 14px 0;border-radius:22px 22px 0 0}
  #uvx .v-cat h1{font-size:22px}
  #uvx .v-finder{margin-left:0;width:100%;flex-wrap:wrap;border-radius:20px;padding:10px 12px;row-gap:10px}
@@ -2118,6 +2121,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       if (!st) return; ftSt = st; closeAll(ft);
       var c = caps(st), ph = photo(st), N = brief && brief.n;
       var p = ft.querySelector('.ph'); p.style.backgroundImage = ph ? 'url("' + ph + '")' : ''; p.classList.toggle('none', !ph);
+      /* v1.5.3 (Mickaël) : sur téléphone, pas de photo quand on est déjà dans l'espace — la 3D le montre juste au-dessus */
+      ft.classList.toggle('here', !!(cur && key(cur.parts.name) === key(st.parts.name)));
       var fit = ft.querySelector('.fit'), ok = N && c && c.max >= N;
       fit.textContent = '✓ ' + LB.convient + ' ' + N + ' ' + LB.personnes; fit.style.display = ok && ph ? '' : 'none';
       var h = '<div class="v-eb">' + esc(st.group || zones[st.zi].label) + '</div><h2>' + esc(st.parts.name) + '</h2>';
