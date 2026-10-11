@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.4
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.5
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.4/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.5/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.4';
+  var VERSION = '1.5.5';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -97,7 +97,7 @@
       '{k} espace pour {n} {u}': '{k} space for {n} {u}', '{k} espaces pour {n} {u}': '{k} spaces for {n} {u}', 'Aucun espace pour {n} {u}': 'No space for {n} {u}',
       ' en {c}': ' · {c}', ' — au plus {m}': ' — {m} at most', 'les plus grandes capacités · ': 'largest capacities · ', 'd\'après les capacités indiquées par {l}': 'based on the capacities provided by {l}',
       'Voir les {n} espaces →': 'See all {n} spaces →', 'Une question ? Écrire à {nom} →': 'A question? Write to {nom} →', 'couverts': 'covers', 'places': 'seats',
-      'Retirer': 'Remove', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
+      'Retirer': 'Remove', 'Ajouter d\'autres espaces': 'Add more spaces', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
         'Add the spaces you like from their factsheet (♡ “{a}”). Your selection is then sent in one click to the sales team, who will send you a proposal.',
       'Envoyé à {nom}': 'Sent to {nom}', 'l\'équipe commerciale': 'the sales team', '{l} · repérage': '{l} · site inspection',
       'Vous êtes ici · {s}': 'You are here · {s}', '{n} espaces sur ce niveau · cliquez un repère pour y aller': '{n} spaces on this level · click a marker to go there',
@@ -134,7 +134,7 @@
       '{k} espace pour {n} {u}': '{k} espacio para {n} {u}', '{k} espaces pour {n} {u}': '{k} espacios para {n} {u}', 'Aucun espace pour {n} {u}': 'Ningún espacio para {n} {u}',
       ' en {c}': ' en {c}', ' — au plus {m}': ' — {m} como máximo', 'les plus grandes capacités · ': 'mayores capacidades · ', 'd\'après les capacités indiquées par {l}': 'según las capacidades indicadas por {l}',
       'Voir les {n} espaces →': 'Ver los {n} espacios →', 'Une question ? Écrire à {nom} →': '¿Una pregunta? Escribir a {nom} →', 'couverts': 'cubiertos', 'places': 'plazas',
-      'Retirer': 'Quitar', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
+      'Retirer': 'Quitar', 'Ajouter d\'autres espaces': 'Añadir más espacios', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
         'Añada los espacios que le interesen desde su ficha (♡ «{a}»). Su selección se envía después con un clic al equipo comercial, que le enviará una propuesta.',
       'Envoyé à {nom}': 'Enviado a {nom}', 'l\'équipe commerciale': 'el equipo comercial', '{l} · repérage': '{l} · visita de inspección',
       'Vous êtes ici · {s}': 'Está aquí · {s}', '{n} espaces sur ce niveau · cliquez un repère pour y aller': '{n} espacios en este nivel · haga clic en un punto para ir',
@@ -171,7 +171,7 @@
       '{k} espace pour {n} {u}': '{k} Raum für {n} {u}', '{k} espaces pour {n} {u}': '{k} Räume für {n} {u}', 'Aucun espace pour {n} {u}': 'Kein Raum für {n} {u}',
       ' en {c}': ' · {c}', ' — au plus {m}': ' — höchstens {m}', 'les plus grandes capacités · ': 'größte Kapazitäten · ', 'd\'après les capacités indiquées par {l}': 'laut den Kapazitätsangaben von {l}',
       'Voir les {n} espaces →': 'Alle {n} Räume ansehen →', 'Une question ? Écrire à {nom} →': 'Eine Frage? An {nom} schreiben →', 'couverts': 'Gedecke', 'places': 'Plätze',
-      'Retirer': 'Entfernen', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
+      'Retirer': 'Entfernen', 'Ajouter d\'autres espaces': 'Weitere Räume hinzufügen', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
         'Fügen Sie die Räume, die Sie interessieren, über ihr Datenblatt hinzu (♡ „{a}“). Ihre Auswahl geht dann mit einem Klick an das Vertriebsteam, das Ihnen ein Angebot schickt.',
       'Envoyé à {nom}': 'Geht an {nom}', 'l\'équipe commerciale': 'das Vertriebsteam', '{l} · repérage': '{l} · Besichtigung',
       'Vous êtes ici · {s}': 'Sie sind hier · {s}', '{n} espaces sur ce niveau · cliquez un repère pour y aller': '{n} Räume auf dieser Ebene · Markierung anklicken, um hinzugehen',
@@ -208,7 +208,7 @@
       '{k} espace pour {n} {u}': '{k} ruimte voor {n} {u}', '{k} espaces pour {n} {u}': '{k} ruimtes voor {n} {u}', 'Aucun espace pour {n} {u}': 'Geen ruimte voor {n} {u}',
       ' en {c}': ' · {c}', ' — au plus {m}': ' — maximaal {m}', 'les plus grandes capacités · ': 'grootste capaciteiten · ', 'd\'après les capacités indiquées par {l}': 'volgens de capaciteiten opgegeven door {l}',
       'Voir les {n} espaces →': 'Bekijk de {n} ruimtes →', 'Une question ? Écrire à {nom} →': 'Een vraag? Schrijf naar {nom} →', 'couverts': 'couverts', 'places': 'plaatsen',
-      'Retirer': 'Verwijderen', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
+      'Retirer': 'Verwijderen', 'Ajouter d\'autres espaces': 'Meer ruimtes toevoegen', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
         'Voeg de ruimtes die u interesseren toe vanuit hun fiche (♡ „{a}”). Uw selectie wordt daarna met één klik naar het verkoopteam gestuurd, dat u een offerte bezorgt.',
       'Envoyé à {nom}': 'Verzonden naar {nom}', 'l\'équipe commerciale': 'het verkoopteam', '{l} · repérage': '{l} · locatiebezoek',
       'Vous êtes ici · {s}': 'U bent hier · {s}', '{n} espaces sur ce niveau · cliquez un repère pour y aller': '{n} ruimtes op dit niveau · klik op een markering om erheen te gaan',
@@ -729,6 +729,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-rep .empty{font-size:13.5px;line-height:1.55;opacity:.75}
 #uvx .v-rep .foot{margin-top:12px}
 #uvx .v-rep .foot .v-btn{width:100%;height:52px;font-size:14.5px}
+#uvx .v-rep .foot .v-tocat{display:flex;align-items:center;justify-content:center;gap:10px}
+#uvx .v-rep .foot .v-more{display:block;margin:12px auto 0;background:none!important;border:0;color:var(--uvx-fg);font-size:13px;opacity:.8;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 #uvx .v-rep .foot .s{text-align:center;font-size:11.5px;opacity:.6;margin-top:10px}
 /* brief d'entrée */
 #uvx .v-brief{position:absolute;inset:0;display:none;place-items:center;background:rgba(var(--uvx-scene-rgb),.35);pointer-events:auto;z-index:5}
@@ -1856,10 +1858,13 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       enhance(fr); if (!fr.__uvxAero) { fr.__uvxAero = 1; fr.addEventListener('load', function () { enhance(fr); }); }
     }); }
     function popOpen() { return !!document.querySelector('.fancybox-container.open-fancybox-pano, .fancybox-container iframe[src*="/pano/"]'); }
-    var acc = null, accDue = false;   /* v1.5 : bloc d'accueil sur la vue aérienne (fourni après la création de v13) */
+    var acc = null, accDue = false, popWasOpen = null;   /* v1.5 : bloc d'accueil sur la vue aérienne (fourni après la création de v13) */
     function accTick() {
       var cont = document.querySelector('.fancybox-container.open-fancybox-pano') || (function () { var f = document.querySelector('.fancybox-container iframe[src*="/pano/"]'); return f ? f.closest('.fancybox-container') : null; })();
       var cur = document.querySelector('.uvx-aacc');
+      /* v1.5.5 : vue aérienne rouverte par l'interface MPskin (modes champ / modules) → le bloc revient avec elle */
+      if (popWasOpen === false && cont && acc) accDue = true;
+      popWasOpen = !!cont;
       if (cur && (!cont || !cont.contains(cur))) cur.remove();   /* vue fermée (point cliqué, croix) : le bloc part avec elle */
       if (accDue && acc && cont && !(window.cfg && cfg.targetUrl)) { accDue = false; acc(cont); }
     }
@@ -2261,6 +2266,11 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       ls.querySelectorAll('.x').forEach(function (b) { b.onclick = function () { tick(); rep.splice(+b.dataset.i, 1); save(); renderDock(); openRep(); }; });
       var f = repP.querySelector('.foot'), c = OPTIONS.contact;
       f.innerHTML = rep.length && c && c.email ? '<a class="v-btn p" href="' + proposal() + '">' + esc(LB.proposer) + '</a><div class="s">' + esc(T('Envoyé à {nom}', { nom: c.nom || T("l'équipe commerciale") })) + (c.libelle ? ' · ' + esc(c.libelle) : '') + '</div>' : '';
+      /* v1.5.5 (Mickaël) : accès direct au catalogue depuis le repérage — bouton principal quand il est vide, lien discret sinon */
+      f.insertAdjacentHTML(rep.length ? 'beforeend' : 'afterbegin', rep.length ?
+        '<button class="v-more" type="button">+ ' + esc(T('Ajouter d\'autres espaces')) + '</button>' :
+        '<button class="v-btn p v-tocat" type="button">' + SV.grid + '<span>' + esc(LB.espaces) + '</span></button>');
+      var tc = f.querySelector('.v-tocat, .v-more'); if (tc) tc.onclick = function () { tick(); openCat(-1); };
     }
     function proposal() {
       var c = OPTIONS.contact || {}, n = brief && brief.n, f = brief && brief.f;
@@ -2411,7 +2421,11 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
   function aeroIntro(box) {
     var old = document.querySelector('.uvx-aacc'); if (old) old.remove();
     var el = document.createElement('div'); el.className = 'uvx-aacc';
-    el.innerHTML = v13IntroHTML(introTitle());
+    /* v1.5.5 (Mickaël, 11/10/2026) : sans l'interface complète (modes « champ » et « modules », interface MPskin
+       classique derrière), seulement le nom du lieu et « Visiter librement » — ni chiffres clés ni repérage */
+    el.innerHTML = v13 ? v13IntroHTML(introTitle()) :
+      '<div class="in"><h1>' + esc(introTitle()) + '</h1><div class="btns"><button class="go-btn free" type="button">' + esc(T('Visiter librement')) + '</button></div></div>';
+    if (!v13) el.classList.add('simple');
     ['keydown', 'keyup', 'keypress'].forEach(function (t) { el.addEventListener(t, function (e) { e.stopPropagation(); }); });
     box.appendChild(el);
     requestAnimationFrame(function () { requestAnimationFrame(function () { el.classList.add('on'); }); });
@@ -2423,7 +2437,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       else { var x = document.querySelector('.fancybox-container .fancybox-button--close'); if (x) x.click(); } }
     var fr = el.querySelector('.go-btn.free'), rp = el.querySelector('.go-btn.rep');
     fr.addEventListener('click', function () { tick(); enter(); });
-    if (rp) rp.addEventListener('click', function () { tick(); v13.briefSkip(); enter(); setTimeout(v13.openBrief, 700); });
+    if (rp && v13) rp.addEventListener('click', function () { tick(); v13.briefSkip(); enter(); setTimeout(v13.openBrief, 700); });
     return el;
   }
   function showIntro() {
@@ -2469,7 +2483,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
   /* v1.2.1 (décision de Mickaël) : s'il y a une vue aérienne d'accueil, pas d'écran d'accueil — elle s'affiche en premier */
   if (OPTIONS.intro && !CHAMP && !aero && !window.__UVX_NOINTRO) showIntro();
   /* v1.5 : avec une vue aérienne, le bloc d'accueil s'y pose (option aerienAccueil:false pour s'en passer) ; rappelé par la maison */
-  if (aero && v13 && OPTIONS.intro && OPTIONS.aerienAccueil !== false) aero.accueil(aeroIntro, !window.__UVX_NOINTRO);
+  if (aero && OPTIONS.intro && OPTIONS.aerienAccueil !== false) aero.accueil(aeroIntro, !window.__UVX_NOINTRO);
 
   render();
   window.UVX = {
