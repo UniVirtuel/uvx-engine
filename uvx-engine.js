@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.7
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.8
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.7/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.8/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.7';
+  var VERSION = '1.5.8';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -94,7 +94,7 @@
       'Team building': 'Team building', 'Comité de direction': 'Board meeting', 'jauge indicative': 'approximate', 'Modifiable à tout moment': 'Can be changed at any time',
       'Vue d\'ensemble': 'Overview', '{z} univers · {n} espaces': '{z} areas · {n} spaces', '{n} pers.': '{n} ppl', '{e} ?': '{e}?',
       '✓ {c} {n} {p}': '✓ {c} {n} {p}', 'toutes configurations': 'all layouts', 'Découvrir {l}': 'Discover {l}', '{n} espaces · {z} univers': '{n} spaces · {z} areas',
-      '{k} espace pour {n} {u}': '{k} space for {n} {u}', '{k} espaces pour {n} {u}': '{k} spaces for {n} {u}', 'Aucun espace pour {n} {u}': 'No space for {n} {u}', ' — en table de conférence, {m} places au plus': ' — boardroom seats {m} at most',
+      '{k} espace pour {n} {u}': '{k} space for {n} {u}', '{k} espaces pour {n} {u}': '{k} spaces for {n} {u}', 'Aucun espace pour {n} {u}': 'No space for {n} {u}', ' — en table de conférence, {m} places au plus': ' — boardroom seats {m} at most', 'Facultatif — la visite s\'adapte à vos réponses': 'Optional — the tour adapts to your answers', 'Hébergement': 'Accommodation', 'avec hébergement': 'with accommodation', 'Dates envisagées': 'Preferred dates', 'Du': 'From', 'Au': 'To', 'facultatif': 'optional', 'Dates flexibles': 'Flexible dates', 'Envoyer la demande': 'Send the request', 'du {a} au {b}': 'from {a} to {b}', 'le {a}': 'on {a}', 'à préciser': 'to be confirmed', 'dates flexibles': 'flexible dates', 'Hébergement : {v}': 'Accommodation: {v}', 'oui': 'yes', 'non': 'no',
       ' en {c}': ' · {c}', ' — au plus {m}': ' — {m} at most', 'les plus grandes capacités · ': 'largest capacities · ', 'd\'après les capacités indiquées par {l}': 'based on the capacities provided by {l}',
       'Voir les {n} espaces →': 'See all {n} spaces →', 'Une question ? Écrire à {nom} →': 'A question? Write to {nom} →', 'couverts': 'covers', 'places': 'seats',
       'Retirer': 'Remove', 'Ajouter d\'autres espaces': 'Add more spaces', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
@@ -131,7 +131,7 @@
       'Team building': 'Team building', 'Comité de direction': 'Comité de dirección', 'jauge indicative': 'orientativo', 'Modifiable à tout moment': 'Modificable en cualquier momento',
       'Vue d\'ensemble': 'Vista general', '{z} univers · {n} espaces': '{z} zonas · {n} espacios', '{n} pers.': '{n} pers.', '{e} ?': '¿{e}?',
       '✓ {c} {n} {p}': '✓ {c} {n} {p}', 'toutes configurations': 'todos los montajes', 'Découvrir {l}': 'Descubrir {l}', '{n} espaces · {z} univers': '{n} espacios · {z} zonas',
-      '{k} espace pour {n} {u}': '{k} espacio para {n} {u}', '{k} espaces pour {n} {u}': '{k} espacios para {n} {u}', 'Aucun espace pour {n} {u}': 'Ningún espacio para {n} {u}', ' — en table de conférence, {m} places au plus': ' — en mesa imperial, {m} plazas como máximo',
+      '{k} espace pour {n} {u}': '{k} espacio para {n} {u}', '{k} espaces pour {n} {u}': '{k} espacios para {n} {u}', 'Aucun espace pour {n} {u}': 'Ningún espacio para {n} {u}', ' — en table de conférence, {m} places au plus': ' — en mesa imperial, {m} plazas como máximo', 'Facultatif — la visite s\'adapte à vos réponses': 'Opcional — la visita se adapta a sus respuestas', 'Hébergement': 'Alojamiento', 'avec hébergement': 'con alojamiento', 'Dates envisagées': 'Fechas previstas', 'Du': 'Del', 'Au': 'Al', 'facultatif': 'opcional', 'Dates flexibles': 'Fechas flexibles', 'Envoyer la demande': 'Enviar la solicitud', 'du {a} au {b}': 'del {a} al {b}', 'le {a}': 'el {a}', 'à préciser': 'por confirmar', 'dates flexibles': 'fechas flexibles', 'Hébergement : {v}': 'Alojamiento: {v}', 'oui': 'sí', 'non': 'no',
       ' en {c}': ' en {c}', ' — au plus {m}': ' — {m} como máximo', 'les plus grandes capacités · ': 'mayores capacidades · ', 'd\'après les capacités indiquées par {l}': 'según las capacidades indicadas por {l}',
       'Voir les {n} espaces →': 'Ver los {n} espacios →', 'Une question ? Écrire à {nom} →': '¿Una pregunta? Escribir a {nom} →', 'couverts': 'cubiertos', 'places': 'plazas',
       'Retirer': 'Quitar', 'Ajouter d\'autres espaces': 'Añadir más espacios', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
@@ -168,7 +168,7 @@
       'Team building': 'Teambuilding', 'Comité de direction': 'Vorstandssitzung', 'jauge indicative': 'Richtwert', 'Modifiable à tout moment': 'Jederzeit änderbar',
       'Vue d\'ensemble': 'Überblick', '{z} univers · {n} espaces': '{z} Bereiche · {n} Räume', '{n} pers.': '{n} Pers.', '{e} ?': '{e}?',
       '✓ {c} {n} {p}': '✓ {c} {n} {p}', 'toutes configurations': 'alle Bestuhlungen', 'Découvrir {l}': '{l} entdecken', '{n} espaces · {z} univers': '{n} Räume · {z} Bereiche',
-      '{k} espace pour {n} {u}': '{k} Raum für {n} {u}', '{k} espaces pour {n} {u}': '{k} Räume für {n} {u}', 'Aucun espace pour {n} {u}': 'Kein Raum für {n} {u}', ' — en table de conférence, {m} places au plus': ' — als Blocktafel höchstens {m} Plätze',
+      '{k} espace pour {n} {u}': '{k} Raum für {n} {u}', '{k} espaces pour {n} {u}': '{k} Räume für {n} {u}', 'Aucun espace pour {n} {u}': 'Kein Raum für {n} {u}', ' — en table de conférence, {m} places au plus': ' — als Blocktafel höchstens {m} Plätze', 'Facultatif — la visite s\'adapte à vos réponses': 'Optional — der Rundgang passt sich Ihren Antworten an', 'Hébergement': 'Übernachtung', 'avec hébergement': 'mit Übernachtung', 'Dates envisagées': 'Gewünschte Termine', 'Du': 'Von', 'Au': 'Bis', 'facultatif': 'optional', 'Dates flexibles': 'Termine flexibel', 'Envoyer la demande': 'Anfrage senden', 'du {a} au {b}': 'vom {a} bis {b}', 'le {a}': 'am {a}', 'à préciser': 'noch offen', 'dates flexibles': 'Termine flexibel', 'Hébergement : {v}': 'Übernachtung: {v}', 'oui': 'ja', 'non': 'nein',
       ' en {c}': ' · {c}', ' — au plus {m}': ' — höchstens {m}', 'les plus grandes capacités · ': 'größte Kapazitäten · ', 'd\'après les capacités indiquées par {l}': 'laut den Kapazitätsangaben von {l}',
       'Voir les {n} espaces →': 'Alle {n} Räume ansehen →', 'Une question ? Écrire à {nom} →': 'Eine Frage? An {nom} schreiben →', 'couverts': 'Gedecke', 'places': 'Plätze',
       'Retirer': 'Entfernen', 'Ajouter d\'autres espaces': 'Weitere Räume hinzufügen', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
@@ -205,7 +205,7 @@
       'Team building': 'Teambuilding', 'Comité de direction': 'Directiecomité', 'jauge indicative': 'indicatief', 'Modifiable à tout moment': 'Altijd aan te passen',
       'Vue d\'ensemble': 'Overzicht', '{z} univers · {n} espaces': '{z} zones · {n} ruimtes', '{n} pers.': '{n} pers.', '{e} ?': '{e}?',
       '✓ {c} {n} {p}': '✓ {c} {n} {p}', 'toutes configurations': 'alle opstellingen', 'Découvrir {l}': 'Ontdek {l}', '{n} espaces · {z} univers': '{n} ruimtes · {z} zones',
-      '{k} espace pour {n} {u}': '{k} ruimte voor {n} {u}', '{k} espaces pour {n} {u}': '{k} ruimtes voor {n} {u}', 'Aucun espace pour {n} {u}': 'Geen ruimte voor {n} {u}', ' — en table de conférence, {m} places au plus': ' — in boardroom-opstelling maximaal {m} plaatsen',
+      '{k} espace pour {n} {u}': '{k} ruimte voor {n} {u}', '{k} espaces pour {n} {u}': '{k} ruimtes voor {n} {u}', 'Aucun espace pour {n} {u}': 'Geen ruimte voor {n} {u}', ' — en table de conférence, {m} places au plus': ' — in boardroom-opstelling maximaal {m} plaatsen', 'Facultatif — la visite s\'adapte à vos réponses': 'Optioneel — de rondleiding past zich aan uw antwoorden aan', 'Hébergement': 'Overnachting', 'avec hébergement': 'met overnachting', 'Dates envisagées': 'Gewenste data', 'Du': 'Van', 'Au': 'Tot', 'facultatif': 'optioneel', 'Dates flexibles': 'Flexibele data', 'Envoyer la demande': 'Aanvraag versturen', 'du {a} au {b}': 'van {a} tot {b}', 'le {a}': 'op {a}', 'à préciser': 'nog te bepalen', 'dates flexibles': 'flexibele data', 'Hébergement : {v}': 'Overnachting: {v}', 'oui': 'ja', 'non': 'nee',
       ' en {c}': ' · {c}', ' — au plus {m}': ' — maximaal {m}', 'les plus grandes capacités · ': 'grootste capaciteiten · ', 'd\'après les capacités indiquées par {l}': 'volgens de capaciteiten opgegeven door {l}',
       'Voir les {n} espaces →': 'Bekijk de {n} ruimtes →', 'Une question ? Écrire à {nom} →': 'Een vraag? Schrijf naar {nom} →', 'couverts': 'couverts', 'places': 'plaatsen',
       'Retirer': 'Verwijderen', 'Ajouter d\'autres espaces': 'Meer ruimtes toevoegen', 'Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.':
@@ -755,6 +755,42 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-brief .btns{display:flex;align-items:center;gap:16px;margin-top:28px;flex-wrap:wrap}
 #uvx .v-brief .free{background:none!important;padding:0 0 2px;font-size:13px;opacity:.8;border-bottom:1px solid rgba(var(--uvx-fg-rgb),.35)!important}
 #uvx .v-brief .note{margin-left:auto;font-size:11px;opacity:.5}
+/* v1.5.8 : hébergement (bascule) */
+#uvx .v-num{flex-wrap:wrap}
+#uvx .v-heb{display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 16px;border-radius:16px;font-size:13px;background:none!important;border:1px solid rgba(var(--uvx-fg-rgb),.2)!important;color:var(--uvx-fg)}
+#uvx .v-heb svg{width:20px;height:20px;flex:none}
+#uvx .v-num .v-heb{width:auto;font-size:13px;font-weight:400}#uvx .v-num .v-heb.on{font-weight:600}
+#uvx .v-heb.on{background:var(--uvx-sheet)!important;color:var(--uvx-on-sheet);border-color:var(--uvx-sheet)!important;font-weight:600}
+#uvx .v-brief .sub-m{display:none}
+/* v1.5.8 : dates de la demande de proposition */
+#uvx .v-dates{display:none;margin:4px 0 12px}
+#uvx .v-dates.on{display:block}
+#uvx .v-dates .t{font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.65;margin-bottom:8px}
+#uvx .v-dates .row{display:flex;gap:10px}
+#uvx .v-dates .row label{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;font-size:11.5px;opacity:.9}
+#uvx .v-dates input[type=date]{width:100%;min-width:0;height:44px;border-radius:12px;border:0!important;background:rgba(var(--uvx-fg-rgb),.1)!important;color:var(--uvx-fg);font:500 14px var(--uvx-font);padding:0 10px;box-sizing:border-box;-webkit-appearance:none;appearance:none;outline:0}
+#uvx .v-dates .fx{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12.5px;opacity:.85;cursor:pointer}
+#uvx .v-dates .fx input{width:16px;height:16px;margin:0;accent-color:var(--uvx-sheet)}
+@media (max-width:760px){
+ #uvx .v-brief{place-items:end center;padding:10px 0}
+ #uvx .v-brief .in{width:calc(100vw - 20px);max-height:calc(100% - 20px);overflow:auto;padding:18px 18px 0;box-sizing:border-box;border-radius:22px;-webkit-overflow-scrolling:touch}
+ #uvx .v-brief .v-eb{font-size:10.5px}
+ #uvx .v-brief h1{font-size:24px;margin:6px 0 2px;line-height:1.15}
+ #uvx .v-brief .sub{display:none}#uvx .v-brief .sub-m{display:block;font-size:12.5px;opacity:.75}
+ #uvx .v-brief label{margin:14px 0 7px;font-size:10.5px}
+ #uvx .v-num{gap:8px}
+ #uvx .v-num .box{width:auto;flex:1 1 0;min-width:120px;height:44px;border-radius:13px}
+ #uvx .v-num button{width:40px;height:44px;font-size:20px}
+ #uvx .v-num input{height:44px;font-size:19px}
+ #uvx .v-num .v-heb{height:44px;padding:0 12px;border-radius:13px;font-size:12.5px;flex:0 0 auto}
+ #uvx .v-num span{order:3;flex-basis:100%;font-size:10.5px;margin-top:-2px}
+ #uvx .v-fmt{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+ #uvx .v-fmt button{height:auto;min-height:38px;padding:6px 8px;font-size:12.5px;line-height:1.15;border-radius:13px;white-space:normal;text-align:center}
+ #uvx .v-brief .btns{position:sticky;bottom:0;margin:14px -18px 0;padding:12px 18px 16px;gap:14px;flex-wrap:nowrap;background:rgba(var(--uvx-panel-rgb),.98)}
+ #uvx .v-brief .btns .go{flex:1;height:46px;padding:0 10px}
+ #uvx .v-brief .free{white-space:nowrap;font-size:12.5px}
+ #uvx .v-brief .note{display:none}
+}
 /* plan de niveau */
 #uvx .v-plan{position:absolute;left:32px;right:32px;top:72px;bottom:var(--v-db,100px);border-radius:26px;background:#f4f1ec;color:#222;display:none;overflow:hidden;z-index:3;pointer-events:auto;box-shadow:0 30px 80px rgba(0,0,0,.45)}
 #uvx .v-plan.on{display:block}
@@ -1908,6 +1944,12 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     Object.keys(LB).forEach(function (k) { LB[k] = T(LB[k]); });
     Object.keys(OPTIONS.libelles || {}).forEach(function (k) { if (OPTIONS.libelles[k]) LB[k] = OPTIONS.libelles[k]; });
     var FORMATS = OPTIONS.formats || ['Séminaire résidentiel', 'Journée d\'étude', 'Convention / plénière', 'Soirée de gala', 'Team building', 'Comité de direction'].map(function (f) { return T(f); });
+    /* v1.5.8 — hébergement : la fiche client décide (OPTIONS.hebergement = true / false) ; à défaut, le moteur cherche des
+       chambres dans les espaces du menu (nom, zone, groupe). Jamais affiché pour un lieu sans hébergement (CID). */
+    var HASHEB = typeof OPTIONS.hebergement === 'boolean' ? OPTIONS.hebergement : flat().some(function (st) {
+      var t = st.parts.name + ' ' + (zoneOf(st) || '') + ' ' + (st.group || '');
+      return /(^|[^a-zà-ÿ])(chambres?|h[ée]bergements?|bedrooms?|guest ?rooms?|kamers?|zimmer|habitaciones?)(?![a-zà-ÿ])/i.test(t) && !/froides?|cold/i.test(t); });
+    var SVBED = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6v13M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></svg>';
     var LIEU = OPTIONS.introTitle || (document.querySelector('.nav-cnt .section.title .project') || {}).textContent || baseTitle;
     LIEU = String(LIEU).trim();
     /* v1.3.2 : le nom dans une phrase, avec son article (« Découvrir l'Abbaye de La Ramée ») — fiche client « lieuPhrase » */
@@ -2031,8 +2073,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
         '<form class="v-finder"><span class="f1">' + esc(LB.trouver) + '</span><input type="number" min="1" max="99999" inputmode="numeric" placeholder="—"><span class="f1">' + esc(LB.personnes) + '</span><i class="br"></i><select></select><button type="submit">' + esc(LB.voir) + '</button></form></div>' +
         '<div class="v-tabs"></div><div class="v-grid"></div></div>' +
       '<div class="v-plan"><button class="v-x" type="button">×</button><div class="lv"></div><div class="ttl"><b></b><span></span></div><div class="stage"><div class="wrap"><img alt=""></div></div><div class="leg"></div></div>' +
-      '<div class="v-brief"><div class="in v-panel"><div class="v-eb"></div><h1>' + esc(LB.briefTitre) + '</h1><div class="sub">' + esc(LB.briefTexte) + '</div>' +
-        '<label>' + esc(LB.participants) + '</label><div class="v-num"><div class="box"><button type="button" data-d="-10">−</button><input type="number" min="1" max="99999" inputmode="numeric"><button type="button" data-d="10">+</button></div><span>' + T('jauge indicative') + '</span></div>' +
+      '<div class="v-brief"><div class="in v-panel"><div class="v-eb"></div><h1>' + esc(LB.briefTitre) + '</h1><div class="sub">' + esc(LB.briefTexte) + '</div><div class="sub-m">' + esc(T('Facultatif — la visite s\'adapte à vos réponses')) + '</div>' +
+        '<label>' + esc(LB.participants) + '</label><div class="v-num"><div class="box"><button type="button" data-d="-10">−</button><input type="number" min="1" max="99999" inputmode="numeric"><button type="button" data-d="10">+</button></div>' + (HASHEB ? '<button class="v-heb" type="button" aria-pressed="false">' + SVBED + '<span>' + esc(T('Hébergement')) + '</span></button>' : '') + '<span>' + T('jauge indicative') + '</span></div>' +
         '<label>' + esc(LB.format) + '</label><div class="v-fmt"></div>' +
         '<div class="btns"><button class="v-btn p go" type="button">' + esc(LB.briefGo) + '</button><button class="free" type="button">' + esc(LB.briefLibre) + '</button><span class="note">' + T('Modifiable à tout moment') + '</span></div></div></div>';
     while (el.firstChild) root.appendChild(el.firstChild);
@@ -2267,7 +2309,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     function openRep() {
       closeAll(repP);
       repP.querySelector('.v-eb').textContent = LIEU;
-      var s = []; if (brief && brief.n) s.push(brief.n + ' ' + LB.personnes); if (brief && brief.f) s.push(brief.f); s.push(Tn(rep.length, '{n} espace', '{n} espaces'));
+      var s = []; if (brief && brief.n) s.push(brief.n + ' ' + LB.personnes); if (brief && brief.f) s.push(brief.f); if (brief && brief.h) s.push(T('avec hébergement')); s.push(Tn(rep.length, '{n} espace', '{n} espaces'));
       repP.querySelector('.sum').innerHTML = s.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('');
       var ls = repP.querySelector('.ls');
       ls.innerHTML = rep.length ? repSteps().map(function (x, i) {
@@ -2278,12 +2320,24 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       ls.querySelectorAll('.go').forEach(function (b) { b.onclick = function () { var x = repSteps()[+b.dataset.i]; if (x.st) { tick(); openFiche(x.st); } }; });
       ls.querySelectorAll('.x').forEach(function (b) { b.onclick = function () { tick(); rep.splice(+b.dataset.i, 1); save(); renderDock(); openRep(); }; });
       var f = repP.querySelector('.foot'), c = OPTIONS.contact;
-      f.innerHTML = rep.length && c && c.email ? '<a class="v-btn p" href="' + proposal() + '">' + esc(LB.proposer) + '</a><div class="s">' + esc(T('Envoyé à {nom}', { nom: c.nom || T("l'équipe commerciale") })) + (c.libelle ? ' · ' + esc(c.libelle) : '') + '</div>' : '';
+      var b0 = brief || {}, td = new Date(Date.now() - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+      f.innerHTML = rep.length && c && c.email ? '<div class="v-dates"><div class="t">' + esc(T('Dates envisagées')) + '</div><div class="row"><label><span>' + esc(T('Du')) + '</span><input type="date" class="d1" min="' + td + '" value="' + esc(b0.d1 || '') + '"></label><label><span>' + esc(T('Au')) + ' <i style="opacity:.6;font-style:normal">(' + esc(T('facultatif')) + ')</i></span><input type="date" class="d2" min="' + td + '" value="' + esc(b0.d2 || '') + '"></label></div>' +
+        '<label class="fx"><input type="checkbox" class="fxc"' + (b0.fx ? ' checked' : '') + '>' + esc(T('Dates flexibles')) + '</label></div>' +
+        '<button class="v-btn p v-ask" type="button">' + esc(LB.proposer) + '</button><a class="v-btn p v-send" style="display:none" href="#">' + esc(T('Envoyer la demande')) + '</a><div class="s">' + esc(T('Envoyé à {nom}', { nom: c.nom || T("l'équipe commerciale") })) + (c.libelle ? ' · ' + esc(c.libelle) : '') + '</div>' : '';
       /* v1.5.5 (Mickaël) : accès direct au catalogue depuis le repérage — bouton principal quand il est vide, lien discret sinon */
       f.insertAdjacentHTML(rep.length ? 'beforeend' : 'afterbegin', rep.length ?
         '<button class="v-more" type="button">+ ' + esc(T('Ajouter d\'autres espaces')) + '</button>' :
         '<button class="v-btn p v-tocat" type="button">' + SV.grid + '<span>' + esc(LB.espaces) + '</span></button>');
       var tc = f.querySelector('.v-tocat, .v-more'); if (tc) tc.onclick = function () { tick(); openCat(-1); };
+      /* v1.5.8 : « Demander une proposition » ouvre d'abord les dates (facultatives), puis « Envoyer la demande » */
+      var dz = f.querySelector('.v-dates'), ask = f.querySelector('.v-ask'), snd = f.querySelector('.v-send');
+      if (dz) {
+        var upd = function () { var o = brief || { n: null, f: '' }; o.d1 = dz.querySelector('.d1').value; o.d2 = dz.querySelector('.d2').value; o.fx = dz.querySelector('.fxc').checked;
+          if (o.d1 && o.d2 && o.d2 < o.d1) { o.d2 = ''; dz.querySelector('.d2').value = ''; } dz.querySelector('.d2').min = o.d1 || td; brief = o; save(); snd.href = proposal(); };
+        dz.addEventListener('change', upd); dz.addEventListener('input', upd);
+        ask.onclick = function () { tick(); dz.classList.add('on'); ask.style.display = 'none'; snd.style.display = ''; snd.href = proposal(); repP.querySelector('.ls').scrollTop = 1e6; };
+        snd.onclick = function () { tick(); upd(); };
+      }
     }
     function proposal() {
       var c = OPTIONS.contact || {}, n = brief && brief.n, f = brief && brief.f;
@@ -2308,23 +2362,30 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       } else {
         var ev = f ? f.toLowerCase() : 'un événement';
         subj = 'Repérage — ' + (f || 'demande de proposition') + (n ? ', ' + n + ' participants' : '');
-        body = 'Bonjour,\n\nJe prépare ' + (/^[aeiouéèh]/i.test(ev) ? 'un ' : 'une ') + ev.replace(/^un /, '') + (n ? ' pour ' + n + ' participants' : '') + ' et j\'ai repéré dans votre visite virtuelle :\n' + list +
+        body = 'Bonjour,\n\nJe prépare ' + (/^un /.test(ev) ? '' : /^(journ|conven|soir|assembl|r[ée]union|conf[ée]rence|pl[ée]ni|f[êe]te|remise|sortie|exposition|inauguration)/i.test(ev) ? 'une ' : 'un ') + ev + (n ? ' pour ' + n + ' participants' : '') + ' et j\'ai repéré dans votre visite virtuelle :\n' + list +
           '\n\nPourriez-vous m\'adresser une proposition ?\nDates envisagées : \n\nMerci,\n\n— Visite : ' + url + '\n';
         body = body.replace('une un événement', 'un événement');
       }
+      /* v1.5.8 : dates et hébergement saisis par le visiteur */
+      var b = brief || {}, fd = function (d) { var p = String(d).split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : d; };
+      var dt = b.d1 ? (b.d2 && b.d2 !== b.d1 ? T('du {a} au {b}', { a: fd(b.d1), b: fd(b.d2) }) : T('le {a}', { a: fd(b.d1) })) : T('à préciser');
+      if (b.fx && b.d1) dt += ' (' + T('dates flexibles') + ')';
+      body = body.replace(/(Dates envisagées :|Preferred dates:|Fechas previstas:|Gewünschte Termine:|Gewenste data:) \n/, function (m, l) { return (HASHEB ? T('Hébergement : {v}', { v: b.h ? T('oui') : T('non') }) + '\n' : '') + l + ' ' + dt + '\n'; });
       return 'mailto:' + (c.envoi || c.email || '') + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
     }
 
     /* ---- brief d'entrée (facultatif) ---- */
-    var bIn = br.querySelector('input'), bF = brief && brief.f || '';
+    var bIn = br.querySelector('input'), bF = brief && brief.f || '', bH = !!(brief && brief.h), hebB = br.querySelector('.v-heb');
+    var RESID = /r[ée]sidenti|residential|residencial|residentieel|übernachtung/i;
+    if (hebB) hebB.onclick = function () { tick(); bH = !bH; paintF(); };
     br.querySelector('.v-eb').textContent = T('{l} · repérage', { l: LIEU });
     br.querySelector('.v-fmt').innerHTML = FORMATS.map(function (f) { return '<button type="button">' + esc(f) + '</button>'; }).join('');
-    br.querySelector('.v-fmt').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; tick(); bF = bF === b.textContent ? '' : b.textContent; paintF(); };
-    function paintF() { br.querySelectorAll('.v-fmt button').forEach(function (b) { b.classList.toggle('on', b.textContent === bF); }); }
+    br.querySelector('.v-fmt').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; tick(); bF = bF === b.textContent ? '' : b.textContent; if (bF && RESID.test(bF)) bH = true; paintF(); };
+    function paintF() { br.querySelectorAll('.v-fmt button').forEach(function (b) { b.classList.toggle('on', b.textContent === bF); }); if (hebB) { hebB.classList.toggle('on', bH); hebB.setAttribute('aria-pressed', bH ? 'true' : 'false'); } }
     br.querySelectorAll('.v-num button').forEach(function (b) { b.onclick = function () { var v = (+bIn.value || 0) + (+b.dataset.d); bIn.value = Math.max(1, v); }; });
     ['keydown', 'keyup', 'keypress'].forEach(function (t) { br.addEventListener(t, function (e) { e.stopPropagation(); }); cat.addEventListener(t, function (e) { e.stopPropagation(); }); });
-    function openBrief() { closeAll(); bIn.value = brief && brief.n || 50; bF = brief && brief.f || ''; paintF(); br.classList.add('on'); }
-    br.querySelector('.go').onclick = function () { tick(); brief = { n: Math.max(1, +bIn.value || 0) || null, f: bF || '' }; save(); br.classList.remove('on'); catN = 0; renderDock(); if (withCaps >= 2) openCat(-1); };
+    function openBrief() { closeAll(); bIn.value = brief && brief.n || 50; bF = brief && brief.f || ''; bH = !!(brief && brief.h); paintF(); br.classList.add('on'); br.querySelector('.in').scrollTop = 0; }
+    br.querySelector('.go').onclick = function () { tick(); var old = brief || {}; brief = { n: Math.max(1, +bIn.value || 0) || null, f: bF || '', h: HASHEB && bH, d1: old.d1 || '', d2: old.d2 || '', fx: !!old.fx }; save(); br.classList.remove('on'); catN = 0; renderDock(); if (withCaps >= 2) openCat(-1); };
     br.querySelector('.free').onclick = function () { tick(); if (!brief) { brief = { n: null, f: '' }; save(); } br.classList.remove('on'); renderDock(); };
     br.onclick = function (e) { if (e.target === br) br.querySelector('.free').click(); };
     var briefAuto = OPTIONS.brief === 'accueil' && !brief && !window.matchMedia('(max-width:760px)').matches;
@@ -2402,7 +2463,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       return { espaces: Object.keys(seen).length, fiches: f, max: mx };
     }
     return {
-      stats: stats, briefSkip: function () { briefAuto = false; },
+      stats: stats, heb: function () { return HASHEB; }, briefSkip: function () { briefAuto = false; },
       capsAll: function () { return flat().map(function (st) { var c = caps(st); return c ? { n: st.parts.name, z: zoneOf(st), j: c.jauge, rows: c.rows.map(function (r) { return r.k + ':' + r.n; }).join(',') } : null; }).filter(Boolean); },
       stop: function () { if (briefIv) clearInterval(briefIv); clearTimeout(capT); fitT.forEach(clearTimeout); window.removeEventListener('resize', fitDock); },
       render: renderDock,
