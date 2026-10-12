@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.10
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.11
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.10/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.11/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.10';
+  var VERSION = '1.5.11';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -642,7 +642,14 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-act{flex:none;display:flex;gap:6px}
 #uvx .v-act button{height:44px;border-radius:22px;display:flex;align-items:center;gap:8px;padding:0 16px;font-size:13px;font-weight:500;background:var(--uvx-btn2)!important;border:1px solid var(--uvx-btn2-bd)!important;white-space:nowrap;color:var(--uvx-on-btn2)}
 #uvx .v-act button.main{border-color:transparent!important;background:var(--uvx-accent)!important;color:var(--uvx-on-accent)}
-#uvx .v-act button.on{background:rgba(var(--uvx-fg-rgb),.2)!important}
+/* v1.5.11 (Mickaël) : bouton du panneau ouvert MIS EN AVANT (anneau à la couleur du texte de l'interface), plus jamais grisé ; fond d'origine conservé quelle que soit la charte */
+#uvx .v-act button.on{box-shadow:0 0 0 2px rgba(var(--uvx-fg-rgb),.9),0 4px 14px rgba(0,0,0,.25);font-weight:600}
+/* v1.5.11 (Mickaël) : barres de défilement visibles mais aux couleurs de la charte (fines, arrondies) */
+@supports (-moz-appearance:none){#uvx *{scrollbar-width:thin;scrollbar-color:rgba(var(--uvx-fg-rgb),.35) transparent}}   /* Firefox ; Chrome et Safari prennent les règles -webkit (toujours visibles, aussi sur Mac) */
+#uvx ::-webkit-scrollbar{width:6px;height:6px}
+#uvx ::-webkit-scrollbar-track{background:transparent}
+#uvx ::-webkit-scrollbar-thumb{background:rgba(var(--uvx-fg-rgb),.35);border-radius:3px}
+#uvx ::-webkit-scrollbar-thumb:hover{background:rgba(var(--uvx-fg-rgb),.55)}
 /* bulle de réponse et résultats de recherche : au-dessus du dock */
 #uvx .v-pop{position:absolute;left:50%;bottom:98px;transform:translateX(-50%);width:min(860px,calc(100vw - 48px));pointer-events:none;z-index:2}
 #uvx .v-pop .ans{position:relative;left:auto;right:auto;bottom:auto;pointer-events:auto;background:rgba(var(--uvx-panel-rgb),.96)!important;border-radius:22px;padding:20px 22px 18px;font-size:14px;max-height:min(56vh,480px);box-shadow:0 30px 80px rgba(0,0,0,.45)}
