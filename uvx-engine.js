@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.9
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.10
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.9/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.10/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.9';
+  var VERSION = '1.5.10';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -2370,22 +2370,28 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       var b = brief || {}, fd = function (d) { var p = String(d).split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : d; };
       var dt = b.d1 ? (b.d2 && b.d2 !== b.d1 ? T('du {a} au {b}', { a: fd(b.d1), b: fd(b.d2) }) : T('le {a}', { a: fd(b.d1) })) : T('à préciser');
       if (b.fx && b.d1) dt += ' (' + T('dates flexibles') + ')';
-      body = body.replace(/(Dates envisagées :|Preferred dates:|Fechas previstas:|Gewünschte Termine:|Gewenste data:) \n/, function (m, l) { return (HASHEB ? T('Hébergement : {v}', { v: b.h ? T('oui') : T('non') }) + '\n' : '') + l + ' ' + dt + '\n'; });
+      body = body.replace(/(Dates envisagées :|Preferred dates:|Fechas previstas:|Gewünschte Termine:|Gewenste data:) \n/, function (m, l) { return (HASHEB && b.h ? T('Hébergement : {v}', { v: T('oui') }) + '\n' : '') + l + ' ' + dt + '\n'; });
       return 'mailto:' + (c.envoi || c.email || '') + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
     }
 
     /* ---- brief d'entrée (facultatif) ---- */
     var bIn = br.querySelector('input'), bF = brief && brief.f || '', bH = !!(brief && brief.h), hebB = br.querySelector('.v-heb');
     var RESID = /r[ée]sidenti|residential|residencial|residentieel|übernachtung/i;
-    if (hebB) hebB.onclick = function () { tick(); bH = !bH; paintF(); };
+    var bHAuto = false;   /* v1.5.10 : hébergement allumé par « Séminaire résidentiel » (et non par le visiteur) */
+    if (hebB) hebB.onclick = function () { tick(); bH = !bH; bHAuto = false; paintF(); };
     br.querySelector('.v-eb').textContent = T('{l} · repérage', { l: LIEU });
     br.querySelector('.v-fmt').innerHTML = FORMATS.map(function (f) { return '<button type="button">' + esc(f) + '</button>'; }).join('');
-    br.querySelector('.v-fmt').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; tick(); bF = bF === b.textContent ? '' : b.textContent; if (bF && RESID.test(bF)) bH = true; paintF(); };
+    br.querySelector('.v-fmt').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; tick(); bF = bF === b.textContent ? '' : b.textContent;
+      /* v1.5.10 (audit) : résidentiel → hébergement activé ; on l'enlève seulement si c'est le résidentiel qui l'avait mis
+         et que le visiteur passe à un autre format ; un choix fait à la main sur le bouton est toujours respecté */
+      if (bF && RESID.test(bF)) { if (!bH) { bH = true; bHAuto = true; } } else if (bHAuto && bF) { bH = false; bHAuto = false; }
+      paintF(); };
     function paintF() { br.querySelectorAll('.v-fmt button').forEach(function (b) { b.classList.toggle('on', b.textContent === bF); }); if (hebB) { hebB.classList.toggle('on', bH); hebB.setAttribute('aria-pressed', bH ? 'true' : 'false'); } }
-    br.querySelectorAll('.v-num button').forEach(function (b) { b.onclick = function () { var v = (+bIn.value || 0) + (+b.dataset.d); bIn.value = Math.max(1, v); }; });
+    br.querySelectorAll('.v-num .box button').forEach(function (b) { b.onclick = function () { var v = (+bIn.value || 0) + (+b.dataset.d); bIn.value = Math.max(1, v); }; });   /* v1.5.10 : seulement − et + (pas le bouton Hébergement) */
     ['keydown', 'keyup', 'keypress'].forEach(function (t) { br.addEventListener(t, function (e) { e.stopPropagation(); }); cat.addEventListener(t, function (e) { e.stopPropagation(); }); });
-    function openBrief() { closeAll(); bIn.value = brief && brief.n || 50; bF = brief && brief.f || ''; bH = !!(brief && brief.h); paintF(); br.classList.add('on'); br.querySelector('.in').scrollTop = 0; }
-    br.querySelector('.go').onclick = function () { tick(); var old = brief || {}; brief = { n: Math.max(1, +bIn.value || 0) || null, f: bF || '', h: HASHEB && bH, d1: old.d1 || '', d2: old.d2 || '', fx: !!old.fx }; save(); br.classList.remove('on'); catN = 0; renderDock(); if (withCaps >= 2) openCat(-1); };
+    function openBrief() { closeAll(); bIn.value = brief && brief.n || 50; bF = brief && brief.f || ''; bH = !!(brief && brief.h); bHAuto = false; paintF(); br.classList.add('on'); br.querySelector('.in').scrollTop = 0; }
+    br.querySelector('.go').onclick = function () { tick(); var old = brief || {}; brief = { n: (+bIn.value || 0) > 0 ? Math.round(+bIn.value) : null,   /* v1.5.10 : champ vide = pas de jauge (et non « 1 personne ») */
+       f: bF || '', h: HASHEB && bH, d1: old.d1 || '', d2: old.d2 || '', fx: !!old.fx }; save(); br.classList.remove('on'); catN = 0; renderDock(); if (withCaps >= 2) openCat(-1); };
     br.querySelector('.free').onclick = function () { tick(); if (!brief) { brief = { n: null, f: '' }; save(); } br.classList.remove('on'); renderDock(); };
     br.onclick = function (e) { if (e.target === br) br.querySelector('.free').click(); };
     var briefAuto = OPTIONS.brief === 'accueil' && !brief && !window.matchMedia('(max-width:760px)').matches;
