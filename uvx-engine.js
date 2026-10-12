@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.8
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.9
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.8/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.9/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.8';
+  var VERSION = '1.5.9';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -1937,7 +1937,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var LB = {   /* libellés de l'interface — réglables par client (fiche client « libelles ») ; les noms d'espaces et de zones, jamais */
       espaces: 'Salles & espaces', reperage: 'Mon repérage', reperageCourt: 'Repérage', dansReperage: 'Dans mon repérage', proposer: 'Demander une proposition', ajouter: 'Ajouter à mon repérage',
       retirer: 'Retiré du repérage', aller: 'Y aller', plan: 'Plan', recherche: 'Salle, jauge, question…', fiche: 'Lire la fiche',
-      briefTitre: 'Préparez votre repérage', briefTexte: 'Deux réponses facultatives : la visite met ensuite en avant les espaces adaptés à votre événement.',
+      briefTitre: 'Préparez votre repérage', briefTexte: 'Facultatif — la visite s\'adapte à vos réponses',   /* v1.5.9 : ne compte plus les questions (hébergement en option) */
       briefGo: 'Commencer le repérage', briefLibre: 'Visiter librement', participants: 'Nombre de participants', format: 'Format',
       tout: 'Tout', trouver: 'Trouver une salle pour', voir: 'Voir', convient: 'Convient à', personnes: 'personnes', evenement: 'Votre événement'
     };
