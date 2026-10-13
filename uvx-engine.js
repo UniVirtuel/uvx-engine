@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.12
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.13
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.12/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.13/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.12';
+  var VERSION = '1.5.13';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -818,6 +818,11 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-plan .pt span{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:600;padding:5px 10px;border-radius:10px;background:var(--uvx-panel);color:var(--uvx-fg);opacity:0;transition:opacity .2s;pointer-events:none}
 #uvx .v-plan .pt:hover span,#uvx .v-plan .pt.here span{opacity:1}
 #uvx .v-plan .pt.here{width:20px;height:20px;background:var(--uvx-accent)!important;box-shadow:0 0 0 6px rgba(var(--uvx-accent-rgb),.3),0 3px 10px rgba(0,0,0,.3)}
+/* v1.5.13 (demande de Mickaël, 13/10/2026) : halo battant sur tous les repères des plans, à la couleur de la charte (le fond du plan est clair) */
+@keyframes uvxPlanHalo{0%{box-shadow:0 0 0 0 rgba(var(--uvx-panel-rgb),.8)}70%{box-shadow:0 0 0 14px rgba(var(--uvx-panel-rgb),0)}100%{box-shadow:0 0 0 0 rgba(var(--uvx-panel-rgb),0)}}
+#uvx .v-plan .pt::after{content:'';position:absolute;left:-3px;top:-3px;right:-3px;bottom:-3px;border-radius:50%;pointer-events:none;animation:uvxPlanHalo 2.2s ease-out infinite}
+#uvx .v-plan .pt:hover::after{animation:none}
+@media (prefers-reduced-motion:reduce){#uvx .v-plan .pt::after{animation:none}}
 #uvx .v-plan .leg{position:absolute;left:24px;bottom:16px;font-size:12px;color:#555}
 #uvx .v-plan .v-x{background:rgba(0,0,0,.06)!important;color:#222}
 #uvx .v-card .im,#uvx .v-room .im,#uvx .v-ri .im{overflow:hidden;position:relative}
@@ -859,6 +864,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 .uvx-aacc .go-btn.free{background:rgba(255,255,255,.14)!important;color:#fff!important;border:1px solid rgba(255,255,255,.35)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .uvx-aacc .pl-lnk{display:inline-block;margin:18px 0 0;background:none!important;border:0!important;border-bottom:1px solid var(--uvx-accent)!important;border-radius:0;padding:0 0 4px;color:#fff!important;font:600 11.5px var(--uvx-font)!important;letter-spacing:.16em;text-transform:uppercase!important;cursor:pointer;box-shadow:none;text-shadow:0 1px 8px rgba(0,0,0,.5)}
 .uvx-aacc .pl-lnk:hover{border-bottom-color:#fff!important}
+.uvx-intro .pl-lnk{display:inline-block;margin:18px 0 0;background:none!important;border:0!important;border-bottom:1px solid var(--uvx-accent)!important;border-radius:0;padding:0 0 4px;color:#fff!important;font:600 11.5px var(--uvx-font)!important;letter-spacing:.16em;text-transform:uppercase!important;cursor:pointer;box-shadow:none;text-shadow:0 1px 8px rgba(0,0,0,.5);pointer-events:auto}
+.uvx-intro .pl-lnk:hover{border-bottom-color:#fff!important}
+@media (hover:none),(max-width:760px){.uvx-intro .pl-lnk{display:none!important}}
 @media (hover:none),(max-width:760px){.uvx-aacc .pl-lnk{display:none!important}}
 .uvx-aacc .go-btn.free:only-child{background:var(--uvx-accent)!important;color:var(--uvx-on-accent)!important;border:0!important}
 /* v1.5.1 (Mickaël) : écrans tactiles — seulement le nom du lieu et les deux boutons, la vue aérienne reste dégagée */
@@ -2542,7 +2550,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     fr.addEventListener('click', function () { tick(); enter(); });
     if (rp && v13) rp.addEventListener('click', function () { tick(); v13.briefSkip(); enter(); setTimeout(v13.openBrief, 700); });
     var plk = el.querySelector('.pl-lnk');
-    if (plk) plk.addEventListener('click', function () { tick(); enter(); setTimeout(function () { v13.openPlan(PL.length > 1 ? 1 : 0); }, 700); });
+    if (plk) plk.addEventListener('click', function () { tick(); enter(); setTimeout(function () { v13.openPlan(firstDetailPlan()); }, 700); });
     return el;
   }
   function showIntro() {
@@ -2561,6 +2569,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     if (v13) {   /* v1.3 : accueil « organisateur » — composition en bas à gauche, chiffres clés du lieu, deux entrées */
       intro.classList.add('v13i');
       intro.innerHTML = vid + v13IntroHTML(ttl);
+      /* v1.5.13 (accord de Mickaël, 13/10/2026) : même lien « Voir le plan des salles » que sur la vue aérienne (CID : accueil vidéo) */
+      if ((OPTIONS.plans || []).length) { var pin2 = intro.querySelector('.in'); if (pin2) { var pl2 = document.createElement('button'); pl2.type = 'button'; pl2.className = 'pl-lnk'; pl2.textContent = T('Voir le plan des salles'); pin2.appendChild(pl2); } }
     } else
     intro.innerHTML = vid + '<div class="in"><div class="eb">' + T('Bienvenue') + '</div><h1>' + ttl + '</h1>' +
       '<button class="go-btn">' + T(OPTIONS.introButton) + '</button></div>' + (vid ? '' : '<button class="skip">' + T('Passer l\'intro') + '</button>');
@@ -2572,7 +2582,11 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var sk = intro.querySelector('.skip'); if (!sk) { sk = document.createElement('i'); }
     intro.querySelectorAll('.go-btn').forEach(function (b) { b.addEventListener('click', leave); });
     sk.addEventListener('click', leave);
+    var plk2 = intro.querySelector('.pl-lnk');
+    if (plk2) plk2.addEventListener('click', function () { leave(); setTimeout(function () { v13.openPlan(firstDetailPlan()); }, 700); });
   }
+  /* premier plan détaillé : option planDetail de la fiche, sinon le 2e plan quand il y en a plusieurs (le 1er étant la vue d'ensemble) */
+  function firstDetailPlan() { var n = (OPTIONS.plans || []).length; if (typeof OPTIONS.planDetail === 'number' && OPTIONS.planDetail < n) return OPTIONS.planDetail; return n > 1 ? 1 : 0; }
   function goHome() {
     tick();
     /* fermer tout ce qui est ouvert */
