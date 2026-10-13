@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.11
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.12
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.11/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.12/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.11';
+  var VERSION = '1.5.12';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -73,7 +73,7 @@
   var I18N = {
     en: {
       'Démarrer la visite': 'Start the tour', 'Commencer la visite': 'Start the tour', 'Découvrir ▾': 'Discover ▾',
-      'Retour à l\'accueil': 'Back to start', 'Masquer l\'interface': 'Hide interface', 'Flou périphérique': 'Peripheral blur', 'Musique': 'Music',
+      'Retour à l\'accueil': 'Back to start', 'Masquer l\'interface': 'Hide interface', 'Afficher l\'interface': 'Show interface', 'Voir le plan des salles': 'See the room plan', 'Flou périphérique': 'Peripheral blur', 'Musique': 'Music',
       'Plein écran': 'Full screen', 'Visite guidée en vidéo': 'Guided video tour', 'Tous les espaces': 'All spaces', 'Voir plus': 'See more',
       'Masquer le champ de question': 'Hide the question field', 'Afficher le champ de question': 'Show the question field', 'Photo à venir': 'Photo coming soon',
       '{n} espace': '{n} space', '{n} espaces': '{n} spaces', '{n} fiche': '{n} factsheet', '{n} fiches': '{n} factsheets',
@@ -110,7 +110,7 @@
     },
     es: {
       'Démarrer la visite': 'Iniciar la visita', 'Commencer la visite': 'Iniciar la visita', 'Découvrir ▾': 'Descubrir ▾',
-      'Retour à l\'accueil': 'Volver al inicio', 'Masquer l\'interface': 'Ocultar la interfaz', 'Flou périphérique': 'Desenfoque periférico', 'Musique': 'Música',
+      'Retour à l\'accueil': 'Volver al inicio', 'Masquer l\'interface': 'Ocultar la interfaz', 'Afficher l\'interface': 'Mostrar la interfaz', 'Voir le plan des salles': 'Ver el plano de las salas', 'Flou périphérique': 'Desenfoque periférico', 'Musique': 'Música',
       'Plein écran': 'Pantalla completa', 'Visite guidée en vidéo': 'Visita guiada en vídeo', 'Tous les espaces': 'Todos los espacios', 'Voir plus': 'Ver más',
       'Masquer le champ de question': 'Ocultar el campo de pregunta', 'Afficher le champ de question': 'Mostrar el campo de pregunta', 'Photo à venir': 'Foto próximamente',
       '{n} espace': '{n} espacio', '{n} espaces': '{n} espacios', '{n} fiche': '{n} ficha', '{n} fiches': '{n} fichas',
@@ -147,7 +147,7 @@
     },
     de: {
       'Démarrer la visite': 'Rundgang starten', 'Commencer la visite': 'Rundgang starten', 'Découvrir ▾': 'Entdecken ▾',
-      'Retour à l\'accueil': 'Zurück zum Start', 'Masquer l\'interface': 'Oberfläche ausblenden', 'Flou périphérique': 'Randunschärfe', 'Musique': 'Musik',
+      'Retour à l\'accueil': 'Zurück zum Start', 'Masquer l\'interface': 'Oberfläche ausblenden', 'Afficher l\'interface': 'Oberfläche einblenden', 'Voir le plan des salles': 'Raumplan ansehen', 'Flou périphérique': 'Randunschärfe', 'Musique': 'Musik',
       'Plein écran': 'Vollbild', 'Visite guidée en vidéo': 'Videoführung', 'Tous les espaces': 'Alle Räume', 'Voir plus': 'Mehr sehen',
       'Masquer le champ de question': 'Fragefeld ausblenden', 'Afficher le champ de question': 'Fragefeld einblenden', 'Photo à venir': 'Foto folgt',
       '{n} espace': '{n} Raum', '{n} espaces': '{n} Räume', '{n} fiche': '{n} Datenblatt', '{n} fiches': '{n} Datenblätter',
@@ -184,7 +184,7 @@
     },
     nl: {
       'Démarrer la visite': 'Start de rondleiding', 'Commencer la visite': 'Start de rondleiding', 'Découvrir ▾': 'Ontdekken ▾',
-      'Retour à l\'accueil': 'Terug naar het begin', 'Masquer l\'interface': 'Interface verbergen', 'Flou périphérique': 'Randvervaging', 'Musique': 'Muziek',
+      'Retour à l\'accueil': 'Terug naar het begin', 'Masquer l\'interface': 'Interface verbergen', 'Afficher l\'interface': 'Interface tonen', 'Voir le plan des salles': 'Bekijk de zaalplattegrond', 'Flou périphérique': 'Randvervaging', 'Musique': 'Muziek',
       'Plein écran': 'Volledig scherm', 'Visite guidée en vidéo': 'Videorondleiding', 'Tous les espaces': 'Alle ruimtes', 'Voir plus': 'Meer zien',
       'Masquer le champ de question': 'Vraagveld verbergen', 'Afficher le champ de question': 'Vraagveld tonen', 'Photo à venir': 'Foto volgt',
       '{n} espace': '{n} ruimte', '{n} espaces': '{n} ruimtes', '{n} fiche': '{n} fiche', '{n} fiches': '{n} fiches',
@@ -613,6 +613,10 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-corner{position:absolute;top:22px;right:22px;display:flex;gap:8px;pointer-events:auto}
 #uvx .v-corner button{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;padding:0}
 #uvx .v-corner button.off{opacity:.6}
+/* v1.5.12 (demande de Mickaël, 13/10/2026) : l'œil « Masquer l'interface » revient, dans le coin — seul lui reste visible */
+#uvx.v13 .v-dock,#uvx.v13 .v-cap,#uvx.v13 .v-pop,#uvx.v13 .v-corner button{transition:opacity .4s}
+#uvx.v13.bare .v-dock,#uvx.v13.bare .v-cap,#uvx.v13.bare .v-pop,#uvx.v13.bare .v-dim,#uvx.v13.bare .v-panel,#uvx.v13.bare .v-plan,#uvx.v13.bare .uvx-ans,#uvx.v13.bare .v-corner button:not(.eye){opacity:0!important;pointer-events:none!important}
+#uvx.v13.bare .v-corner button.eye{opacity:.85}
 #uvx .v-corner .lng{position:relative;font:600 12px/1 var(--uvx-font);letter-spacing:.06em;color:var(--uvx-fg)}
 #uvx .v-lngs{position:absolute;top:46px;left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:4px;padding:6px;border-radius:14px;z-index:3}
 #uvx .v-lngs.on{display:flex}
@@ -853,6 +857,9 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 .uvx-aacc .go-btn{height:52px;padding:0 26px;border-radius:14px;font:600 14.5px var(--uvx-font)!important;cursor:pointer;border:0;box-shadow:none;margin:0;text-transform:none!important;letter-spacing:normal}
 .uvx-aacc .go-btn.rep{background:var(--uvx-accent)!important;color:var(--uvx-on-accent)!important}
 .uvx-aacc .go-btn.free{background:rgba(255,255,255,.14)!important;color:#fff!important;border:1px solid rgba(255,255,255,.35)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.uvx-aacc .pl-lnk{display:inline-block;margin:18px 0 0;background:none!important;border:0!important;border-bottom:1px solid var(--uvx-accent)!important;border-radius:0;padding:0 0 4px;color:#fff!important;font:600 11.5px var(--uvx-font)!important;letter-spacing:.16em;text-transform:uppercase!important;cursor:pointer;box-shadow:none;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.uvx-aacc .pl-lnk:hover{border-bottom-color:#fff!important}
+@media (hover:none),(max-width:760px){.uvx-aacc .pl-lnk{display:none!important}}
 .uvx-aacc .go-btn.free:only-child{background:var(--uvx-accent)!important;color:var(--uvx-on-accent)!important;border:0!important}
 /* v1.5.1 (Mickaël) : écrans tactiles — seulement le nom du lieu et les deux boutons, la vue aérienne reste dégagée */
 @media (hover:none){.uvx-aacc .eb,.uvx-aacc .figs{display:none}.uvx-aacc h1{margin-top:0!important}
@@ -2099,6 +2106,11 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     function cbtn(cls, title, svg, fn) { var b = document.createElement('button'); b.type = 'button'; b.className = 'uvx-glass ' + cls; b.title = title; b.innerHTML = svg; b.onclick = fn; corner.appendChild(b); return b; }
     if (aero || OPTIONS.intro) cbtn('home', aero ? T('Vue d\'ensemble') : T('Retour à l\'accueil'), ic.home, function () { goHome(); });
     if (eps.length) cbtn('ep', T('Visite guidée en vidéo'), ic.play, function () { epPlay(0); });
+    /* v1.5.12 : masquer / réafficher toute l'interface (vue dégagée pour contempler ou faire une capture) */
+    var eyeV = cbtn('eye', T('Masquer l\'interface'), ic.eye, function () { tick();
+      var on = !root.classList.contains('bare'); if (on) closeAll();
+      root.classList.toggle('bare', on); document.body.classList.toggle('uvx-bare', on);
+      eyeV.classList.toggle('off', on); eyeV.title = on ? T('Afficher l\'interface') : T('Masquer l\'interface'); });
     var snd = cbtn('snd off', T('Musique'), ic.snd, function () { root.querySelector('.uvx-tool.snd').click(); snd.classList.toggle('off', !sndOn); });
     cbtn('fs', T('Plein écran'), ic.fs, function () { root.querySelector('.uvx-tool.fs').click(); });
     /* v1.4 — sélecteur de langue : il reprend les liens de langue natifs de MPskin (versions créées dans MPskin) ;
@@ -2513,6 +2525,10 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     el.innerHTML = v13 ? v13IntroHTML(introTitle()) :
       '<div class="in"><h1>' + esc(introTitle()) + '</h1><div class="btns"><button class="go-btn free" type="button">' + esc(T('Visiter librement')) + '</button></div></div>';
     if (!v13) el.classList.add('simple');
+    /* v1.5.12 (accord de Mickaël, 13/10/2026) : accès discret au plan des salles depuis la vue aérienne (ordinateur seulement) ;
+       il entre dans la visite et ouvre le premier plan détaillé (le premier plan étant la vue d'ensemble quand il y en a plusieurs) */
+    var PL = OPTIONS.plans || [];
+    if (v13 && PL.length) { var pin = el.querySelector('.in'); if (pin) { var pl = document.createElement('button'); pl.type = 'button'; pl.className = 'pl-lnk'; pl.textContent = T('Voir le plan des salles'); pin.appendChild(pl); } }
     ['keydown', 'keyup', 'keypress'].forEach(function (t) { el.addEventListener(t, function (e) { e.stopPropagation(); }); });
     box.appendChild(el);
     requestAnimationFrame(function () { requestAnimationFrame(function () { el.classList.add('on'); }); });
@@ -2525,6 +2541,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var fr = el.querySelector('.go-btn.free'), rp = el.querySelector('.go-btn.rep');
     fr.addEventListener('click', function () { tick(); enter(); });
     if (rp && v13) rp.addEventListener('click', function () { tick(); v13.briefSkip(); enter(); setTimeout(v13.openBrief, 700); });
+    var plk = el.querySelector('.pl-lnk');
+    if (plk) plk.addEventListener('click', function () { tick(); enter(); setTimeout(function () { v13.openPlan(PL.length > 1 ? 1 : 0); }, 700); });
     return el;
   }
   function showIntro() {
@@ -2563,6 +2581,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
     var c3d = root.querySelector('.uvx-cfg .chip'); if (pano.classList.contains('on') && c3d) c3d.click();
     root.classList.remove('bare'); document.body.classList.remove('uvx-bare');
     var eyeB = root.querySelector('.uvx-tool.eye'); if (eyeB) eyeB.classList.remove('off');
+    var eyeC = root.querySelector('.v-corner .eye'); if (eyeC) { eyeC.classList.remove('off'); eyeC.title = T('Masquer l\'interface'); }
     var first = flat()[0]; if (first) go(first);
     if (aero) aero.open(); else showIntro();   /* v1.2.1 : avec une vue aérienne, la maison la rouvre */
   }
