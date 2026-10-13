@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.13
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.14
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.13/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.14/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.13';
+  var VERSION = '1.5.14';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -230,6 +230,10 @@
   function Tn(n, one, many, v) { v = v || {}; v.n = n; return T(n > 1 ? many : one, v); }
   var MODULES = OPTIONS.mode === 'modules';   /* interface MPskin intacte : seuls les modules autonomes (vue aérienne) */
   var CHAMP = OPTIONS.mode === 'champ' || MODULES;
+  /* v1.5.14 (demande de Mickaël, 13/10/2026) : arrivée par un lien direct vers un espace (adresse avec « ss= », ou lien profond MPskin) →
+     ni écran d'accueil, ni vue aérienne, ni repérage automatique : le visiteur arrive directement dans l'espace demandé. Tous modes. */
+  var DEEP = /[?&]ss=/.test(location.search) || !!(window.cfg && cfg.targetUrl);
+  if (DEEP) document.documentElement.classList.add('uvx-deep');
 
 
   /* ---------- 0 bis. Charte : une ou deux couleurs → toute la palette ----------
@@ -821,6 +825,8 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 /* v1.5.13 (demande de Mickaël, 13/10/2026) : halo battant sur tous les repères des plans, à la couleur de la charte (le fond du plan est clair) */
 @keyframes uvxPlanHalo{0%{box-shadow:0 0 0 0 rgba(var(--uvx-panel-rgb),.8)}70%{box-shadow:0 0 0 14px rgba(var(--uvx-panel-rgb),0)}100%{box-shadow:0 0 0 0 rgba(var(--uvx-panel-rgb),0)}}
 #uvx .v-plan .pt::after{content:'';position:absolute;left:-3px;top:-3px;right:-3px;bottom:-3px;border-radius:50%;pointer-events:none;animation:uvxPlanHalo 2.2s ease-out infinite}
+/* v1.5.14 : lien direct vers un espace — la popup d'entrée MPskin reste invisible le temps qu'on la referme */
+html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-container:has(iframe[src*="/pano/"]){opacity:0!important;pointer-events:none!important}
 #uvx .v-plan .pt:hover::after{animation:none}
 @media (prefers-reduced-motion:reduce){#uvx .v-plan .pt::after{animation:none}}
 #uvx .v-plan .leg{position:absolute;left:24px;bottom:16px;font-size:12px;color:#555}
@@ -1946,6 +1952,17 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
       },
       open: function () { accDue = !!acc; if (!popOpen() && window.jQuery) jQuery('.click-trigger-cnt-start').first().trigger('click'); timers.push(setTimeout(scan, 800), setTimeout(accTick, 900)); },
       accueil: function (fn, now) { acc = fn; accDue = !!(fn && now); accTick(); },
+      /* v1.5.14 : lien direct — MPskin ouvre quand même sa popup d'entrée ; on la referme dès qu'elle apparaît (masquée entre-temps) */
+      skip: function () {
+        var t0 = Date.now(), done = function () { document.documentElement.classList.remove('uvx-deep'); };
+        var iv = setInterval(function () {
+          if (popOpen()) { clearInterval(iv);
+            if (window.jQuery && jQuery.fancybox && jQuery.fancybox.close) jQuery.fancybox.close();
+            else { var x = document.querySelector('.fancybox-container .fancybox-button--close'); if (x) x.click(); }
+            setTimeout(done, 900); }
+          else if (Date.now() - t0 > 12000) { clearInterval(iv); done(); }
+        }, 200);
+      },
       stop: function () { if (obs) obs.disconnect(); timers.forEach(clearTimeout); var a = document.querySelector('.uvx-aacc'); if (a) a.remove(); },
       scan: scan
     };
@@ -2421,7 +2438,7 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
        f: bF || '', h: HASHEB && bH, d1: old.d1 || '', d2: old.d2 || '', fx: !!old.fx }; save(); br.classList.remove('on'); catN = 0; renderDock(); if (withCaps >= 2) openCat(-1); };
     br.querySelector('.free').onclick = function () { tick(); if (!brief) { brief = { n: null, f: '' }; save(); } br.classList.remove('on'); renderDock(); };
     br.onclick = function (e) { if (e.target === br) br.querySelector('.free').click(); };
-    var briefAuto = OPTIONS.brief === 'accueil' && !brief && !window.matchMedia('(max-width:760px)').matches;
+    var briefAuto = OPTIONS.brief === 'accueil' && !brief && !DEEP && !window.matchMedia('(max-width:760px)').matches;
     function briefSoon() {   /* après l'écran d'accueil ou la vue aérienne, une seule fois */
       if (!briefAuto) return; briefAuto = false; setTimeout(function () {
         /* v1.3.1 : jamais par-dessus ce que le visiteur a déjà ouvert (fiche, catalogue, repérage, plan, réponse) */
@@ -2601,9 +2618,10 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
   }
   root.querySelector('.uvx-tool.home').addEventListener('click', goHome);
   /* v1.2.1 (décision de Mickaël) : s'il y a une vue aérienne d'accueil, pas d'écran d'accueil — elle s'affiche en premier */
-  if (OPTIONS.intro && !CHAMP && !aero && !window.__UVX_NOINTRO) showIntro();
+  if (OPTIONS.intro && !CHAMP && !aero && !window.__UVX_NOINTRO && !DEEP) showIntro();
   /* v1.5 : avec une vue aérienne, le bloc d'accueil s'y pose (option aerienAccueil:false pour s'en passer) ; rappelé par la maison */
-  if (aero && OPTIONS.intro && OPTIONS.aerienAccueil !== false) aero.accueil(aeroIntro, !window.__UVX_NOINTRO);
+  if (aero && OPTIONS.intro && OPTIONS.aerienAccueil !== false) aero.accueil(aeroIntro, !window.__UVX_NOINTRO && !DEEP);
+  if (aero && DEEP) aero.skip(); else if (DEEP) document.documentElement.classList.remove('uvx-deep');
 
   render();
   window.UVX = {
