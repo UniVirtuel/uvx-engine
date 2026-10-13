@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.14
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.15
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.14/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.15/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.14';
+  var VERSION = '1.5.15';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -86,7 +86,7 @@
       '{nom} vous répond directement': '{nom} will answer you directly', ' Essayez avec le nom d\'une salle, une capacité ou un usage.': ' Try the name of a room, a capacity or a use.',
       'Salles & espaces': 'Rooms & spaces', 'Mon repérage': 'My shortlist', 'Repérage': 'Shortlist', 'Dans mon repérage': 'In my shortlist',
       'Demander une proposition': 'Request a proposal', 'Ajouter à mon repérage': 'Add to my shortlist', 'Retiré du repérage': 'Removed from shortlist',
-      'Y aller': 'Go there', 'Plan': 'Floor plan', 'Salle, jauge, question…': 'Room, capacity, question…', 'Lire la fiche': 'Read the factsheet',
+      'Y aller': 'Go there', 'Autres espaces': 'Other spaces', 'Plan': 'Floor plan', 'Salle, jauge, question…': 'Room, capacity, question…', 'Lire la fiche': 'Read the factsheet', 'Réduire la fiche': 'Collapse',
       'Préparez votre repérage': 'Plan your site inspection', 'Deux réponses facultatives : la visite met ensuite en avant les espaces adaptés à votre événement.': 'Two optional answers: the tour then highlights the spaces suited to your event.',
       'Commencer le repérage': 'Start exploring', 'Visiter librement': 'Explore freely', 'Nombre de participants': 'Number of participants', 'Format': 'Format',
       'Tout': 'All', 'Trouver une salle pour': 'Find a room for', 'Voir': 'Show', 'Convient à': 'Suits', 'personnes': 'people', 'Votre événement': 'Your event',
@@ -123,7 +123,7 @@
       '{nom} vous répond directement': '{nom} le responderá directamente', ' Essayez avec le nom d\'une salle, une capacité ou un usage.': ' Pruebe con el nombre de una sala, una capacidad o un uso.',
       'Salles & espaces': 'Salas y espacios', 'Mon repérage': 'Mi selección', 'Repérage': 'Selección', 'Dans mon repérage': 'En mi selección',
       'Demander une proposition': 'Solicitar una propuesta', 'Ajouter à mon repérage': 'Añadir a mi selección', 'Retiré du repérage': 'Quitado de la selección',
-      'Y aller': 'Ir allí', 'Plan': 'Plano', 'Salle, jauge, question…': 'Sala, capacidad, pregunta…', 'Lire la fiche': 'Leer la ficha',
+      'Y aller': 'Ir allí', 'Autres espaces': 'Otros espacios', 'Plan': 'Plano', 'Salle, jauge, question…': 'Sala, capacidad, pregunta…', 'Lire la fiche': 'Leer la ficha', 'Réduire la fiche': 'Contraer',
       'Préparez votre repérage': 'Prepare su visita de inspección', 'Deux réponses facultatives : la visite met ensuite en avant les espaces adaptés à votre événement.': 'Dos respuestas opcionales: la visita destacará después los espacios adecuados para su evento.',
       'Commencer le repérage': 'Empezar la visita', 'Visiter librement': 'Visitar libremente', 'Nombre de participants': 'Número de participantes', 'Format': 'Formato',
       'Tout': 'Todo', 'Trouver une salle pour': 'Buscar una sala para', 'Voir': 'Ver', 'Convient à': 'Apta para', 'personnes': 'personas', 'Votre événement': 'Su evento',
@@ -160,7 +160,7 @@
       '{nom} vous répond directement': '{nom} antwortet Ihnen direkt', ' Essayez avec le nom d\'une salle, une capacité ou un usage.': ' Versuchen Sie es mit einem Raumnamen, einer Kapazität oder einer Nutzung.',
       'Salles & espaces': 'Räume & Bereiche', 'Mon repérage': 'Meine Auswahl', 'Repérage': 'Auswahl', 'Dans mon repérage': 'In meiner Auswahl',
       'Demander une proposition': 'Angebot anfragen', 'Ajouter à mon repérage': 'Zu meiner Auswahl', 'Retiré du repérage': 'Aus der Auswahl entfernt',
-      'Y aller': 'Hingehen', 'Plan': 'Grundriss', 'Salle, jauge, question…': 'Raum, Kapazität, Frage…', 'Lire la fiche': 'Datenblatt lesen',
+      'Y aller': 'Hingehen', 'Autres espaces': 'Weitere Räume', 'Plan': 'Grundriss', 'Salle, jauge, question…': 'Raum, Kapazität, Frage…', 'Lire la fiche': 'Datenblatt lesen', 'Réduire la fiche': 'Einklappen',
       'Préparez votre repérage': 'Bereiten Sie Ihre Besichtigung vor', 'Deux réponses facultatives : la visite met ensuite en avant les espaces adaptés à votre événement.': 'Zwei optionale Angaben: Der Rundgang hebt danach die passenden Räume für Ihre Veranstaltung hervor.',
       'Commencer le repérage': 'Besichtigung starten', 'Visiter librement': 'Frei erkunden', 'Nombre de participants': 'Teilnehmerzahl', 'Format': 'Format',
       'Tout': 'Alle', 'Trouver une salle pour': 'Raum finden für', 'Voir': 'Anzeigen', 'Convient à': 'Geeignet für', 'personnes': 'Personen', 'Votre événement': 'Ihre Veranstaltung',
@@ -197,7 +197,7 @@
       '{nom} vous répond directement': '{nom} antwoordt u rechtstreeks', ' Essayez avec le nom d\'une salle, une capacité ou un usage.': ' Probeer de naam van een zaal, een capaciteit of een gebruik.',
       'Salles & espaces': 'Zalen & ruimtes', 'Mon repérage': 'Mijn selectie', 'Repérage': 'Selectie', 'Dans mon repérage': 'In mijn selectie',
       'Demander une proposition': 'Offerte aanvragen', 'Ajouter à mon repérage': 'Toevoegen aan mijn selectie', 'Retiré du repérage': 'Verwijderd uit selectie',
-      'Y aller': 'Ga erheen', 'Plan': 'Plattegrond', 'Salle, jauge, question…': 'Zaal, capaciteit, vraag…', 'Lire la fiche': 'Lees de fiche',
+      'Y aller': 'Ga erheen', 'Autres espaces': 'Andere ruimtes', 'Plan': 'Plattegrond', 'Salle, jauge, question…': 'Zaal, capaciteit, vraag…', 'Lire la fiche': 'Lees de fiche', 'Réduire la fiche': 'Inklappen',
       'Préparez votre repérage': 'Bereid uw locatiebezoek voor', 'Deux réponses facultatives : la visite met ensuite en avant les espaces adaptés à votre événement.': 'Twee optionele antwoorden: de rondleiding toont daarna de ruimtes die bij uw evenement passen.',
       'Commencer le repérage': 'Start het bezoek', 'Visiter librement': 'Vrij rondkijken', 'Nombre de participants': 'Aantal deelnemers', 'Format': 'Formaat',
       'Tout': 'Alles', 'Trouver une salle pour': 'Zoek een zaal voor', 'Voir': 'Toon', 'Convient à': 'Geschikt voor', 'personnes': 'personen', 'Votre événement': 'Uw evenement',
@@ -694,12 +694,20 @@ body.uvx-bare #uvx-back .uvx-floor{opacity:0}
 #uvx .v-ft .tx h3{font-size:14px;font-weight:600;margin:0 0 6px}
 #uvx .v-ft .tx p{margin:0 0 8px}
 #uvx .v-ft .add{display:flex;gap:10px;margin-top:14px;flex:none}
+#uvx .v-ft .add{flex-wrap:wrap}
 #uvx .v-ft .add .v-btn{flex:1}
+#uvx .v-ft .add .v-btn{flex:1 1 auto;padding:0 12px}
+@media (max-height:800px) and (min-width:761px){#uvx .v-ft .ph{height:150px}}
+#uvx .v-ft .exp{display:none}
+#uvx .v-ft .sc.ovf{-webkit-mask-image:linear-gradient(#000 calc(100% - 46px),transparent);mask-image:linear-gradient(#000 calc(100% - 46px),transparent)}
 /* v1.5.6 (Mickaël) : halo battant sur « Y aller », même rythme que les points de la vue aérienne */
 @keyframes uvxGoHalo{0%{box-shadow:0 0 0 0 rgba(255,255,255,.7)}60%{box-shadow:0 0 0 12px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
-#uvx .v-ft .add .v-btn.goto{animation:uvxGoHalo 2.2s cubic-bezier(.25,.6,.3,1) infinite}
+/* v1.5.15 : halo à la couleur du texte de la fenêtre (contraste garanti quelle que soit la charte), aussi sur « Autres espaces » (demande de Mickaël) */
+@keyframes uvxFtHalo{0%{box-shadow:0 0 0 0 rgba(var(--uvx-fg-rgb),.6)}60%{box-shadow:0 0 0 12px rgba(var(--uvx-fg-rgb),0)}100%{box-shadow:0 0 0 0 rgba(var(--uvx-fg-rgb),0)}}
+#uvx .v-ft .add .v-btn.goto,#uvx .v-ft .add .v-btn.more{animation:uvxFtHalo 2.2s cubic-bezier(.25,.6,.3,1) infinite}
+#uvx .v-ft .add .v-btn.more:hover{animation:none}
 #uvx .v-ft .add .v-btn.goto:hover{animation:none}
-@media (prefers-reduced-motion:reduce){#uvx .v-ft .add .v-btn.goto{animation:none}}
+@media (prefers-reduced-motion:reduce){#uvx .v-ft .add .v-btn.goto,#uvx .v-ft .add .v-btn.more{animation:none}}
 /* catalogue « Salles & espaces » */
 #uvx .v-cat{position:absolute;left:32px;right:32px;top:72px;bottom:0;border-radius:26px 26px 0 0;padding:28px 36px 0;display:none;flex-direction:column;z-index:3}
 #uvx .v-cat.on{display:flex}
@@ -927,6 +935,15 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
  #uvx .v-ft{padding-top:14px}
  #uvx .v-ft .ph{border-radius:14px 14px 0 0;margin:0 10px}
  #uvx .v-ft,#uvx .v-rep{background:rgb(var(--uvx-panel-rgb))!important}
+ /* v1.5.15 : arrivée dans un espace = fiche réduite (nom, chiffres clés, actions) ; « Lire la fiche ▴ » la déplie */
+ /* v1.5.15 (demande de Mickaël) : sur téléphone, pas de photo dans la fiche — le visiteur a déjà l'espace sous les yeux */
+ #uvx .v-ft .ph,#uvx .v-ft .fit{display:none!important}
+ #uvx .v-ft.mini .sc table,#uvx .v-ft.mini .sc .tx{display:none}
+ #uvx .v-ft.mini .bd{padding:6px 20px 16px}
+ #uvx .v-ft.mini .sc{flex:none;overflow:visible}
+ #uvx .v-ft.mini h2{font-size:24px;margin-top:4px;cursor:pointer}
+ #uvx .v-ft .exp{display:inline-block;margin-top:8px;padding:0;background:none!important;border:0!important;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;color:inherit;opacity:.85}
+ #uvx .v-ft.mini .add{margin-top:12px}
  #uvx .v-cat{left:0;right:0;top:56px;padding:18px 14px 0;border-radius:22px 22px 0 0}
  #uvx .v-cat h1{font-size:22px}
  #uvx .v-finder{margin-left:0;width:100%;flex-wrap:wrap;border-radius:20px;padding:10px 12px;row-gap:10px}
@@ -1975,7 +1992,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
   var v13 = CHAMP ? null : (function () {
     var LB = {   /* libellés de l'interface — réglables par client (fiche client « libelles ») ; les noms d'espaces et de zones, jamais */
       espaces: 'Salles & espaces', reperage: 'Mon repérage', reperageCourt: 'Repérage', dansReperage: 'Dans mon repérage', proposer: 'Demander une proposition', ajouter: 'Ajouter à mon repérage',
-      retirer: 'Retiré du repérage', aller: 'Y aller', plan: 'Plan', recherche: 'Salle, jauge, question…', fiche: 'Lire la fiche',
+      retirer: 'Retiré du repérage', aller: 'Y aller', autres: 'Autres espaces', plan: 'Plan', recherche: 'Salle, jauge, question…', fiche: 'Lire la fiche', reduire: 'Réduire la fiche',
       briefTitre: 'Préparez votre repérage', briefTexte: 'Facultatif — la visite s\'adapte à vos réponses',   /* v1.5.9 : ne compte plus les questions (hébergement en option) */
       briefGo: 'Commencer le repérage', briefLibre: 'Visiter librement', participants: 'Nombre de participants', format: 'Format',
       tout: 'Tout', trouver: 'Trouver une salle pour', voir: 'Voir', convient: 'Convient à', personnes: 'personnes', evenement: 'Votre événement'
@@ -2102,9 +2119,10 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
         '<button class="v-ctx" type="button" style="display:none"></button>' +
         '<div class="v-act">' +
           '<button class="srch" type="button" style="display:none">' + SV.search + '</button>' +
+          /* v1.5.15 (Mickaël) : ordre du parcours — Salles & espaces, Plan, Repérage */
+          '<button class="main cat" type="button">' + SV.grid + '<span class="l">' + esc(LB.espaces) + '</span></button>' +
           '<button class="plan" type="button" style="display:none">' + SV.map + '<span class="l">' + esc(LB.plan) + '</span></button>' +
           '<button class="rep" type="button">' + SV.heart + '<span class="l">' + esc(LB.reperageCourt) + '</span><span class="v-badge"></span></button>' +
-          '<button class="main cat" type="button">' + SV.grid + '<span class="l">' + esc(LB.espaces) + '</span></button>' +
         '</div></div>' +
       '<div class="v-ft v-panel"><button class="v-x" type="button">×</button><div class="ph"><span class="fit" style="display:none"></span></div><div class="bd"><div class="sc"></div><div class="add"></div></div></div>' +
       '<div class="v-rep v-panel"><button class="v-x" type="button">×</button><div class="v-eb"></div><h2>' + esc(LB.reperage) + '</h2><div class="sum"></div><div class="ls"></div><div class="foot"></div></div>' +
@@ -2214,15 +2232,23 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
       else rep.push({ n: st.parts.name, z: zoneOf(st) });
       save(); renderDock();
     }
-    function openFiche(st) {
-      if (!st) return; ftSt = st; closeAll(ft);
+    /* v1.5.15 (décision de Mickaël, 13/10/2026) : cliquer un espace (catalogue, réponse, repérage, plan) = y aller ;
+       sa fiche s'ouvre à l'arrivée, la vraie salle derrière. Le visiteur explore, lit, puis ajoute à son repérage. */
+    function visit(st) {
+      if (!st) return; closeAll(); go(st);
+      var mini = window.matchMedia('(max-width:760px)').matches;   /* téléphone : fiche réduite, la salle reste visible */
+      if (st.fiche || caps(st)) setTimeout(function () { if (cur === st) openFiche(st, mini); }, 350);
+    }
+    function openFiche(st, mini) {
+      if (!st) return; ftSt = st; closeAll(ft); ft.classList.toggle('mini', !!mini);
       var c = caps(st), ph = photo(st), N = brief && brief.n;
       var p = ft.querySelector('.ph'); p.style.backgroundImage = ph ? 'url("' + ph + '")' : ''; p.classList.toggle('none', !ph);
       var fit = ft.querySelector('.fit'), ok = N && c && c.max >= N;
       fit.textContent = '✓ ' + LB.convient + ' ' + N + ' ' + LB.personnes; fit.style.display = ok && ph ? '' : 'none';
       var h = '<div class="v-eb">' + esc(st.group || zones[st.zi].label) + '</div><h2>' + esc(st.parts.name) + '</h2>';
-      var meta = [c && c.m2 ? c.m2 + ' m²' : (st.parts.fig || ''), ok && !ph ? '✓ ' + LB.convient + ' ' + N + ' ' + LB.personnes : ''].filter(Boolean).join(' · ');
+      var meta = [c && c.m2 ? c.m2 + ' m²' : (st.parts.fig || ''), ok && (!ph || window.matchMedia('(max-width:760px)').matches) ? '✓ ' + LB.convient + ' ' + N + ' ' + LB.personnes : ''].filter(Boolean).join(' · ');
       if (meta) h += '<div class="meta">' + esc(meta) + '</div>';
+      h += '<button class="exp" type="button"></button>';
       if (c && c.rows.length) h += '<table>' + c.rows.map(function (r) { return '<tr class="' + (N && r.n >= N ? 'ok' : '') + '"><td>' + esc(confTxt(r.k).replace(/^./, function (c) { return c.toUpperCase(); })) + '</td><td>' + r.n.toLocaleString(LOC) + '</td></tr>'; }).join('') + '</table>';
       if (c && c.note) h += '<div class="tx">' + esc(c.note) + '</div>';
       if (st.fiche) {
@@ -2231,11 +2257,26 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
         h += '<div class="tx">' + html + '</div>';
       }
       ft.querySelector('.sc').innerHTML = h;
+      /* v1.5.15 : sur téléphone, la fiche se déplie ET se replie (« Lire la fiche ▴ » / « Réduire la fiche ▾ ») */
+      var sc = ft.querySelector('.sc'), ex = sc.querySelector('.exp');
+      function lbl() { ex.textContent = ft.classList.contains('mini') ? LB.fiche + ' ▴' : LB.reduire + ' ▾'; }
+      function fold(m) { tick(); ft.classList.toggle('mini', m); lbl(); sc.scrollTop = 0; ovf(); }
+      lbl(); ex.onclick = function () { fold(!ft.classList.contains('mini')); };
+      sc.querySelector('h2').onclick = function () { if (ft.classList.contains('mini')) fold(false); };
+      /* v1.5.15 : texte trop long → fondu en bas de la zone qui défile, retiré une fois arrivé en bas (les boutons restent fixes) */
+      function ovf() { sc.classList.toggle('ovf', sc.scrollHeight - sc.scrollTop - sc.clientHeight > 6); }
+      sc.onscroll = ovf; setTimeout(ovf, 60); setTimeout(ovf, 600);
+      if (!window.__uvxOvf) { window.__uvxOvf = 1; window.addEventListener('resize', function () { var s = document.querySelector('#uvx .v-ft .sc'); if (s && s.onscroll) s.onscroll(); }); }
       var a = ft.querySelector('.add'), on = inRep(st);
-      a.innerHTML = '<button class="v-btn ' + (on ? 'on' : 'p') + ' heart" type="button">' + (on ? SV.heartF : SV.heart) + esc(on ? LB.dansReperage : LB.ajouter) + '</button>' +
-        (cur === st ? '' : '<button class="v-btn goto" type="button">' + esc(LB.aller) + ' →</button>');
-      a.querySelector('.heart').onclick = function () { tick(); toggleRep(st); openFiche(st); };
-      var g = a.querySelector('.goto'); if (g) g.onclick = function () { closeAll(); go(st); };
+      /* v1.5.15 : hors de l'espace, « Y aller » passe en premier et en bouton principal ; dans l'espace, il disparaît */
+      var away = cur !== st;
+      a.innerHTML = (away ? '<button class="v-btn p goto" type="button">' + esc(LB.aller) + ' →</button>' : '') +
+        '<button class="v-btn ' + (on ? 'on' : (away ? '' : 'p')) + ' heart" type="button">' + (on ? SV.heartF : SV.heart) + esc(on ? LB.dansReperage : LB.ajouter) + '</button>' +
+        /* v1.5.15 (demande de Mickaël) : depuis la fiche, revenir au catalogue pour visiter un autre espace (même onglet qu'avant) */
+        (away ? '' : '<button class="v-btn more" type="button">' + SV.grid + esc(LB.autres) + '</button>');
+      a.querySelector('.heart').onclick = function () { tick(); toggleRep(st); openFiche(st, ft.classList.contains('mini')); };
+      var g = a.querySelector('.goto'); if (g) g.onclick = function () { visit(st); };
+      var mo = a.querySelector('.more'); if (mo) mo.onclick = function () { tick(); openCat(catZ < 0 ? undefined : catZ); };
       ft.querySelector('.sc').scrollTop = 0;
     }
 
@@ -2286,7 +2327,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
     }
     cat.querySelector('.v-grid').onclick = function (e) {
       var b = e.target.closest('.v-card'); if (!b) return; var k = b.dataset.key.split(':'), st = zones[+k[0]].steps[+k[1]]; tick();
-      if (st.fiche || caps(st)) { cat.classList.remove('on'); openFiche(st); dim.classList.remove('on'); } else { closeAll(); go(st); }
+      visit(st);
     };
     function openCat(zi) {
       closeAll(cat); catZ = zi === undefined ? -1 : zi;
@@ -2337,7 +2378,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
         (OPTIONS.contact && OPTIONS.contact.email ? '<a href="' + mailto(text) + '">' + esc(T('Une question ? Écrire à {nom} →', { nom: OPTIONS.contact.nom || T("l'équipe") })) + '</a>' : '') + '</div></div>';
       ans.innerHTML = h;
       ans.querySelector('.close').onclick = function () { ans.classList.remove('on'); restoreAns(); };
-      ans.querySelectorAll('.v-room').forEach(function (b) { b.onclick = function () { tick(); var x = shown[+b.dataset.i]; ans.classList.remove('on'); restoreAns(); openFiche(x.st); }; });
+      ans.querySelectorAll('.v-room').forEach(function (b) { b.onclick = function () { tick(); var x = shown[+b.dataset.i]; ans.classList.remove('on'); restoreAns(); visit(x.st); }; });
       var all = ans.querySelector('.all'); if (all) all.onclick = function () { ans.classList.remove('on'); restoreAns(); catN = n; catConf = conf || ''; finder.querySelector('input').value = n; finder.querySelector('select').value = catConf; openCat(-1); };
       closeAll('pop'); ans.classList.add('on');
       return true;
@@ -2361,7 +2402,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
         return '<div class="v-ri"><span class="im">' + im(x.st && photo(x.st)) + '</span><button class="go" type="button" data-i="' + i + '"><span class="t">' + esc(x.r.n) + '</span><span class="c">' +
           esc([x.r.z, c && c.m2 ? c.m2 + ' m²' : '', capLine(c)].filter(Boolean).join(' · ')) + '</span></button><button class="x" type="button" data-i="' + i + '" title="' + T('Retirer') + '">×</button></div>';
       }).join('') : '<div class="empty">' + esc(T('Ajoutez les espaces qui vous intéressent depuis leur fiche (♡ « {a} »). Votre sélection est ensuite envoyée en un clic à l\'équipe commerciale, qui vous adresse une proposition.', { a: LB.ajouter })) + '</div>';
-      ls.querySelectorAll('.go').forEach(function (b) { b.onclick = function () { var x = repSteps()[+b.dataset.i]; if (x.st) { tick(); openFiche(x.st); } }; });
+      ls.querySelectorAll('.go').forEach(function (b) { b.onclick = function () { var x = repSteps()[+b.dataset.i]; if (x.st) { tick(); visit(x.st); } }; });
       ls.querySelectorAll('.x').forEach(function (b) { b.onclick = function () { tick(); rep.splice(+b.dataset.i, 1); save(); renderDock(); openRep(); }; });
       var f = repP.querySelector('.foot'), c = OPTIONS.contact;
       var b0 = brief || {}, td = new Date(Date.now() - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
@@ -2465,7 +2506,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
         var xy = p.points[name], b = document.createElement('button'); b.type = 'button'; b.className = 'pt' + (st === cur ? ' here' : '');
         b.style.left = xy[0] + '%'; b.style.top = xy[1] + '%';
         b.innerHTML = '<span>' + esc(st === cur ? T('Vous êtes ici · {s}', { s: st.parts.name }) : st.parts.name) + '</span>';
-        b.onclick = function () { closeAll(); go(st); };
+        b.onclick = function () { visit(st); };
         w.appendChild(b);
       });
       plan.querySelector('.leg').textContent = T('{n} espaces sur ce niveau · cliquez un repère pour y aller', { n: n });
