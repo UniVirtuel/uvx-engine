@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.15
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.16
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.15/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.16/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.15';
+  var VERSION = '1.5.16';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -1661,6 +1661,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
       try { localStorage.setItem(LS, JSON.stringify(visited)); } catch (e) {}
       try { document.title = st.parts.name + ' — ' + baseTitle; } catch (e) {}
       render(); cfgRefresh();
+      if (v13 && v13.onWalk) v13.onWalk(st);
     })); } catch (e) {}
   });
 
@@ -2559,6 +2560,8 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
       stop: function () { if (briefIv) clearInterval(briefIv); clearTimeout(capT); fitT.forEach(clearTimeout); window.removeEventListener('resize', fitDock); },
       render: renderDock,
       onGo: function () { closeAll(); dock.classList.remove('srch'); },
+      /* v1.5.16 : le visiteur entre à pied dans un autre espace du menu → la fiche ouverte suit (même taille) ; fermée, elle le reste */
+      onWalk: function (st) { if (st && ft.classList.contains('on') && ftSt !== st) openFiche(st, ft.classList.contains('mini')); },
       finder: function (text) { restoreAns(); return finderAnswer(text); },
       restore: restoreAns,
       briefSoon: briefSoon,
