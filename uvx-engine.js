@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.17
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.18
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.17/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.18/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.17';
+  var VERSION = '1.5.18';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -1557,11 +1557,45 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
   q('.menu').addEventListener('click', function () { tick(); showZone(cur ? cur.zi : 0); full.classList.add('on'); });
   q('.eye').addEventListener('click', function () { tick(); root.classList.toggle('bare'); document.body.classList.toggle('uvx-bare'); this.classList.toggle('off'); });
   q('.blur').addEventListener('click', function () { document.body.classList.toggle('uvx-novign'); this.classList.toggle('off'); });
-  var sndOn = false;
-  q('.snd').addEventListener('click', function () {   /* musique native MPskin : cfg.bgAudio.play / stop */
-    sndOn = !sndOn; this.classList.toggle('off', !sndOn);
-    try { if (cfg.bgAudio) { sndOn ? cfg.bgAudio.play() : cfg.bgAudio.stop(); } } catch (e) {}
-  });
+  /* v1.5.18 — musique. Logique MPskin (lue le 14/10/2026) : si l'autoplay est activé (cfg.play == 1), une scrutation toutes les
+     200 ms appelle audio.play() jusqu'à ce que le navigateur l'accepte (premier geste du visiteur) ; elle IGNORE la classe
+     user-muted. Le bouton natif [data-trigger="audio"] porte « muted » / « user-muted ». L'iPhone ignore le volume de MPskin.
+     Avant v1.5.18 le moteur gardait son propre état, faux dès que MPskin lançait la musique → bouton grisé alors que la musique
+     joue, deux clics pour la couper. Désormais l'état affiché est l'INTENTION (sndOn) :
+       ordinateur : musique voulue (bouton actif) si l'autoplay est activé ; un clic la coupe ;
+       écran tactile : musique coupée (bouton grisé), un clic la lance — sauf OPTIONS.musiqueMobile === true.
+     Quand la musique n'est pas voulue, le départ automatique de MPskin est neutralisé : son coupé (muted) le temps que la
+     scrutation aboutisse et s'arrête, puis pause et marquage user-muted (MPskin ne la relance plus). Pas de musique → boutons masqués. */
+  var sndEl = document.querySelector('.audio-bg'), sndNat = document.querySelector('[data-trigger="audio"]');
+  var sndAuto = !!(window.cfg && +cfg.play === 1);
+  var sndTouch = window.matchMedia('(pointer:coarse)').matches && OPTIONS.musiqueMobile !== true;
+  var sndOn = !!sndEl && sndAuto && !sndTouch;
+  function sndSync() {
+    [].forEach.call(root.querySelectorAll('.snd'), function (b) { b.classList.toggle('off', !sndOn); if (!sndEl) b.style.display = 'none'; });
+  }
+  function sndMark(off) { if (!sndNat) return; if (off) sndNat.classList.add('muted', 'user-muted'); else sndNat.classList.remove('muted', 'user-muted'); }
+  function sndToggle() {
+    if (!sndEl) return;
+    sndOn = !sndOn;
+    try {
+      if (sndOn) { sndEl.muted = false; sndMark(false); var pr = sndEl.play(); if (pr && pr.catch) pr.catch(function () {}); }
+      else { sndMark(true); if (sndEl.paused) sndEl.muted = true; else sndEl.pause(); }
+    } catch (e) {}
+    sndSync();
+  }
+  if (sndEl) {
+    if (!sndOn && sndAuto) { sndEl.muted = true; sndMark(true); }
+    sndEl.addEventListener('playing', function () {
+      if (sndOn) { sndEl.muted = false; return; }
+      /* départ automatique non voulu : laisser la promesse de MPskin aboutir (sa scrutation s'arrête), puis couper */
+      setTimeout(function () { if (sndOn) { sndEl.muted = false; return; } try { sndEl.pause(); } catch (e) {} sndMark(true); sndEl.muted = false; }, 80);
+    });
+    sndEl.addEventListener('ended', function () { if (!sndEl.loop) { sndOn = false; sndSync(); } });
+    /* clic sur le bouton natif de MPskin (s'il est visible) : on suit son nouvel état */
+    if (sndNat) sndNat.addEventListener('click', function () { setTimeout(function () { sndOn = !sndNat.classList.contains('muted'); if (sndOn) sndEl.muted = false; sndSync(); }, 0); });
+  }
+  q('.snd').addEventListener('click', sndToggle);
+  sndSync();
   q('.fs').addEventListener('click', function () {
     var d = document; if (!d.fullscreenElement) d.documentElement.requestFullscreen && d.documentElement.requestFullscreen(); else d.exitFullscreen();
   });
@@ -2155,7 +2189,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
       var on = !root.classList.contains('bare'); if (on) closeAll();
       root.classList.toggle('bare', on); document.body.classList.toggle('uvx-bare', on);
       eyeV.classList.toggle('off', on); eyeV.title = on ? T('Afficher l\'interface') : T('Masquer l\'interface'); });
-    var snd = cbtn('snd off', T('Musique'), ic.snd, function () { root.querySelector('.uvx-tool.snd').click(); snd.classList.toggle('off', !sndOn); });
+    cbtn('snd off', T('Musique'), ic.snd, sndToggle); sndSync();
     cbtn('fs', T('Plein écran'), ic.fs, function () { root.querySelector('.uvx-tool.fs').click(); });
     /* v1.4 — sélecteur de langue : il reprend les liens de langue natifs de MPskin (versions créées dans MPskin) ;
        un clic déclenche le lien natif, MPskin change la langue et le moteur se relance dans la nouvelle langue. */
