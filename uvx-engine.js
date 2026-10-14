@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.16
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.17
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.16/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.17/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.16';
+  var VERSION = '1.5.17';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -2219,7 +2219,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
        il ramène à la vue aérienne s'il y en a une, sinon il ne sert que de repère. Dans un espace : raccourci vers sa fiche. */
     dock.querySelector('.v-here').onclick = function () { if (cur && (cur.fiche || caps(cur))) { tick(); openFiche(cur); } else if (aero) { tick(); goHome(); } };
     dock.querySelector('.v-ctx').onclick = function () { tick(); openBrief(); };
-    dock.querySelector('.cat').onclick = function () { tick(); if (cat.classList.contains('on')) closeAll(); else openCat(-1); };
+    dock.querySelector('.cat').onclick = function () { tick(); if (cat.classList.contains('on')) closeAll(); else openCat(); };
     dock.querySelector('.rep').onclick = function () { tick(); if (repP.classList.contains('on')) closeAll(); else openRep(); };
     dock.querySelector('.plan').onclick = function () { tick(); if (plan.classList.contains('on')) closeAll(); else openPlan(); };
     dock.querySelector('.srch').onclick = function () { tick(); var o = dock.classList.toggle('srch'); if (o) setTimeout(function () { askIn.focus(); }, 50); };
@@ -2277,12 +2277,20 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
         (away ? '' : '<button class="v-btn more" type="button">' + SV.grid + esc(LB.autres) + '</button>');
       a.querySelector('.heart').onclick = function () { tick(); toggleRep(st); openFiche(st, ft.classList.contains('mini')); };
       var g = a.querySelector('.goto'); if (g) g.onclick = function () { visit(st); };
-      var mo = a.querySelector('.more'); if (mo) mo.onclick = function () { tick(); openCat(catZ < 0 ? undefined : catZ); };
+      var mo = a.querySelector('.more'); if (mo) mo.onclick = function () { tick(); openCat(catSeen ? catZ : undefined); };
       ft.querySelector('.sc').scrollTop = 0;
     }
 
     /* ---- catalogue « Salles & espaces » ---- */
-    var catZ = -1, catN = 0, catConf = '';
+    var catZ = -1, catN = 0, catConf = '', catSeen = false;
+    /* v1.5.17 (idée de Mickaël) : onglet d'arrivée du catalogue réglable par client (option catDefaut : numéro de rubrique
+       à partir de 0, ou nom de la rubrique) → le visiteur découvre le lieu rubrique par rubrique ; « Tout » passe en dernier.
+       Sans réglage : comportement inchangé (« Tout » en premier et à l'ouverture). */
+    var CATDEF = (function (d) {
+      if (typeof d === 'number') return d >= 0 && d < zones.length ? d : -1;
+      if (typeof d === 'string' && d) { for (var i = 0; i < zones.length; i++) if (key(zones[i].label) === key(d)) return i; }
+      return -1;
+    })(OPTIONS.catDefaut);
     var allConfs = [];
     flat().forEach(function (st) { var c = caps(st); if (c) c.rows.forEach(function (r) { if (allConfs.indexOf(r.k) < 0 && !/^(Places|Personnes|Couverts|Déjeuner|Dîner)$/.test(r.k)) allConfs.push(r.k); }); });
     var withCaps = flat().filter(function (st) { var c = caps(st); return c && c.max && c.jauge; }).length;
@@ -2294,7 +2302,8 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
     cat.querySelector('h1').textContent = T('Découvrir {l}', { l: LIEU_TXT });
     cat.querySelector('.sub').textContent = T('{n} espaces · {z} univers', { n: nbEspaces(), z: zones.length });
     var tabs = cat.querySelector('.v-tabs');
-    tabs.innerHTML = '<button type="button" data-z="-1">' + esc(LB.tout) + '</button>' + zones.map(function (z, i) { return '<button type="button" data-z="' + i + '">' + esc(z.label) + '</button>'; }).join('');
+    var tToutB = '<button type="button" data-z="-1">' + esc(LB.tout) + '</button>', tZones = zones.map(function (z, i) { return '<button type="button" data-z="' + i + '">' + esc(z.label) + '</button>'; }).join('');
+    tabs.innerHTML = CATDEF >= 0 ? tZones + tToutB : tToutB + tZones;
     tabs.onclick = function (e) { var b = e.target.closest('button'); if (!b) return; tick(); catZ = +b.dataset.z; fillCat(); };
     function fits(st) { if (!catN) return true; var c = caps(st); if (!c || !c.max) return true; if (!c.jauge) return false; return c.rows.some(function (r) { return r.n >= catN && (!catConf || r.k === catConf); }); }
     function cardHtml(st) {
@@ -2331,8 +2340,12 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
       visit(st);
     };
     function openCat(zi) {
-      closeAll(cat); catZ = zi === undefined ? -1 : zi;
+      closeAll(cat);
       if (brief && brief.n && !catN) { catN = brief.n; finder.querySelector('input').value = brief.n; }
+      /* v1.5.17 : sans rubrique précisée → onglet d'arrivée du client la première fois, puis le dernier onglet choisi ;
+         dès qu'une jauge est en jeu, la première ouverture se fait sur « Tout » (les espaces adaptés de tout le lieu) */
+      if (zi === undefined) zi = CATDEF < 0 ? -1 : (catSeen ? catZ : (catN ? -1 : CATDEF));
+      catZ = zi; catSeen = true;
       fillCat();
     }
 
@@ -2414,7 +2427,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
       f.insertAdjacentHTML(rep.length ? 'beforeend' : 'afterbegin', rep.length ?
         '<button class="v-more" type="button">+ ' + esc(T('Ajouter d\'autres espaces')) + '</button>' :
         '<button class="v-btn p v-tocat" type="button">' + SV.grid + '<span>' + esc(LB.espaces) + '</span></button>');
-      var tc = f.querySelector('.v-tocat, .v-more'); if (tc) tc.onclick = function () { tick(); openCat(-1); };
+      var tc = f.querySelector('.v-tocat, .v-more'); if (tc) tc.onclick = function () { tick(); openCat(); };
       /* v1.5.8 : « Demander une proposition » ouvre d'abord les dates (facultatives), puis « Envoyer la demande » */
       var dz = f.querySelector('.v-dates'), ask = f.querySelector('.v-ask'), snd = f.querySelector('.v-send');
       if (dz) {
