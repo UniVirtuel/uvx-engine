@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.19
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.20
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.19/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.20/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.19';
+  var VERSION = '1.5.20';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -1360,7 +1360,36 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
   back.innerHTML = '<div class="uvx-vign"></div><div class="uvx-grad"></div><div class="uvx-wait"><div class="t"></div><div class="b"><i></i></div></div>';
   var waitEl = back.querySelector('.uvx-wait'); waitEl.querySelector('.t').textContent = T('Préparation de la visite 3D…');
   function waitOff() { if (!waitEl || waitEl.classList.contains('off')) return; waitEl.classList.add('off'); setTimeout(function () { if (waitEl && waitEl.parentNode) waitEl.parentNode.removeChild(waitEl); waitEl = null; }, 800); }
-  setTimeout(waitOff, 90000);   /* filet : jamais d'écran d'attente qui reste */
+  setTimeout(waitOff, 150000);   /* filet : jamais d'écran d'attente qui reste */
+  /* v1.5.20 : après « playing », Matterport télécharge encore les images de la pièce ; tant qu'elles manquent, le rendu est un aplat sombre.
+     On sonde une capture 48×48 du rendu (Renderer.takeScreenShot) toutes les 1,5 s : dès qu'elle contient une image (contraste ou luminosité), l'écran d'attente s'efface.
+     Toute erreur de l'API → effacement immédiat (comportement v1.5.19). */
+  var waitPixOn = false;
+  function waitPix(s) {
+    if (waitPixOn || !waitEl) return; waitPixOn = true; var errs = 0;
+    function probe() {
+      if (!waitEl || waitEl.classList.contains('off')) return;
+      /* tant que l'écran d'accueil ou la vue aérienne recouvre la scène, l'attente est invisible : on ne sonde pas (aucune charge pendant le clic d'entrée) */
+      if (document.querySelector('.uvx-intro, .uvx-aacc')) { setTimeout(probe, 400); return; }
+      var pr; try { pr = s.Renderer.takeScreenShot({ width: 48, height: 48 }, {}); } catch (e) { pr = null; }
+      if (!pr || !pr.then) { waitOff(); return; }
+      pr.then(function (d) {
+        var im = new Image();
+        im.onload = function () {
+          try {
+            var c = document.createElement('canvas'); c.width = 48; c.height = 48; var x = c.getContext('2d'); x.drawImage(im, 0, 0);
+            var px = x.getImageData(0, 0, 48, 48).data, n = 0, m = 0, q = 0;
+            for (var k = 0; k < px.length; k += 4) { var l = (px[k] + px[k + 1] + px[k + 2]) / 3; m += l; q += l * l; n++; }
+            m /= n; var sd = Math.sqrt(Math.max(0, q / n - m * m));
+            if (sd >= 12 || m >= 40) waitOff(); else setTimeout(probe, 1500);
+          } catch (e) { waitOff(); }
+        };
+        im.onerror = function () { if (++errs > 1) waitOff(); else setTimeout(probe, 1500); };
+        im.src = d;
+      }, function () { if (++errs > 1) waitOff(); else setTimeout(probe, 1500); });
+    }
+    probe();
+  }
   var model = host.querySelector('.mp-model');
   host.insertBefore(back, model ? model.nextSibling : host.firstChild);
   var pano = document.createElement('div'); pano.id = 'uvx-360'; host.insertBefore(pano, back);
@@ -1641,7 +1670,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
   /* v1.5.2 : 3D prête → les déplacements demandés trop tôt sont rejoués (voir go) */
   withSdk(function (s) {
     try { s.App.state.subscribe(function (a) {
-      if (/playing/i.test(String(a && a.phase))) waitOff();   /* v1.5.19 : la 3D s'affiche → l'écran d'attente s'efface */
+      if (/playing/i.test(String(a && a.phase))) waitPix(s);   /* v1.5.20 : « playing » ne veut pas dire « image affichée » (mobile lent : 30 à 100 s d'écran noir) → on attend une vraie image */
       if (ready3d || !/playing/i.test(String(a && a.phase))) return;
       if (Date.now() - t3d0 < 400) set3dReady(); else setTimeout(set3dReady, 2500);   /* déjà prêt (relance) : tout de suite */
     }); } catch (e) { set3dReady(); waitOff(); }
