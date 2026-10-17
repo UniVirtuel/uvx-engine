@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.23
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.24
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.23/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.24/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.23';
+  var VERSION = '1.5.24';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -884,7 +884,10 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
 .uvx-aacc{position:absolute;inset:0;z-index:99994;pointer-events:none;display:grid;place-items:end start;text-align:left;font-family:var(--uvx-font);color:#fff;opacity:0;transition:opacity .9s ease}
 .uvx-aacc.on{opacity:1}.uvx-aacc.go{opacity:0;transition:opacity .6s ease}
 .uvx-aacc *{box-sizing:border-box}
-.uvx-aacc::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.62),rgba(var(--uvx-scene-rgb),.18) 22%,transparent 36%)}
+/* v1.5.24 : plus de voile sur toute l'image (demande de Mickaël) — un halo sombre limité au bloc titre + boutons */
+.uvx-aacc{overflow:hidden}
+.uvx-aacc .in{isolation:isolate}
+.uvx-aacc .in::before{content:'';position:absolute;inset:-70px -110px -60px -110px;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,rgba(var(--uvx-scene-rgb),.55),rgba(var(--uvx-scene-rgb),.28) 55%,transparent)}
 .uvx-aacc .eb{text-shadow:0 1px 2px rgba(0,0,0,.35),0 2px 24px rgba(0,0,0,.45)}
 .uvx-aacc .in{position:relative;pointer-events:auto;margin:0 0 72px 64px;max-width:min(760px,calc(100vw - 64px))}
 .uvx-aacc .eb{font-size:11px;letter-spacing:.22em;font-weight:600;text-transform:uppercase;color:var(--uvx-accent-scene)}
@@ -906,7 +909,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
 @media (hover:none){.uvx-aacc .eb,.uvx-aacc .figs{display:none}.uvx-aacc h1{margin-top:0!important}
  /* centré quand il ne reste que le titre et les boutons (Mickaël, 11/10/2026) */
  .uvx-aacc{place-items:end center;text-align:center}.uvx-aacc .in{margin-left:auto;margin-right:auto;width:min(760px,calc(100% - 36px))}.uvx-aacc .btns{justify-content:center}
- .uvx-aacc::before{background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.6),rgba(var(--uvx-scene-rgb),.15) 20%,transparent 32%)}}
+ .uvx-aacc .in::before{inset:-50px -40px -40px -40px}}
 /* tablette */
 @media (min-width:761px) and (max-width:1100px){
  #uvx .v-dock{width:calc(100vw - 48px)}
