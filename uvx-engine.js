@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.22
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.23
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.22/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.23/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.22';
+  var VERSION = '1.5.23';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -73,7 +73,7 @@
   var I18N = {
     en: {
       'Démarrer la visite': 'Start the tour', 'Commencer la visite': 'Start the tour', 'Découvrir ▾': 'Discover ▾',
-      'Retour à l\'accueil': 'Back to start', 'Masquer l\'interface': 'Hide interface', 'Afficher l\'interface': 'Show interface', 'Voir le plan des salles': 'See the room plan', 'Flou périphérique': 'Peripheral blur', 'Musique': 'Music', 'Préparation de la visite 3D…': 'Preparing the 3D tour…',
+      'Retour à l\'accueil': 'Back to start', 'Masquer l\'interface': 'Hide interface', 'Afficher l\'interface': 'Show interface', 'Voir le plan des salles': 'See the room plan', 'Flou périphérique': 'Peripheral blur', 'Musique': 'Music', 'Préparation de la visite 3D…': 'Preparing the 3D tour…', 'Connexion lente, merci de patienter…': 'Slow connection, please wait…',
       'Plein écran': 'Full screen', 'Visite guidée en vidéo': 'Guided video tour', 'Tous les espaces': 'All spaces', 'Voir plus': 'See more',
       'Masquer le champ de question': 'Hide the question field', 'Afficher le champ de question': 'Show the question field', 'Photo à venir': 'Photo coming soon',
       '{n} espace': '{n} space', '{n} espaces': '{n} spaces', '{n} fiche': '{n} factsheet', '{n} fiches': '{n} factsheets',
@@ -110,7 +110,7 @@
     },
     es: {
       'Démarrer la visite': 'Iniciar la visita', 'Commencer la visite': 'Iniciar la visita', 'Découvrir ▾': 'Descubrir ▾',
-      'Retour à l\'accueil': 'Volver al inicio', 'Masquer l\'interface': 'Ocultar la interfaz', 'Afficher l\'interface': 'Mostrar la interfaz', 'Voir le plan des salles': 'Ver el plano de las salas', 'Flou périphérique': 'Desenfoque periférico', 'Musique': 'Música', 'Préparation de la visite 3D…': 'Preparando la visita 3D…',
+      'Retour à l\'accueil': 'Volver al inicio', 'Masquer l\'interface': 'Ocultar la interfaz', 'Afficher l\'interface': 'Mostrar la interfaz', 'Voir le plan des salles': 'Ver el plano de las salas', 'Flou périphérique': 'Desenfoque periférico', 'Musique': 'Música', 'Préparation de la visite 3D…': 'Preparando la visita 3D…', 'Connexion lente, merci de patienter…': 'Conexión lenta, por favor espere…',
       'Plein écran': 'Pantalla completa', 'Visite guidée en vidéo': 'Visita guiada en vídeo', 'Tous les espaces': 'Todos los espacios', 'Voir plus': 'Ver más',
       'Masquer le champ de question': 'Ocultar el campo de pregunta', 'Afficher le champ de question': 'Mostrar el campo de pregunta', 'Photo à venir': 'Foto próximamente',
       '{n} espace': '{n} espacio', '{n} espaces': '{n} espacios', '{n} fiche': '{n} ficha', '{n} fiches': '{n} fichas',
@@ -147,7 +147,7 @@
     },
     de: {
       'Démarrer la visite': 'Rundgang starten', 'Commencer la visite': 'Rundgang starten', 'Découvrir ▾': 'Entdecken ▾',
-      'Retour à l\'accueil': 'Zurück zum Start', 'Masquer l\'interface': 'Oberfläche ausblenden', 'Afficher l\'interface': 'Oberfläche einblenden', 'Voir le plan des salles': 'Raumplan ansehen', 'Flou périphérique': 'Randunschärfe', 'Musique': 'Musik', 'Préparation de la visite 3D…': '3D-Rundgang wird vorbereitet…',
+      'Retour à l\'accueil': 'Zurück zum Start', 'Masquer l\'interface': 'Oberfläche ausblenden', 'Afficher l\'interface': 'Oberfläche einblenden', 'Voir le plan des salles': 'Raumplan ansehen', 'Flou périphérique': 'Randunschärfe', 'Musique': 'Musik', 'Préparation de la visite 3D…': '3D-Rundgang wird vorbereitet…', 'Connexion lente, merci de patienter…': 'Langsame Verbindung, bitte warten…',
       'Plein écran': 'Vollbild', 'Visite guidée en vidéo': 'Videoführung', 'Tous les espaces': 'Alle Räume', 'Voir plus': 'Mehr sehen',
       'Masquer le champ de question': 'Fragefeld ausblenden', 'Afficher le champ de question': 'Fragefeld einblenden', 'Photo à venir': 'Foto folgt',
       '{n} espace': '{n} Raum', '{n} espaces': '{n} Räume', '{n} fiche': '{n} Datenblatt', '{n} fiches': '{n} Datenblätter',
@@ -184,7 +184,7 @@
     },
     nl: {
       'Démarrer la visite': 'Start de rondleiding', 'Commencer la visite': 'Start de rondleiding', 'Découvrir ▾': 'Ontdekken ▾',
-      'Retour à l\'accueil': 'Terug naar het begin', 'Masquer l\'interface': 'Interface verbergen', 'Afficher l\'interface': 'Interface tonen', 'Voir le plan des salles': 'Bekijk de zaalplattegrond', 'Flou périphérique': 'Randvervaging', 'Musique': 'Muziek', 'Préparation de la visite 3D…': '3D-rondleiding wordt voorbereid…',
+      'Retour à l\'accueil': 'Terug naar het begin', 'Masquer l\'interface': 'Interface verbergen', 'Afficher l\'interface': 'Interface tonen', 'Voir le plan des salles': 'Bekijk de zaalplattegrond', 'Flou périphérique': 'Randvervaging', 'Musique': 'Muziek', 'Préparation de la visite 3D…': '3D-rondleiding wordt voorbereid…', 'Connexion lente, merci de patienter…': 'Trage verbinding, even geduld…',
       'Plein écran': 'Volledig scherm', 'Visite guidée en vidéo': 'Videorondleiding', 'Tous les espaces': 'Alle ruimtes', 'Voir plus': 'Meer zien',
       'Masquer le champ de question': 'Vraagveld verbergen', 'Afficher le champ de question': 'Vraagveld tonen', 'Photo à venir': 'Foto volgt',
       '{n} espace': '{n} ruimte', '{n} espaces': '{n} ruimtes', '{n} fiche': '{n} fiche', '{n} fiches': '{n} fiches',
@@ -326,6 +326,8 @@ body.uvx-novign #uvx-back .uvx-vign{display:none}
 #uvx-back .uvx-wait .t{font-size:clamp(17px,4.2vw,22px);font-weight:300;letter-spacing:.01em;text-align:center;max-width:84vw}
 #uvx-back .uvx-wait .b{margin-top:26px;width:150px;height:2px;background:rgba(255,255,255,.16);overflow:hidden;border-radius:2px}
 #uvx-back .uvx-wait .b i{display:block;width:40%;height:100%;background:#fff;animation:uvxWaitL 1.4s ease-in-out infinite}
+#uvx-back .uvx-wait .s{margin-top:18px;font-size:clamp(13px,3.4vw,15px);font-weight:300;opacity:0;transition:opacity .8s ease;color:rgba(255,255,255,.78);text-align:center;max-width:84vw}
+#uvx-back .uvx-wait .s.on{opacity:1}
 @keyframes uvxWaitL{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
 body.uvx-bare #uvx-back .uvx-grad{opacity:0}
 /* F1 / F2 */
@@ -882,10 +884,11 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
 .uvx-aacc{position:absolute;inset:0;z-index:99994;pointer-events:none;display:grid;place-items:end start;text-align:left;font-family:var(--uvx-font);color:#fff;opacity:0;transition:opacity .9s ease}
 .uvx-aacc.on{opacity:1}.uvx-aacc.go{opacity:0;transition:opacity .6s ease}
 .uvx-aacc *{box-sizing:border-box}
-.uvx-aacc::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.82),rgba(var(--uvx-scene-rgb),.3) 38%,transparent 62%),linear-gradient(to right,rgba(var(--uvx-scene-rgb),.4),transparent 50%)}
+.uvx-aacc::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.62),rgba(var(--uvx-scene-rgb),.18) 22%,transparent 36%)}
+.uvx-aacc .eb{text-shadow:0 1px 2px rgba(0,0,0,.35),0 2px 24px rgba(0,0,0,.45)}
 .uvx-aacc .in{position:relative;pointer-events:auto;margin:0 0 72px 64px;max-width:min(760px,calc(100vw - 64px))}
 .uvx-aacc .eb{font-size:11px;letter-spacing:.22em;font-weight:600;text-transform:uppercase;color:var(--uvx-accent-scene)}
-.uvx-aacc h1{font:300 56px/1.05 var(--uvx-font)!important;margin:14px 0 18px!important;padding:0!important;letter-spacing:-.01em;color:#fff!important;text-shadow:0 2px 30px rgba(0,0,0,.45);text-transform:none!important}
+.uvx-aacc h1{font:300 56px/1.05 var(--uvx-font)!important;margin:14px 0 18px!important;padding:0!important;letter-spacing:-.01em;color:#fff!important;text-shadow:0 1px 2px rgba(0,0,0,.35),0 2px 24px rgba(0,0,0,.45);text-transform:none!important}
 .uvx-aacc .figs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
 .uvx-aacc .figs span{font-size:13px;line-height:1.3;padding:7px 14px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .uvx-aacc .btns{display:flex;gap:12px;flex-wrap:wrap}
@@ -903,7 +906,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
 @media (hover:none){.uvx-aacc .eb,.uvx-aacc .figs{display:none}.uvx-aacc h1{margin-top:0!important}
  /* centré quand il ne reste que le titre et les boutons (Mickaël, 11/10/2026) */
  .uvx-aacc{place-items:end center;text-align:center}.uvx-aacc .in{margin-left:auto;margin-right:auto;width:min(760px,calc(100% - 36px))}.uvx-aacc .btns{justify-content:center}
- .uvx-aacc::before{background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.7),rgba(var(--uvx-scene-rgb),.2) 26%,transparent 42%)}}
+ .uvx-aacc::before{background:linear-gradient(to top,rgba(var(--uvx-scene-rgb),.6),rgba(var(--uvx-scene-rgb),.15) 20%,transparent 32%)}}
 /* tablette */
 @media (min-width:761px) and (max-width:1100px){
  #uvx .v-dock{width:calc(100vw - 48px)}
@@ -1374,6 +1377,16 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
   var waitEl = back.querySelector('.uvx-wait'); waitEl.querySelector('.t').textContent = T('Préparation de la visite 3D…');
   function waitOff() { if (!waitEl || waitEl.classList.contains('off')) return; waitEl.classList.add('off'); setTimeout(function () { if (waitEl && waitEl.parentNode) waitEl.parentNode.removeChild(waitEl); waitEl = null; }, 800); }
   setTimeout(waitOff, 150000);   /* filet : jamais d'écran d'attente qui reste */
+  /* v1.5.23 : après 20 s d'attente réellement visible (écran d'accueil et vue aérienne exclus), message « connexion lente » sous la barre */
+  (function () { var vis = 0; var tk = setInterval(function () {
+    try {
+      if (!waitEl || waitEl.classList.contains('off')) { clearInterval(tk); return; }
+      if (document.hidden || document.querySelector('.uvx-intro, .uvx-aacc')) return;
+      if (++vis < 20) return;
+      clearInterval(tk); var m = document.createElement('div'); m.className = 's'; m.textContent = T('Connexion lente, merci de patienter…');
+      waitEl.appendChild(m); setTimeout(function () { m.classList.add('on'); }, 30);
+    } catch (e) { clearInterval(tk); }
+  }, 1000); })();
   /* v1.5.20 : après « playing », Matterport télécharge encore les images de la pièce ; tant qu'elles manquent, le rendu est un aplat sombre.
      On sonde une capture 48×48 du rendu (Renderer.takeScreenShot) toutes les 1,5 s : dès qu'elle contient une image (contraste ou luminosité), l'écran d'attente s'efface.
      Toute erreur de l'API → effacement immédiat (comportement v1.5.19). */
