@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.21
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.22
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.21/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.22/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.21';
+  var VERSION = '1.5.22';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -1300,6 +1300,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
     var p = f.title.split(SEP);
     if (!/^vid[ée]o$/i.test(p[1] || '')) return;
     if (/^accueil$/i.test(p[0]) && p.length < 3) return;   /* « Accueil · Vidéo » = vidéo d'accueil, pas un épisode */
+    if (/^accueil$/i.test(p[0]) && /^mobile$/i.test((p[2] || '').trim())) return;   /* v1.5.22 : « Accueil · Vidéo · Mobile » non plus */
     var t = p.slice(2).join(' · '), n = t.match(/^[ÉE]p\.?\s*(\d+)\s*/i), href = f.el.getAttribute('href') || '';
     if (!href) return;
     tagEps.push({ title: n ? t.slice(n[0].length) : t, n: n ? +n[1] : 99, step: p[0],
@@ -1308,14 +1309,17 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
   tagEps.sort(function (a, b) { return a.n - b.n; });
   /* « Nom · Photo » (type Photo, cible Popup) : href = fichier de la médiathèque → aperçu du menu plein écran.
      « Accueil · Photo » = image d'attente de la vidéo d'accueil ; « Accueil · Vidéo » = vidéo d'accueil (lecteur MPskin). */
-  var tagIntro = null;
+  var tagIntro = null, tagIntroM = null;
   allFiches.filter(isContent).forEach(function (f) {
     var p = f.title.split(SEP), href = f.el.getAttribute('href') || '';
     if (!href) return;
     if (/^photo$/i.test(p[1] || '')) {
       if (/^accueil$/i.test(p[0])) OPTIONS.introPoster = href; else OPTIONS.photos[p[0]] = href;
     } else if (/^vid[ée]o$/i.test(p[1] || '') && /^accueil$/i.test(p[0]) && p.length < 3) tagIntro = href;
+    else if (/^vid[ée]o$/i.test(p[1] || '') && /^accueil$/i.test(p[0]) && /^mobile$/i.test((p[2] || '').trim())) tagIntroM = href;
   });
+  /* v1.5.22 : « Accueil · Vidéo · Mobile » = version cadrée pour téléphone debout (même contenu, recadré au centre, ~3× plus léger) */
+  if (tagIntroM) { if (/\.mp4(\?|$)/i.test(tagIntroM)) OPTIONS.introVideoMobile = tagIntroM; else OPTIONS.introPlayerMobile = tagIntroM; }
   if (tagIntro) { if (/\.mp4(\?|$)/i.test(tagIntro)) OPTIONS.introVideo = tagIntro; else { OPTIONS.introVideo = null; OPTIONS.introPlayer = tagIntro; } }
   if (tagEps.length) OPTIONS.episodes = tagEps;   /* les balises vidéo remplacent les épisodes écrits dans la fiche client */
   /* une salle décrite par ses balises remplace la configuration écrite dans la fiche client */
@@ -2733,11 +2737,14 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
     var old = root.querySelector('.uvx-intro'); if (old) old.remove();
     var intro = document.createElement('div'); intro.className = 'uvx-intro';
     var pj = document.querySelector('.nav-cnt .section.title .project');
-    var hasVid = OPTIONS.introVideo || OPTIONS.introPlayer;
-    var vid = hasVid ? '<video class="bg"' + (OPTIONS.introVideo ? ' src="' + OPTIONS.introVideo + '"' : '') + (OPTIONS.introPoster ? ' poster="' + OPTIONS.introPoster + '"' : '') + ' autoplay muted loop playsinline></video><div class="shade"></div>' : '';
-    if (!OPTIONS.introVideo && OPTIONS.introPlayer) {   /* vidéo d'accueil lue dans le lecteur MPskin : URL du MP4 résolue à la demande */
-      var ie = { player: OPTIONS.introPlayer };
-      epResolve(ie, function () { if (!ie.video) return; OPTIONS.introVideo = ie.video;
+    /* v1.5.22 : téléphone debout + version mobile fournie → on la prend ; sinon la version normale, comme avant */
+    var mob = false; try { mob = !!(OPTIONS.introVideoMobile || OPTIONS.introPlayerMobile) && window.matchMedia('(max-width:760px) and (orientation:portrait)').matches; } catch (e) {}
+    var iv = mob ? OPTIONS.introVideoMobile : OPTIONS.introVideo, ip = mob ? OPTIONS.introPlayerMobile : OPTIONS.introPlayer;
+    var hasVid = iv || ip;
+    var vid = hasVid ? '<video class="bg"' + (iv ? ' src="' + iv + '"' : '') + (OPTIONS.introPoster ? ' poster="' + OPTIONS.introPoster + '"' : '') + ' autoplay muted loop playsinline></video><div class="shade"></div>' : '';
+    if (!iv && ip) {   /* vidéo d'accueil lue dans le lecteur MPskin : URL du MP4 résolue à la demande */
+      var ie = { player: ip };
+      epResolve(ie, function () { if (!ie.video) return; if (mob) OPTIONS.introVideoMobile = ie.video; else OPTIONS.introVideo = ie.video;
         var v = intro.querySelector('video.bg'); if (v) { v.src = ie.video; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } });
     }
     if (vid) intro.classList.add('vid');
