@@ -1,11 +1,11 @@
-/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.20
+/*! UniVirtuel — moteur d'interface pour MPskin Extend-HTML · v1.5.21
  *  © UniVirtuel. Chargé par une ligne dans l'Extend-HTML du skin, après la fiche client :
  *    <script>window.UVX_OPTIONS = { mode:'complet', introTitle:'…', charte:{couleur:'#…'}, contact:{…} };</script>
- *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.20/uvx-engine.js"></script>
+ *    <script src="https://cdn.jsdelivr.net/gh/<compte>/<dépôt>@v1.5.21/uvx-engine.js"></script>
  *  Le contenu vient des balises MPskin (catégorie « Contenus »). Console : UVX.version, UVX.destroy().
  */
 (function () {
-  var VERSION = '1.5.20';
+  var VERSION = '1.5.21';
   if (window.__UVX_BOOT) { console.warn('[UVX] moteur déjà chargé (v' + window.__UVX_BOOT + ')'); return; }
   window.__UVX_BOOT = VERSION;
 
@@ -471,6 +471,15 @@ body.uvx-bare #uvx-hs{display:none}
 .uvx-intro.vid{backdrop-filter:none;-webkit-backdrop-filter:none;background:#000;transition:opacity 1.2s}
 .uvx-intro.vid.go{opacity:0}
 .uvx-intro .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* v1.5.21 : sur écran tactile, MPskin cale la hauteur de la page sur window.innerHeight (--windowHeight), qui ne suit pas toujours
+   l'apparition des barres du navigateur (Chrome iOS) : le bas de l'interface passait sous la barre. 100dvh = hauteur réellement visible. */
+@supports (height:100dvh){@media (hover:none) and (pointer:coarse){
+.ui-wrap{height:100dvh!important}
+.ui-wrap .nav-box .nav-cnt{max-height:calc(100dvh - 42px)!important}
+}}
+/* v1.5.21 : iPhone en mode économie d'énergie (ou données réduites) = lecture automatique refusée → jamais le gros bouton ▶ natif sur l'accueil ; l'image reste fixe */
+.uvx-intro video.bg{pointer-events:none}
+.uvx-intro video.bg::-webkit-media-controls,.uvx-intro video.bg::-webkit-media-controls-panel,.uvx-intro video.bg::-webkit-media-controls-overlay-play-button,.uvx-intro video.bg::-webkit-media-controls-start-playback-button{display:none!important;-webkit-appearance:none;opacity:0}
 .uvx-intro .shade{position:absolute;inset:0;background:radial-gradient(ellipse 60% 45% at 50% 50%,rgba(var(--uvx-scene-rgb),.68),rgba(var(--uvx-scene-rgb),.28) 70%,rgba(var(--uvx-scene-rgb),.4))}
 .uvx-intro .in{position:relative}
 .uvx-intro.vid h1{font-size:52px;text-shadow:0 2px 30px rgba(0,0,0,.6)}
@@ -2701,6 +2710,25 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
     if (plk) plk.addEventListener('click', function () { tick(); enter(); setTimeout(function () { v13.openPlan(firstDetailPlan()); }, 700); });
     return el;
   }
+  /* v1.5.21 : si l'appareil refuse la lecture automatique (iOS en mode économie d'énergie), relancer la vidéo au premier
+     toucher du visiteur. Rien n'est armé si la lecture marche ou échoue pour une autre raison (format non lu, etc.). */
+  function introRetry(intro) {
+    var v = intro.querySelector('video.bg'); if (!v) return;
+    var armed = false, probed = false;
+    var once = function () {
+      document.removeEventListener('touchend', once, true); document.removeEventListener('click', once, true);
+      try { if (intro.isConnected && v.paused) { v.muted = true; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } } catch (e) {}
+    };
+    function arm() { if (armed) return; armed = true;
+      /* touchend / click : seuls gestes que WebKit (iOS) reconnaît pour autoriser une lecture */
+      document.addEventListener('touchend', once, { capture: true, passive: true });
+      document.addEventListener('click', once, true); }
+    /* aucune lecture forcée ici (charge inutile) : 3 s après le début du chargement, une vidéo sans erreur et toujours en pause
+       = lecture automatique refusée par l'appareil → on arme la relance au toucher */
+    function probe() { if (probed || !v.currentSrc && !v.getAttribute('src')) return; probed = true;
+      setTimeout(function () { try { if (intro.isConnected && v.paused && !v.error) arm(); } catch (e) {} }, 3000); }
+    if (v.getAttribute('src')) probe(); else v.addEventListener('loadstart', probe);
+  }
   function showIntro() {
     var old = root.querySelector('.uvx-intro'); if (old) old.remove();
     var intro = document.createElement('div'); intro.className = 'uvx-intro';
@@ -2723,6 +2751,7 @@ html.uvx-deep .fancybox-container.open-fancybox-pano,html.uvx-deep .fancybox-con
     intro.innerHTML = vid + '<div class="in"><div class="eb">' + T('Bienvenue') + '</div><h1>' + ttl + '</h1>' +
       '<button class="go-btn">' + T(OPTIONS.introButton) + '</button></div>' + (vid ? '' : '<button class="skip">' + T('Passer l\'intro') + '</button>');
     root.appendChild(intro);
+    introRetry(intro);
     if (aero) aero.hold();
     var leave = function (e) { tick(); intro.classList.add('go'); setTimeout(function () { intro.remove(); }, 2400);
       var wantBrief = e && e.currentTarget && e.currentTarget.classList.contains('rep');
